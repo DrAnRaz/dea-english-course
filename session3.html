@@ -107,8 +107,13 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;
 .online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
 .online-btn:hover{transform:translateY(-2px)}
 .btn-save{background:#1B5E20;color:white}
-.btn-ss{background:#0D47A1;color:white}
+.btn-ss{background:#0D47A1;color:white;display:none}
 .btn-ss.active{background:#B71C1C}
+body.teacher-mode .btn-ss{display:inline-block}
+.teacher-note,.t-only{display:none}
+body.teacher-mode .teacher-note,body.teacher-mode .t-only{display:block}
+.btn-teacher{background:#37474F;color:white}
+body.teacher-mode .btn-teacher{background:#B71C1C}
 .live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
 body.screen-share .live-banner{display:block}
 body.screen-share .content{font-size:18px!important}
@@ -456,6 +461,7 @@ body.screen-share .content{font-size:18px!important}
       <p>✏️ Write <strong>5 sentences</strong> using <em>There is…</em> or <em>There are…</em></p>
       <p>Example: <em>There is a big window. There are 25 desks.</em></p>
     </div>
+    <div class="t-only">
     <div class="field-label">Homework result (fill in at Session 4)</div>
     <div class="editable" id="hw-check" contenteditable="true" data-placeholder="Did she do it? is/are correct? Article use?"></div>
     <h3 style="margin-top:18px">Session Self-Evaluation</h3>
@@ -466,6 +472,7 @@ body.screen-share .content{font-size:18px!important}
     <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
     <div class="field-label">Session notes / carry into Session 4</div>
     <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit?"></div>
+    </div>
   </div>
 </div>
 
@@ -490,6 +497,7 @@ window.addEventListener('load',load);
 <div class="online-bar">
   <button class="online-btn btn-save" onclick="saveDeaWork(3)">💾 Dea munkájának mentése</button>
   <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+  <button class="online-btn btn-teacher" id="teacher-btn" onclick="unlockTeacher()">🔐</button>
 </div>
 <script>
 function saveDeaWork(n){
@@ -510,6 +518,13 @@ function toggleSS(){
   var b=document.getElementById('ss-btn');
   b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
   b.classList.toggle('active',_ss);
+}
+var _tm=false;
+function unlockTeacher(){
+  if(_tm){_tm=false;document.body.classList.remove('teacher-mode');document.getElementById('teacher-btn').textContent='🔐';return;}
+  var p=prompt('Enter teacher code:');
+  if(p==='teach'){_tm=true;document.body.classList.add('teacher-mode');document.getElementById('teacher-btn').textContent='🔓 Teacher';}
+  else if(p!==null){alert('Incorrect code.');}
 }
 </script>
 </body>

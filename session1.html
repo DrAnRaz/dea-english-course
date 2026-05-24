@@ -129,6 +129,12 @@ body.screen-share .content{font-size:18px!important}
 .print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
 .print-btn{right:24px;background:#1565C0}
 .reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+.teacher-note,.t-only{display:none}
+body.teacher-mode .teacher-note,body.teacher-mode .t-only{display:block}
+.btn-ss{display:none}
+body.teacher-mode .btn-ss{display:inline-block}
+.btn-teacher{background:#37474F;color:white}
+body.teacher-mode .btn-teacher{background:#B71C1C}
 </style>
 </head>
 <body>
@@ -154,8 +160,10 @@ body.screen-share .content{font-size:18px!important}
       <li>Read a short text about a girl named Emma</li>
       <li>Make and present a personal English ID card</li>
     </ul>
+    <div class="t-only">
     <div class="field-label">Teacher's session notes</div>
     <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="Add any notes before the session…"></div>
+    </div>
   </div>
 </div>
 
@@ -480,6 +488,7 @@ body.screen-share .content{font-size:18px!important}
       <p>✏️ <strong>Write 4 sentences:</strong> their name, age, and two adjectives.</p>
       <p>📌 Use your ID card as a model!</p>
     </div>
+    <div class="t-only">
     <div class="field-label">Next session check: listen for…</div>
     <p style="font-size:13px;color:#666;margin:6px 0">✅ is/am correct? ✅ Subject + verb in every sentence? ✅ Adjectives from our list?</p>
     <div class="field-label">Homework result (fill in at Session 2)</div>
@@ -492,6 +501,7 @@ body.screen-share .content{font-size:18px!important}
     <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
     <div class="field-label">Overall session notes</div>
     <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit? Carry into Session 2?"></div>
+    </div>
   </div>
 </div>
 
@@ -504,6 +514,7 @@ body.screen-share .content{font-size:18px!important}
 <div class="online-bar">
   <button class="online-btn btn-save" onclick="saveDeaWork(1)">💾 Dea munkájának mentése</button>
   <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+  <button class="online-btn btn-teacher" id="teacher-btn" onclick="unlockTeacher()">🔐</button>
 </div>
 <script>
 function saveDeaWork(n){
@@ -524,6 +535,13 @@ function toggleSS(){
   var b=document.getElementById('ss-btn');
   b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
   b.classList.toggle('active',_ss);
+}
+var _tm=false;
+function unlockTeacher(){
+  if(_tm){_tm=false;document.body.classList.remove('teacher-mode');document.getElementById('teacher-btn').textContent='🔐';return;}
+  var p=prompt('Enter teacher code:');
+  if(p==='teach'){_tm=true;document.body.classList.add('teacher-mode');document.getElementById('teacher-btn').textContent='🔓 Teacher';}
+  else if(p!==null){alert('Incorrect code.');}
 }
 </script>
 <button class="print-btn" onclick="window.print()">🖨️ Print</button>
