@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 2 — My Day | Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;background:#f4f6f9;color:#1a1a1a}
+.page-header{background:linear-gradient(135deg,#E65100,#F57F17);color:white;padding:28px 36px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header .subtitle{font-size:13px;opacity:0.82;margin-top:5px}
+.page-header .badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap;margin-top:4px}
+#save-status{position:fixed;top:14px;right:20px;background:#43A047;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.5s;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+#save-status.show{opacity:1}
+.container{max-width:940px;margin:0 auto;padding:28px 18px 80px}
+.section{border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+.sec-head{padding:13px 22px;color:white;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-head .icon{font-size:20px}
+.sec-head .timing{margin-left:auto;font-size:12px;opacity:0.85;font-weight:400;background:rgba(255,255,255,0.18);padding:3px 10px;border-radius:12px}
+.sec-body{padding:22px 24px}
+.goal .sec-head{background:#2E7D32}.goal .sec-body{background:#E8F5E9}
+.dea-corner .sec-head{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}.dea-corner .sec-body{background:linear-gradient(135deg,#F3E5F5,#FCE4EC)}
+.warmup .sec-head{background:#E65100}.warmup .sec-body{background:#FFF8F1}
+.vocab .sec-head{background:#1565C0}.vocab .sec-body{background:#E3F2FD}
+.reading .sec-head{background:#6A1B9A}.reading .sec-body{background:#F3E5F5}
+.grammar .sec-head{background:#AD1457}.grammar .sec-body{background:#FCE4EC}
+.task .sec-head{background:#00695C}.task .sec-body{background:#E0F7FA}
+.review .sec-head{background:#BF360C}.review .sec-body{background:#FFF3E0}
+h3{font-size:14px;font-weight:700;color:#333;margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.4px}
+p{font-size:14px;margin:6px 0;color:#333}
+ul,ol{padding-left:20px;font-size:14px;color:#333}
+li{margin:5px 0}
+strong{color:#111}
+
+/* ── VISUAL AIDS ── */
+/* Timeline visual */
+.timeline{position:relative;padding:10px 0;margin:16px 0}
+.timeline::before{content:'';position:absolute;left:50px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#FFC107,#FF8F00,#5C6BC0);border-radius:3px}
+.tl-item{display:flex;align-items:center;gap:14px;margin:8px 0;position:relative}
+.tl-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;z-index:1;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+.tl-time{font-size:12px;font-weight:700;color:#555;min-width:58px;text-align:right}
+.tl-label{background:white;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.08);flex:1}
+.sun-bg{background:#FFF9C4}.mid-bg{background:#E3F2FD}.moon-bg{background:#E8EAF6}
+
+/* Grammar comparison */
+.grammar-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+.gc-box{background:white;border-radius:12px;padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.gc-box .gc-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.gc-box.gc-i .gc-label{color:#1565C0}
+.gc-box.gc-she .gc-label{color:#AD1457}
+.gc-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.gc-verb{font-weight:800;padding:3px 10px;border-radius:6px;color:white;font-size:13px}
+.gc-i .gc-verb{background:#1565C0}
+.gc-she .gc-verb{background:#AD1457}
+.s-suffix{display:inline-block;background:#FFE0B2;color:#E65100;border-radius:4px;padding:0 4px;font-weight:800}
+
+/* Vocab cards for routines */
+.routine-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.rc{background:white;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-left:4px solid #1565C0}
+.rc .rc-emoji{font-size:26px;flex-shrink:0}
+.rc .rc-content{flex:1}
+.rc .rc-word{font-weight:700;font-size:14px;color:#1565C0}
+.rc .rc-time{font-size:11px;color:#888;margin-top:1px}
+.rc .rc-example{font-size:11px;color:#444;font-style:italic;margin-top:2px}
+.rc input[type=checkbox]{margin-left:auto;width:16px;height:16px;accent-color:#2E7D32;flex-shrink:0}
+
+/* Sentence blocks */
+.sent-blocks{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.blk{padding:7px 14px;border-radius:8px;font-weight:800;font-size:15px;color:white}
+.blk.subj{background:#1565C0}.blk.verb{background:#AD1457}.blk.time{background:#2E7D32}.blk.punct{background:transparent;color:#555;font-size:18px;padding:0 2px}
+
+/* Reading */
+.reading-text{background:white;border-left:5px solid #7B1FA2;padding:16px 20px;border-radius:0 10px 10px 0;font-size:15px;line-height:1.9;margin:12px 0;font-style:italic;color:#2a2a2a}
+
+/* Poster template visual */
+.poster-template{background:white;border:3px solid #00695C;border-radius:16px;padding:20px;margin:14px auto;max-width:380px;font-size:13px}
+.pt-title{text-align:center;font-weight:800;font-size:16px;color:#00695C;margin-bottom:16px;border-bottom:2px solid #E0F7FA;padding-bottom:8px}
+.pt-row{display:flex;gap:10px;align-items:center;margin:8px 0}
+.pt-icon{font-size:20px;width:30px;text-align:center;flex-shrink:0}
+.pt-time{font-weight:700;color:#555;min-width:60px;font-size:12px}
+.pt-line{flex:1;border-bottom:2px dashed #aaa;height:20px}
+
+/* Dea's corner */
+.dc-challenge{background:white;border-radius:12px;padding:16px 20px;margin:12px 0;border:2px solid #CE93D8}
+.dc-challenge h4{color:#6A1B9A;font-size:15px;margin-bottom:8px}
+.dc-fact{background:#FFF9C4;border-radius:10px;padding:12px 16px;margin:10px 0;border-left:4px solid #F9A825}
+.dc-fact strong{color:#E65100}
+.dc-editable{background:rgba(255,255,255,0.8);border:2px dashed #CE93D8;border-radius:10px;padding:12px 16px;min-height:60px;font-size:14px;margin:8px 0}
+.dc-editable:focus{outline:none;border-color:#6A1B9A}
+.dc-editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#CE93D8;font-style:italic}
+.star-row{font-size:22px;letter-spacing:6px;margin:8px 0;text-align:center}
+
+.editable{background:white;border:2px dashed #bbb;border-radius:10px;padding:12px 16px;min-height:56px;font-size:14px;color:#333;margin:8px 0;transition:border-color 0.2s}
+.editable:focus{outline:none;border-color:#1565C0;box-shadow:0 0 0 3px rgba(21,101,192,0.12)}
+.editable.tall{min-height:110px}
+.editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#bbb;font-style:italic;pointer-events:none}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin:14px 0 3px}
+.frame-box{background:white;border:2px solid rgba(0,0,0,0.09);border-radius:10px;padding:14px 18px;margin:10px 0}
+.teacher-note{background:#FFFDE7;border-left:4px solid #FBC02D;padding:10px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin:10px 0}
+.activity-box{background:rgba(255,255,255,0.65);border-radius:10px;padding:14px 18px;margin:10px 0;border:1px solid rgba(0,0,0,0.07)}
+.activity-box h3{margin-top:0}
+.task-frame{background:rgba(255,255,255,0.7);border:2px solid rgba(0,105,92,0.2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.check-item:last-child{border-bottom:none}
+.check-item label{font-size:14px;cursor:pointer;flex:1}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;flex-shrink:0}
+.qa-item{margin:10px 0}.qa-item .q{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+
+@media print{body{background:white;font-size:12px}#save-status,.print-btn,.reset-btn{display:none!important}.section{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}.sec-head,.sec-body,.page-header,.dea-corner .sec-head,.dea-corner .sec-body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.editable,.dc-editable{border:1px solid #ccc}.routine-grid{grid-template-columns:repeat(2,1fr)}.grammar-compare{grid-template-columns:1fr 1fr}}
+.print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
+.print-btn{right:24px;background:#1565C0}.reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+.online-bar{position:fixed;bottom:70px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
+.online-btn:hover{transform:translateY(-2px)}
+.btn-save{background:#1B5E20;color:white}
+.btn-ss{background:#0D47A1;color:white}
+.btn-ss.active{background:#B71C1C}
+.live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
+body.screen-share .live-banner{display:block}
+body.screen-share .content{font-size:18px!important}
+@media print{.online-bar,.live-banner{display:none!important}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>🌅 Session 2 — My Day</h1>
+    <div class="subtitle">Dea's English Mini-Course · Right on! 2 (Jenny Dooley, Express Publishing)</div>
+    <div class="subtitle">Hungarian L1 · Age 11 · A1–A2</div>
+  </div>
+  <div><div class="badge">⏱ 45–60 min</div></div>
+</div>
+<div id="save-status">✓ Saved</div>
+<div class="container">
+
+<!-- GOAL -->
+<div class="section goal">
+  <div class="sec-head"><span class="icon">🎯</span> Goal &amp; Introduction <span class="timing">2 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Today you will learn how to talk about what you do every day — your morning, afternoon, and evening — and you will make your own 'Day in My Life' poster!"</em></p></div>
+    <ul>
+      <li>Learn daily routine verbs and time expressions</li>
+      <li>Use present simple: <strong>I wake up / She wakes up</strong> (the -s rule)</li>
+      <li>Read "Tom's School Day" and answer questions</li>
+      <li>Create a visual "My Day" poster</li>
+    </ul>
+    <div class="field-label">Homework check from Session 1 + teacher notes</div>
+    <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="S1 homework check + pre-session notes…"></div>
+  </div>
+</div>
+
+<!-- DEA'S CORNER -->
+<div class="section dea-corner">
+  <div class="sec-head"><span class="icon">🌟</span> Dea's Corner — Just for You! <span class="timing">Read this, Dea!</span></div>
+  <div class="sec-body">
+    <div class="star-row">☀️ 🌤️ 🌙</div>
+    <div class="dc-challenge">
+      <h4>⏰ Hey Dea! Today is all about YOUR day.</h4>
+      <p style="font-size:14px;color:#333;margin:8px 0">No wrong answers here — everyone's day is different! You'll make a poster about YOUR morning, afternoon, and evening. It's like a comic strip of your life. 🎨</p>
+      <p style="font-size:14px;color:#555;margin:10px 0"><strong>Before we start — quick quiz! What time do you...?</strong></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:8px 12px;font-size:13px">☀️ Wake up: <strong>___:___</strong></div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:8px 12px;font-size:13px">🎒 Go to school: <strong>___:___</strong></div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:8px 12px;font-size:13px">🍽️ Have dinner: <strong>___:___</strong></div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:8px 12px;font-size:13px">🌙 Go to bed: <strong>___:___</strong></div>
+      </div>
+    </div>
+    <div class="dc-fact">
+      <strong>💡 Did you know?</strong> In English, there's a tiny but important rule: "She <strong>go</strong>es" and "He <strong>wake</strong>s up" — we add <strong>-s</strong> when talking about ONE other person. It's like a little signal that says "this is about someone else, not me!" 🔔
+    </div>
+    <div class="field-label">Dea writes: My favourite part of the day is…</div>
+    <div class="dc-editable" id="dea-fav" contenteditable="true" data-placeholder="In the morning / afternoon / evening, because…"></div>
+  </div>
+</div>
+
+<!-- WARM-UP -->
+<div class="section warmup">
+  <div class="sec-head"><span class="icon">⚡</span> Warm-Up — Mime the Routine <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>How to play</h3>
+      <ol>
+        <li>Act out a morning routine silently. Dea guesses. Introduce each verb as she guesses.</li>
+        <li>Switch: Dea acts, you guess. She names the verb in English.</li>
+        <li>Do at least 5–6 verbs before the vocabulary section.</li>
+      </ol>
+    </div>
+    <div class="teacher-note"><strong>Recycling S1:</strong> Ask <em>"Are you a morning person?"</em> → Dea answers with I am / I am not.</div>
+    <div class="field-label">Warm-up notes</div>
+    <div class="editable" id="warmup-notes" contenteditable="true" data-placeholder="What she already knew, energy level…"></div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="section vocab">
+  <div class="sec-head"><span class="icon">📝</span> Vocabulary — Daily Routines &amp; Time <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <!-- VISUAL TIMELINE -->
+    <h3>Visual: a day in pictures</h3>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">7:00</div><div class="tl-icon sun-bg">☀️</div><div class="tl-label"><strong>wake up</strong> — I wake up at seven.</div><input type="checkbox" id="v1" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">7:15</div><div class="tl-icon sun-bg">👗</div><div class="tl-label"><strong>get dressed</strong> — She gets dressed quickly.</div><input type="checkbox" id="v2" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">7:30</div><div class="tl-icon sun-bg">🍳</div><div class="tl-label"><strong>have breakfast</strong> — I have breakfast at half past seven.</div><input type="checkbox" id="v3" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">8:00</div><div class="tl-icon sun-bg">🎒</div><div class="tl-label"><strong>go to school</strong> — I go to school at eight.</div><input type="checkbox" id="v4" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">13:00</div><div class="tl-icon mid-bg">🍽️</div><div class="tl-label"><strong>have lunch</strong> — We have lunch at one o'clock.</div><input type="checkbox" id="v5" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">15:30</div><div class="tl-icon mid-bg">📚</div><div class="tl-label"><strong>do homework</strong> — I do homework after school.</div><input type="checkbox" id="v6" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">19:00</div><div class="tl-icon mid-bg">🫕</div><div class="tl-label"><strong>have dinner</strong> — We have dinner at seven.</div><input type="checkbox" id="v7" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">20:00</div><div class="tl-icon moon-bg">📺</div><div class="tl-label"><strong>watch TV</strong> — I watch TV in the evening.</div><input type="checkbox" id="v8" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">20:30</div><div class="tl-icon moon-bg">📖</div><div class="tl-label"><strong>read a book</strong> — She reads a book before bed.</div><input type="checkbox" id="v9" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+      <div class="tl-item"><div class="tl-time">22:00</div><div class="tl-icon moon-bg">🌙</div><div class="tl-label"><strong>go to bed</strong> — I go to bed at ten.</div><input type="checkbox" id="v10" style="margin-left:8px;width:16px;height:16px;accent-color:#2E7D32"></div>
+    </div>
+
+    <!-- Time phrase cards -->
+    <div class="routine-grid">
+      <div class="rc"><div class="rc-emoji">☀️</div><div class="rc-content"><div class="rc-word">in the morning</div><div class="rc-example">I exercise in the morning.</div></div><input type="checkbox" id="v11"></div>
+      <div class="rc"><div class="rc-emoji">🌤️</div><div class="rc-content"><div class="rc-word">in the afternoon</div><div class="rc-example">I play in the afternoon.</div></div><input type="checkbox" id="v12"></div>
+      <div class="rc"><div class="rc-emoji">🌆</div><div class="rc-content"><div class="rc-word">in the evening</div><div class="rc-example">I watch TV in the evening.</div></div><input type="checkbox" id="v13"></div>
+      <div class="rc"><div class="rc-emoji">🌙</div><div class="rc-content"><div class="rc-word">at night</div><div class="rc-example">I sleep at night.</div></div><input type="checkbox" id="v14"></div>
+    </div>
+
+    <div class="activity-box">
+      <h3>📋 Activity 1 — Timeline Sort</h3>
+      <p>Write each routine on a strip. Dea arranges them in order from morning to night.</p>
+    </div>
+    <div class="field-label">Vocabulary notes</div>
+    <div class="editable" id="vocab-notes" contenteditable="true" data-placeholder="Difficult phrases, pronunciation, what she learned quickly…"></div>
+  </div>
+</div>
+
+<!-- READING -->
+<div class="section reading">
+  <div class="sec-head"><span class="icon">📖</span> Reading — "A Day in the Life of Sara" <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="reading-text">
+      <strong>A Day in the Life of Sara</strong><br><br>
+      Sara is eleven years old. She lives with her family in Bristol, England. Here is what Sara does every day.<br><br>
+      Sara wakes up at seven o'clock in the morning. She gets up, washes her face, and gets dressed quickly. Then she goes downstairs and has breakfast with her mum. She usually eats toast with jam and drinks orange juice. Sara's mum always drinks coffee.<br><br>
+      Sara starts school at eight thirty. She walks to school with her friend Amy. They talk about their favourite TV shows on the way. Sara loves science and she is good at maths, but she doesn't like history very much.<br><br>
+      At lunchtime, Sara eats in the school canteen with her friends. She usually has a sandwich and a piece of fruit. After lunch, they play in the playground for twenty minutes.<br><br>
+      Sara finishes school at three thirty. She goes home and has a snack — usually an apple or some biscuits. Then she does her homework. She sits at her desk and works quietly for about an hour.<br><br>
+      In the evening, Sara has dinner with her family at six o'clock. They usually eat pasta or chicken with vegetables. After dinner, she watches TV or reads a book. She never goes to bed late — she sleeps at nine thirty.<br><br>
+      On weekends, Sara's routine is different. She wakes up later, at nine o'clock, and she plays football with her friends in the afternoon. She loves weekends!
+    </div>
+    <div class="qa-item"><div class="q">1. What time does Sara wake up?</div><div class="editable" id="q1" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">2. What does Sara eat for breakfast?</div><div class="editable" id="q2" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">3. What does Sara do after she finishes school?</div><div class="editable" id="q3" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">4. What time does the family have dinner?</div><div class="editable" id="q4" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">🔍 5. Inference: How do we know Sara is a good student?</div><div class="editable" id="q5" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">📖 6. Vocabulary: What does "canteen" mean in the text?</div><div class="editable" id="q6" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">💬 7. Your turn: Is your daily routine similar to Sara's? What is different?</div><div class="editable tall" id="q7" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="activity-box" style="margin-top:14px">
+      <h3>✏️ Follow-up — Color-code</h3>
+      <ul>
+        <li><strong style="color:#2E7D32">🟢 Green pen:</strong> Underline all verbs</li>
+        <li><strong style="color:#E65100">🟠 Orange pen:</strong> Circle time expressions</li>
+        <li>Count: Which verbs end in <strong>-s</strong>? (wakes, eats, walks, loves, goes…) — keep for grammar!</li>
+      </ul>
+    </div>
+    <div class="field-label">Reading notes</div>
+    <div class="editable" id="reading-notes" contenteditable="true" data-placeholder="Fluency, errors, comprehension level…"></div>
+  </div>
+</div>
+
+<!-- GRAMMAR -->
+<div class="section grammar">
+  <div class="sec-head"><span class="icon">🔧</span> Grammar — Present Simple: the -s Rule <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"When we talk about what ONE person (he/she) does every day, we add <strong>-s or -es</strong> to the verb. It's a small but important signal!"</em></p></div>
+
+    <!-- VISUAL GRAMMAR COMPARISON -->
+    <h3>Visual: I vs She — spot the difference</h3>
+    <div class="grammar-compare">
+      <div class="gc-box gc-i">
+        <div class="gc-label">I (me, the speaker)</div>
+        <div class="gc-row"><span class="gc-verb">wake up</span> I wake up at 7.</div>
+        <div class="gc-row"><span class="gc-verb">go</span> I go to school.</div>
+        <div class="gc-row"><span class="gc-verb">watch</span> I watch TV.</div>
+        <div class="gc-row"><span class="gc-verb">have</span> I have lunch.</div>
+        <div class="gc-row"><span class="gc-verb">do</span> I do homework.</div>
+      </div>
+      <div class="gc-box gc-she">
+        <div class="gc-label">She / He (someone else)</div>
+        <div class="gc-row"><span class="gc-verb">wake<span class="s-suffix">s</span> up</span> She wakes up at 7.</div>
+        <div class="gc-row"><span class="gc-verb">go<span class="s-suffix">es</span></span> He goes to school.</div>
+        <div class="gc-row"><span class="gc-verb">watch<span class="s-suffix">es</span></span> She watches TV.</div>
+        <div class="gc-row"><span class="gc-verb">ha<span class="s-suffix">s</span></span> He has lunch. ⚠️</div>
+        <div class="gc-row"><span class="gc-verb">do<span class="s-suffix">es</span></span> She does homework.</div>
+      </div>
+    </div>
+
+    <h3>Visual: sentence structure</h3>
+    <div class="sent-blocks"><div class="blk subj">She</div><div class="blk verb">wakes up</div><div class="blk time">at 7 o'clock</div><div class="blk punct">.</div></div>
+    <div class="sent-blocks"><div class="blk subj">He</div><div class="blk verb">goes</div><div class="blk time">to school</div><div class="blk punct">.</div></div>
+
+    <div class="teacher-note"><strong>Hungarian note:</strong> Hungarian doesn't change verb endings for third person — this is new. Reassure Dea: "Just remember: add -s or -es for she/he. That's all!"</div>
+
+    <div class="activity-box">
+      <h3>🐛 Spot the Mistake</h3>
+      <ul>
+        <li>"Tom <span style="color:#c62828;text-decoration:line-through">wake up</span> at seven." → <strong>wakes up</strong></li>
+        <li>"She <span style="color:#c62828;text-decoration:line-through">have</span> breakfast." → <strong>has</strong></li>
+        <li>"I <span style="color:#c62828;text-decoration:line-through">watches</span> TV." → <strong>watch</strong></li>
+      </ul>
+    </div>
+
+    <div class="field-label">Dea writes 5 sentences about Tom OR someone she knows (use he/she)</div>
+    <div class="editable tall" id="grammar-practice" contenteditable="true" data-placeholder="e.g. My mum wakes up at six. She goes to work at eight."></div>
+    <div class="field-label">Grammar notes</div>
+    <div class="editable" id="grammar-notes" contenteditable="true" data-placeholder="Common errors, what clicked…"></div>
+  </div>
+</div>
+
+<!-- TASK -->
+<div class="section task">
+  <div class="sec-head"><span class="icon">🎨</span> Task — My Day Poster <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="teacher-note"><strong>Materials:</strong> Blank A4 paper, colored pens, ruler (optional)</div>
+
+    <!-- VISUAL POSTER TEMPLATE -->
+    <h3>Visual poster template (draw this guide on paper for Dea)</h3>
+    <div class="poster-template">
+      <div class="pt-title">☀️ MY DAY 🌙</div>
+      <div class="pt-row"><div class="pt-icon">☀️</div><div class="pt-time">7:00</div><div class="pt-line"></div></div>
+      <div class="pt-row"><div class="pt-icon">🍳</div><div class="pt-time">7:30</div><div class="pt-line"></div></div>
+      <div class="pt-row"><div class="pt-icon">🎒</div><div class="pt-time">8:00</div><div class="pt-line"></div></div>
+      <div class="pt-row"><div class="pt-icon">🍽️</div><div class="pt-time">13:00</div><div class="pt-line"></div></div>
+      <div class="pt-row"><div class="pt-icon">📚</div><div class="pt-time">15:30</div><div class="pt-line"></div></div>
+      <div class="pt-row"><div class="pt-icon">🌙</div><div class="pt-time">22:00</div><div class="pt-line"></div></div>
+    </div>
+
+    <h3>Sentence frames</h3>
+    <div class="task-frame">
+      <p>At ___ o'clock, I ___. &nbsp;|&nbsp; In the morning, I ___. &nbsp;|&nbsp; After school, I ___.</p>
+    </div>
+    <h3>Teacher prompts during presentation</h3>
+    <ul>
+      <li><em>"What do you do at eight o'clock?"</em></li>
+      <li><em>"Does your mum wake up at seven too?"</em> ← practice he/she -s</li>
+    </ul>
+
+    <div class="field-label">Dea's poster sentences (copy here)</div>
+    <div class="editable tall" id="task-output" contenteditable="true" data-placeholder="Copy Dea's 5+ poster sentences here…"></div>
+    <div class="field-label">Task notes</div>
+    <div class="editable" id="task-notes" contenteditable="true" data-placeholder="Fluency, errors, confidence, highlights…"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE ROUND -->
+<div class="section" style="border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)">
+  <div class="sec-head" style="background:#E65100"><span class="icon">⚡</span> Challenge Round <span class="timing">10–12 min</span></div>
+  <div class="sec-body" style="background:#FFF3E0">
+
+    <!-- Spot the Missing -s -->
+    <div class="activity-box" style="background:white;border:2px solid #FFB74D;border-radius:12px;padding:18px;margin-bottom:16px">
+      <h3 style="color:#E65100;margin-top:0">Spot the Missing -s 🔍</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:12px">These sentences have a mistake. Write the correct verb in the box!</p>
+      <div style="margin:10px 0">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;color:#c62828;text-decoration:line-through">Sara wake up at 7.</span>
+          <span style="color:#888">→</span>
+          <div class="editable" id="ch1" contenteditable="true" style="min-height:36px;padding:6px 12px;display:inline-block;min-width:120px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="correct verb…"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;color:#c62828;text-decoration:line-through">She eat toast for breakfast.</span>
+          <span style="color:#888">→</span>
+          <div class="editable" id="ch2" contenteditable="true" style="min-height:36px;padding:6px 12px;display:inline-block;min-width:120px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="correct verb…"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;color:#c62828;text-decoration:line-through">Amy walk to school.</span>
+          <span style="color:#888">→</span>
+          <div class="editable" id="ch3" contenteditable="true" style="min-height:36px;padding:6px 12px;display:inline-block;min-width:120px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="correct verb…"></div>
+        </div>
+      </div>
+      <div class="teacher-note" style="margin-top:10px">💡 Remember: He/She/It always needs <strong>-s</strong> in present simple!</div>
+    </div>
+
+    <!-- Transform It -->
+    <div class="activity-box" style="background:white;border:2px solid #FFB74D;border-radius:12px;padding:18px;margin-bottom:16px">
+      <h3 style="color:#E65100;margin-top:0">Transform It 🔄</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:12px">Change <strong>I</strong> → <strong>She</strong>. Fill in the blank.</p>
+      <div style="margin:10px 0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;font-size:14px">
+          <span style="color:#888;min-width:210px">I wake up at 7. →</span>
+          <span style="font-weight:700">She</span>
+          <div class="editable" id="tr1" contenteditable="true" style="min-height:34px;padding:5px 10px;display:inline-block;min-width:90px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="___"></div>
+          <span>up at 7.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;font-size:14px">
+          <span style="color:#888;min-width:210px">I don't like history. →</span>
+          <span style="font-weight:700">She</span>
+          <div class="editable" id="tr2" contenteditable="true" style="min-height:34px;padding:5px 10px;display:inline-block;min-width:90px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="___"></div>
+          <span>like history.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;font-size:14px">
+          <span style="color:#888;min-width:210px">I watch TV in the evening. →</span>
+          <span style="font-weight:700">She</span>
+          <div class="editable" id="tr3" contenteditable="true" style="min-height:34px;padding:5px 10px;display:inline-block;min-width:90px;border:2px dashed #E65100;border-radius:8px;font-size:14px" data-placeholder="___"></div>
+          <span>TV in the evening.</span>
+        </div>
+      </div>
+      <div class="teacher-note" style="margin-top:10px">💡 Hint: don't → doesn't, watch → watches</div>
+    </div>
+
+    <!-- Write Your Own -->
+    <div class="activity-box" style="background:white;border:2px solid #FFB74D;border-radius:12px;padding:18px;margin-bottom:16px">
+      <h3 style="color:#E65100;margin-top:0">Write Your Own ✍️</h3>
+      <div class="editable tall" id="ch-write" contenteditable="true" data-placeholder="Write 5 sentences about what your mum, dad, or friend does every day. Use present simple! Example: My mum wakes up at 6 o'clock."></div>
+    </div>
+
+    <!-- Word Power -->
+    <div class="activity-box" style="background:white;border:2px solid #FFB74D;border-radius:12px;padding:18px">
+      <h3 style="color:#E65100;margin-top:0">Word Power 💡</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px">
+        <div style="background:#FFF8E1;border-radius:10px;padding:14px 16px;border-left:4px solid #E65100">
+          <div style="font-weight:800;font-size:15px;color:#E65100">canteen</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">the room in a school where students eat lunch</div>
+        </div>
+        <div style="background:#FFF8E1;border-radius:10px;padding:14px 16px;border-left:4px solid #E65100">
+          <div style="font-weight:800;font-size:15px;color:#E65100">routine</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">the set of things you do every day, in the same order</div>
+        </div>
+        <div style="background:#FFF8E1;border-radius:10px;padding:14px 16px;border-left:4px solid #E65100">
+          <div style="font-weight:800;font-size:15px;color:#E65100">commute</div>
+          <div style="font-size:13px;color:#555;margin-top:4px">to travel to school or work regularly</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REVIEW & HOMEWORK -->
+<div class="section review">
+  <div class="sec-head"><span class="icon">🏠</span> Review &amp; Homework <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>⚡ Clock Quiz</h3>
+      <p>Draw clock faces showing different times. Dea says the routine that goes with each time. Speed up!</p>
+    </div>
+    <h3>Homework</h3>
+    <div class="task-frame">
+      <p>✏️ Write <strong>5 sentences about your mum's OR dad's day.</strong></p>
+      <p>⚠️ Use <strong>She</strong> or <strong>He</strong> — don't forget the -s!</p>
+      <p>🎨 Draw one picture for each sentence.</p>
+    </div>
+    <div class="field-label">Homework result (fill in at Session 3)</div>
+    <div class="editable" id="hw-check" contenteditable="true" data-placeholder="Did she do it? -s errors? What to recycle?"></div>
+    <h3 style="margin-top:18px">Session Self-Evaluation</h3>
+    <div class="check-item"><input type="checkbox" id="ev1"><label for="ev1">Dea used present simple correctly (I/she forms)</label></div>
+    <div class="check-item"><input type="checkbox" id="ev2"><label for="ev2">Dea read the text fluently</label></div>
+    <div class="check-item"><input type="checkbox" id="ev3"><label for="ev3">Dea completed and presented her My Day poster</label></div>
+    <div class="check-item"><input type="checkbox" id="ev4"><label for="ev4">Dea used time expressions correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
+    <div class="field-label">Session notes / carry into Session 3</div>
+    <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit?"></div>
+  </div>
+</div>
+
+</div>
+<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:998">
+  <a href="session2_game.html" style="background:#F57C00;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);white-space:nowrap">🎮 Play Digital Game</a>
+  <a href="game2.html" style="background:#FFB300;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);white-space:nowrap">🎲 Print Board Game</a>
+</div>
+<button class="print-btn" onclick="window.print()">🖨️ Print</button>
+<button class="reset-btn" onclick="resetSession()">↺ Clear</button>
+<script>
+const KEY='dea_s2_';let timer;
+function showSaved(){const s=document.getElementById('save-status');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1800);}
+function save(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id)localStorage.setItem(KEY+el.id,el.innerHTML);});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id)localStorage.setItem(KEY+cb.id,cb.checked);});showSaved();}
+function load(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){const v=localStorage.getItem(KEY+el.id);if(v!==null)el.innerHTML=v;}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){const v=localStorage.getItem(KEY+cb.id);if(v!==null)cb.checked=(v==='true');}});}
+function resetSession(){if(!confirm('Clear all notes for Session 2?'))return;document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){localStorage.removeItem(KEY+el.id);el.innerHTML='';}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){localStorage.removeItem(KEY+cb.id);cb.checked=false;}});}
+document.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(save,600);});
+document.addEventListener('change',()=>{clearTimeout(timer);timer=setTimeout(save,300);});
+window.addEventListener('load',load);
+</script>
+<div class="live-banner">🔴 ÉLŐÓRA — Képernyőmegosztás aktív</div>
+<div class="online-bar">
+  <button class="online-btn btn-save" onclick="saveDeaWork(2)">💾 Dea munkájának mentése</button>
+  <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+</div>
+<script>
+function saveDeaWork(n){
+  var out='Dea válaszai — Session '+n+'\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\n',count=0;
+  document.querySelectorAll('[contenteditable][id]').forEach(function(el){
+    var t=el.innerText.trim();
+    if(t&&t.length>2){out+='['+el.id+']\n'+t+'\n\n';count++;}
+  });
+  if(count===0){alert('Még nincs kitöltött mező! Töltsd ki Dea válaszait először.');return;}
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+var _ss=false;
+function toggleSS(){
+  _ss=!_ss;
+  document.body.classList.toggle('screen-share',_ss);
+  var b=document.getElementById('ss-btn');
+  b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
+  b.classList.toggle('active',_ss);
+}
+</script>
+</body>
+</html>

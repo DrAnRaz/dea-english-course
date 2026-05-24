@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 6 — My Town | Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;background:#f4f6f9;color:#1a1a1a}
+.page-header{background:linear-gradient(135deg,#4A148C,#7B1FA2);color:white;padding:28px 36px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header .subtitle{font-size:13px;opacity:0.82;margin-top:5px}
+.page-header .badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap;margin-top:4px}
+#save-status{position:fixed;top:14px;right:20px;background:#43A047;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.5s;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+#save-status.show{opacity:1}
+.container{max-width:940px;margin:0 auto;padding:28px 18px 80px}
+.section{border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+.sec-head{padding:13px 22px;color:white;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-head .icon{font-size:20px}
+.sec-head .timing{margin-left:auto;font-size:12px;opacity:0.85;font-weight:400;background:rgba(255,255,255,0.18);padding:3px 10px;border-radius:12px}
+.sec-body{padding:22px 24px}
+.goal .sec-head{background:#2E7D32}.goal .sec-body{background:#E8F5E9}
+.dea-corner .sec-head{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}.dea-corner .sec-body{background:linear-gradient(135deg,#F3E5F5,#FCE4EC)}
+.warmup .sec-head{background:#E65100}.warmup .sec-body{background:#FFF8F1}
+.vocab .sec-head{background:#1565C0}.vocab .sec-body{background:#E3F2FD}
+.reading .sec-head{background:#6A1B9A}.reading .sec-body{background:#F3E5F5}
+.grammar .sec-head{background:#AD1457}.grammar .sec-body{background:#FCE4EC}
+.task .sec-head{background:#00695C}.task .sec-body{background:#E0F7FA}
+.review .sec-head{background:#BF360C}.review .sec-body{background:#FFF3E0}
+.final .sec-head{background:linear-gradient(135deg,#F57F17,#FFC107)}.final .sec-body{background:#FFFDE7}
+h3{font-size:14px;font-weight:700;color:#333;margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.4px}
+p{font-size:14px;margin:6px 0;color:#333}
+ul,ol{padding-left:20px;font-size:14px;color:#333}
+li{margin:5px 0}
+strong{color:#111}
+
+/* ── VISUAL AIDS ── */
+/* Place cards */
+.place-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.pc{background:white;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #4A148C}
+.pc .pc-emoji{font-size:28px;margin-bottom:5px}
+.pc .pc-word{font-weight:800;font-size:12px;color:#4A148C;margin-bottom:5px}
+.pc input{width:14px;height:14px;accent-color:#2E7D32}
+
+/* Preposition visual diagrams (SVG) */
+.prep-diagram-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.pdg-card{background:white;border-radius:12px;padding:14px 10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.pdg-card .pdg-word{font-weight:800;font-size:15px;color:#AD1457;margin-bottom:8px}
+.pdg-card svg{display:block;margin:0 auto 6px}
+.pdg-card .pdg-example{font-size:11px;color:#555;font-style:italic}
+
+/* Town map grid template */
+.map-template{background:white;border:3px solid #4A148C;border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+.map-template .mt-title{font-weight:800;font-size:15px;color:#4A148C;text-align:center;margin-bottom:16px;border-bottom:2px solid #E1BEE7;padding-bottom:10px}
+.map-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.map-block{height:60px;border-radius:10px;border:2px dashed #CE93D8;display:flex;align-items:center;justify-content:center;font-size:22px;background:#F8F4FF;color:#aaa;font-size:11px;text-align:center;padding:4px}
+.map-road-h{grid-column:1/-1;height:20px;background:linear-gradient(to right,#e0e0e0,#bdbdbd,#e0e0e0);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888}
+.map-road-note{font-size:11px;color:#888;text-align:center;margin-top:8px;font-style:italic}
+
+/* Grammar table */
+.grammar-table-vis{width:100%;border-collapse:collapse;margin:12px 0;background:white;border-radius:12px;overflow:hidden;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.grammar-table-vis th{padding:10px 14px;background:#AD1457;color:white;font-size:12px;font-weight:700;text-align:left}
+.grammar-table-vis th:first-child{background:#8E0038}
+.grammar-table-vis td{padding:10px 14px;border-top:1px solid #f0f0f0}
+.grammar-table-vis td:first-child{font-weight:700;font-size:13px;color:#AD1457;background:#FFF5F8}
+
+/* Achievement certificate */
+.certificate{background:linear-gradient(135deg,#FFF8E1,#FFFDE7);border:3px solid #FBC02D;border-radius:20px;padding:30px 36px;margin:20px 0;text-align:center;box-shadow:0 6px 20px rgba(251,192,45,0.2)}
+.cert-stars{font-size:28px;letter-spacing:8px;margin-bottom:12px}
+.cert-title{font-size:22px;font-weight:800;color:#E65100;margin-bottom:8px}
+.cert-sub{font-size:14px;color:#555;line-height:1.6}
+.cert-skills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.cert-skill{background:white;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:700;border:2px solid;color:#333}
+.cs-green{border-color:#2E7D32;color:#2E7D32}.cs-blue{border-color:#1565C0;color:#1565C0}.cs-red{border-color:#AD1457;color:#AD1457}.cs-teal{border-color:#00695C;color:#00695C}.cs-purple{border-color:#6A1B9A;color:#6A1B9A}.cs-orange{border-color:#E65100;color:#E65100}
+
+/* Dea's corner */
+.dc-challenge{background:white;border-radius:12px;padding:16px 20px;margin:12px 0;border:2px solid #CE93D8}
+.dc-challenge h4{color:#6A1B9A;font-size:15px;margin-bottom:8px}
+.dc-fact{background:#FFF9C4;border-radius:10px;padding:12px 16px;margin:10px 0;border-left:4px solid #F9A825}
+.dc-fact strong{color:#E65100}
+.dc-editable{background:rgba(255,255,255,0.8);border:2px dashed #CE93D8;border-radius:10px;padding:12px 16px;min-height:60px;font-size:14px;margin:8px 0}
+.dc-editable:focus{outline:none;border-color:#6A1B9A}
+.dc-editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#CE93D8;font-style:italic}
+.star-row{font-size:22px;letter-spacing:6px;margin:8px 0;text-align:center}
+
+.reading-text{background:white;border-left:5px solid #7B1FA2;padding:16px 20px;border-radius:0 10px 10px 0;font-size:15px;line-height:1.9;margin:12px 0;font-style:italic;color:#2a2a2a}
+.editable{background:white;border:2px dashed #bbb;border-radius:10px;padding:12px 16px;min-height:56px;font-size:14px;color:#333;margin:8px 0;transition:border-color 0.2s}
+.editable:focus{outline:none;border-color:#1565C0;box-shadow:0 0 0 3px rgba(21,101,192,0.12)}
+.editable.tall{min-height:110px}
+.editable.xlarge{min-height:180px}
+.editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#bbb;font-style:italic;pointer-events:none}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin:14px 0 3px}
+.frame-box{background:white;border:2px solid rgba(0,0,0,0.09);border-radius:10px;padding:14px 18px;margin:10px 0}
+.teacher-note{background:#FFFDE7;border-left:4px solid #FBC02D;padding:10px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin:10px 0}
+.activity-box{background:rgba(255,255,255,0.65);border-radius:10px;padding:14px 18px;margin:10px 0;border:1px solid rgba(0,0,0,0.07)}
+.activity-box h3{margin-top:0}
+.task-frame{background:rgba(255,255,255,0.7);border:2px solid rgba(0,105,92,0.2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.check-item:last-child{border-bottom:none}
+.check-item label{font-size:14px;cursor:pointer;flex:1}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;flex-shrink:0}
+.qa-item{margin:10px 0}.qa-item .q{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+
+@media print{body{background:white;font-size:12px}#save-status,.print-btn,.reset-btn{display:none!important}.section{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}.sec-head,.sec-body,.page-header,.dea-corner .sec-head,.dea-corner .sec-body,.final .sec-head,.final .sec-body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.editable,.dc-editable{border:1px solid #ccc}.place-grid{grid-template-columns:repeat(4,1fr)}.prep-diagram-grid{grid-template-columns:repeat(3,1fr)}.map-grid{grid-template-columns:repeat(4,1fr)}}
+.print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
+.print-btn{right:24px;background:#1565C0}.reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+.online-bar{position:fixed;bottom:70px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
+.online-btn:hover{transform:translateY(-2px)}
+.btn-save{background:#1B5E20;color:white}
+.btn-ss{background:#0D47A1;color:white}
+.btn-ss.active{background:#B71C1C}
+.live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
+body.screen-share .live-banner{display:block}
+body.screen-share .container{font-size:18px!important}
+@media print{.online-bar,.live-banner{display:none!important}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>🏙️ Session 6 — My Town 🎉</h1>
+    <div class="subtitle">Dea's English Mini-Course · Right on! 2 (Jenny Dooley) · FINAL SESSION</div>
+    <div class="subtitle">Hungarian L1 · Age 11 · A1–A2</div>
+  </div>
+  <div><div class="badge">⏱ 45–60 min</div></div>
+</div>
+<div id="save-status">✓ Saved</div>
+<div class="container">
+
+<!-- GOAL -->
+<div class="section goal">
+  <div class="sec-head"><span class="icon">🎯</span> Goal &amp; Introduction <span class="timing">2 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Today we explore towns and cities — where things are and how to describe them. You will draw your own dream town and write about it in English. And at the end, we celebrate everything you've learned!"</em></p></div>
+    <ul>
+      <li>Learn town places and prepositions of place</li>
+      <li>Use <strong>there is / there are</strong> + prepositions together</li>
+      <li>Read "My Town" and draw what you understand</li>
+      <li>Draw and describe a dream town map</li>
+      <li>🎉 Final course review: English Bingo + Portfolio page</li>
+    </ul>
+    <div class="field-label">S5 homework check + session notes</div>
+    <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="Homework check + pre-session notes…"></div>
+  </div>
+</div>
+
+<!-- DEA'S CORNER -->
+<div class="section dea-corner">
+  <div class="sec-head"><span class="icon">🌟</span> Dea's Corner — Just for You! <span class="timing">Read this, Dea!</span></div>
+  <div class="sec-body">
+    <div class="star-row">🏙️ 🗺️ 🏗️</div>
+    <div class="dc-challenge">
+      <h4>🗺️ Hey Dea! Today you're a city planner!</h4>
+      <p style="font-size:14px;color:#333;margin:8px 0">Architects design buildings. City planners design whole towns! Today YOU get to design your perfect dream town. What does it have? What doesn't it have? 🏗️</p>
+      <p style="font-size:13px;color:#555;margin-top:10px"><strong>Think about your dream town:</strong></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0">
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:#2E7D32;margin-bottom:6px">✅ My town HAS:</div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px;margin-bottom:4px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px;margin-bottom:4px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:6px">❌ My town does NOT have:</div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px;margin-bottom:4px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px;margin-bottom:4px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:20px"></div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#555">Also: think of ONE very unusual place that no other town has. Maybe a <em>chocolate museum? A dolphin park? A flying car station?</em> 🚁 Anything goes in a DREAM town!</p>
+    </div>
+    <div class="dc-fact">
+      <strong>💡 Did you know?</strong> The world's smallest town is called Hum, in Croatia — only about 20 people live there! And the biggest city in the world is Tokyo, Japan, with over 37 million people. That's like the whole of Serbia… living in ONE city! 🌆
+    </div>
+    <div class="field-label">Dea writes: My dream town is called ___ and it has…</div>
+    <div class="dc-editable" id="dea-town" contenteditable="true" data-placeholder="My dream town is called ___. There is a ___ and there is a ___. I love it because…"></div>
+  </div>
+</div>
+
+<!-- WARM-UP -->
+<div class="section warmup">
+  <div class="sec-head"><span class="icon">⚡</span> Warm-Up — Point and Name <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>How to play</h3>
+      <ol>
+        <li>Draw a rough town map — a few squares, a road, a park. Point to each building and say: <em>"This is a park. What's this?"</em></li>
+        <li>Dea tries to name each one in English. You give the word if she doesn't know it.</li>
+        <li>Write each word on the map as you name it.</li>
+      </ol>
+    </div>
+    <div class="teacher-note"><strong>Recycling S3:</strong> "Is there a park near your house?" — recycles <em>there is</em> and previews today's prepositions.</div>
+    <div class="field-label">Warm-up notes</div>
+    <div class="editable" id="warmup-notes" contenteditable="true" data-placeholder="Town words she already knew, energy…"></div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="section vocab">
+  <div class="sec-head"><span class="icon">📝</span> Vocabulary — Places in Town &amp; Prepositions <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <h3>Places in town — tick as Dea learns each one</h3>
+    <div class="place-grid">
+      <div class="pc"><div class="pc-emoji">🌳</div><div class="pc-word">park</div><input type="checkbox" id="v1"></div>
+      <div class="pc"><div class="pc-emoji">🎬</div><div class="pc-word">cinema</div><input type="checkbox" id="v2"></div>
+      <div class="pc"><div class="pc-emoji">📚</div><div class="pc-word">library</div><input type="checkbox" id="v3"></div>
+      <div class="pc"><div class="pc-emoji">🏥</div><div class="pc-word">hospital</div><input type="checkbox" id="v4"></div>
+      <div class="pc"><div class="pc-emoji">☕</div><div class="pc-word">café</div><input type="checkbox" id="v5"></div>
+      <div class="pc"><div class="pc-emoji">🛒</div><div class="pc-word">supermarket</div><input type="checkbox" id="v6"></div>
+      <div class="pc"><div class="pc-emoji">🚌</div><div class="pc-word">bus stop</div><input type="checkbox" id="v7"></div>
+      <div class="pc"><div class="pc-emoji">🌉</div><div class="pc-word">bridge</div><input type="checkbox" id="v8"></div>
+      <div class="pc"><div class="pc-emoji">📮</div><div class="pc-word">post office</div><input type="checkbox" id="v9"></div>
+      <div class="pc"><div class="pc-emoji">🏫</div><div class="pc-word">school</div><input type="checkbox" id="v10"></div>
+      <div class="pc"><div class="pc-emoji">🛣️</div><div class="pc-word">street</div><input type="checkbox" id="v11"></div>
+      <div class="pc"><div class="pc-emoji">⛲</div><div class="pc-word">square</div><input type="checkbox" id="v12"></div>
+    </div>
+
+    <!-- PREPOSITION VISUAL DIAGRAMS -->
+    <h3>Prepositions of place — visual diagrams</h3>
+    <div class="prep-diagram-grid">
+      <div class="pdg-card">
+        <div class="pdg-word">next to</div>
+        <svg width="80" height="50" viewBox="0 0 80 50"><rect x="5" y="10" width="28" height="30" rx="4" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/><rect x="47" y="10" width="28" height="30" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="2"/><text x="19" y="30" text-anchor="middle" font-size="10" fill="#1565C0">A</text><text x="61" y="30" text-anchor="middle" font-size="10" fill="#AD1457">B</text></svg>
+        <div class="pdg-example">The café is next to the park.</div>
+      </div>
+      <div class="pdg-card">
+        <div class="pdg-word">between</div>
+        <svg width="80" height="50" viewBox="0 0 80 50"><rect x="2" y="10" width="20" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/><rect x="30" y="10" width="20" height="30" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="2"/><rect x="58" y="10" width="20" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/><text x="12" y="30" text-anchor="middle" font-size="9" fill="#2E7D32">A</text><text x="40" y="30" text-anchor="middle" font-size="9" fill="#AD1457">B</text><text x="68" y="30" text-anchor="middle" font-size="9" fill="#2E7D32">C</text></svg>
+        <div class="pdg-example">B is between A and C.</div>
+      </div>
+      <div class="pdg-card">
+        <div class="pdg-word">opposite</div>
+        <svg width="80" height="60" viewBox="0 0 80 60"><rect x="10" y="5" width="24" height="18" rx="4" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/><line x1="40" y1="25" x2="40" y2="35" stroke="#888" stroke-width="2" stroke-dasharray="4"/><text x="40" y="32" text-anchor="middle" font-size="8" fill="#888">road</text><rect x="46" y="37" width="24" height="18" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="2"/><text x="22" y="17" text-anchor="middle" font-size="8" fill="#1565C0">A</text><text x="58" y="49" text-anchor="middle" font-size="8" fill="#AD1457">B</text></svg>
+        <div class="pdg-example">A is opposite B.</div>
+      </div>
+      <div class="pdg-card">
+        <div class="pdg-word">in front of</div>
+        <svg width="80" height="55" viewBox="0 0 80 55"><rect x="22" y="5" width="36" height="22" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/><rect x="28" y="32" width="24" height="18" rx="4" fill="#FFF9C4" stroke="#F9A825" stroke-width="2"/><text x="40" y="20" text-anchor="middle" font-size="9" fill="#2E7D32">building</text><text x="40" y="44" text-anchor="middle" font-size="8" fill="#E65100">you</text></svg>
+        <div class="pdg-example">The park is in front of the school.</div>
+      </div>
+      <div class="pdg-card">
+        <div class="pdg-word">behind</div>
+        <svg width="80" height="55" viewBox="0 0 80 55"><rect x="28" y="5" width="24" height="18" rx="4" fill="#FFF9C4" stroke="#F9A825" stroke-width="2"/><rect x="22" y="30" width="36" height="22" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/><text x="40" y="17" text-anchor="middle" font-size="8" fill="#E65100">you</text><text x="40" y="44" text-anchor="middle" font-size="9" fill="#2E7D32">building</text></svg>
+        <div class="pdg-example">The café is behind the cinema.</div>
+      </div>
+      <div class="pdg-card">
+        <div class="pdg-word">near</div>
+        <svg width="80" height="50" viewBox="0 0 80 50"><rect x="5" y="10" width="26" height="28" rx="4" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/><rect x="46" y="14" width="26" height="20" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="2" stroke-dasharray="5"/><line x1="31" y1="24" x2="46" y2="24" stroke="#888" stroke-width="1.5" stroke-dasharray="3"/><text x="18" y="28" text-anchor="middle" font-size="9" fill="#1565C0">A</text><text x="59" y="28" text-anchor="middle" font-size="9" fill="#AD1457">B</text></svg>
+        <div class="pdg-example">The library is near the park.</div>
+      </div>
+    </div>
+
+    <div class="field-label">Vocabulary notes</div>
+    <div class="editable" id="vocab-notes" contenteditable="true" data-placeholder="Tricky prepositions, place names, errors with word order…"></div>
+  </div>
+</div>
+
+<!-- READING -->
+<div class="section reading">
+  <div class="sec-head"><span class="icon">📖</span> Reading — "Welcome to Millbrook!" <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <h3>Welcome to Millbrook!</h3>
+    <div class="reading-text">
+      Welcome to Millbrook, a beautiful small town in England! Let me tell you about all the great places here.<br><br>
+      In the centre of Millbrook, there is a big park. The park has a fountain in the middle and lots of green trees. Next to the park, there is a lovely café. The café has tables outside in summer, and people love to sit there and drink coffee.<br><br>
+      Opposite the park, there is the town hall. It is a big white building with tall columns. Between the town hall and the café, there is a car park — very useful for visitors!<br><br>
+      Near the car park, there is a supermarket. The supermarket is open every day from eight o'clock in the morning. In front of the supermarket, there is a bus stop. People wait there for the bus to the city.<br><br>
+      The school is behind the park. It is a red brick building with a big playground. There are two football pitches and a basketball court. Next to the school, there is a small library. The library has more than ten thousand books!<br><br>
+      In Millbrook, there is also a cinema, a hospital, a post office, and three restaurants. The cinema is between the library and the hospital. There is no shopping mall in Millbrook — it is a small, quiet town. But there are lots of friendly people and it is a wonderful place to live!<br><br>
+      Would you like to live in Millbrook? What is there in your town?
+    </div>
+    <div class="activity-box" style="margin-top:14px">
+      <h3>✏️ Follow-up</h3>
+      <ul>
+        <li><strong style="color:#AD1457">🩷 Pink pen:</strong> Underline every <em>there is / there are / there isn't</em></li>
+        <li><strong style="color:#1565C0">🔵 Blue pen:</strong> Circle every preposition of place</li>
+        <li><strong>🗺️ Draw it:</strong> Dea sketches Millbrook from the text — if her drawing is correct, she understood!</li>
+      </ul>
+    </div>
+    <h3 style="margin-top:16px">Comprehension Questions</h3>
+    <div class="qa-item"><div class="q">1. What is in the centre of Millbrook?</div><div class="editable" id="q1" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">2. Where is the café?</div><div class="editable" id="q2" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">3. What is in front of the supermarket?</div><div class="editable" id="q3" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">4. Where is the cinema?</div><div class="editable" id="q4" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">5. 🔍 Inference: How do we know Millbrook is a small town? Find TWO clues in the text.</div><div class="editable tall" id="q5" contenteditable="true" data-placeholder="Clue 1: … Clue 2: …"></div></div>
+    <div class="qa-item"><div class="q">6. 📖 Vocabulary: Find a word in the text that means "a water feature in a park" (it starts with 'f').</div><div class="editable" id="q6" contenteditable="true" data-placeholder="The word is: …"></div></div>
+    <div class="qa-item"><div class="q">7. 💬 Your turn: Describe ONE place in your town using a preposition.</div><div class="editable" id="q7" contenteditable="true" data-placeholder="In my town, there is a ___ next to / behind / opposite …"></div></div>
+    <div class="field-label">Did Dea's drawing match the text?</div>
+    <div class="editable" id="map-notes" contenteditable="true" data-placeholder="What she got right / wrong…"></div>
+    <div class="field-label">Reading notes</div>
+    <div class="editable" id="reading-notes" contenteditable="true" data-placeholder="Fluency, preposition recognition, comprehension…"></div>
+  </div>
+</div>
+
+<!-- GRAMMAR -->
+<div class="section grammar">
+  <div class="sec-head"><span class="icon">🔧</span> Grammar — there is/are + Prepositions <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Remember from Session 3? There IS for one thing. There ARE for more than one. Now we combine it with prepositions to make real descriptions!"</em></p></div>
+
+    <!-- VISUAL GRAMMAR TABLE -->
+    <h3>Visual: the full pattern</h3>
+    <table class="grammar-table-vis">
+      <thead><tr><th></th><th>✅ Positive</th><th>❌ Negative</th><th>❓ Question</th></tr></thead>
+      <tbody>
+        <tr><td>ONE thing</td><td>There <strong>is</strong> a park.</td><td>There <strong>isn't</strong> a cinema.</td><td><strong>Is</strong> there a hospital?</td></tr>
+        <tr><td>MANY things</td><td>There <strong>are</strong> two cafés.</td><td>There <strong>aren't</strong> any buses.</td><td><strong>Are</strong> there any shops?</td></tr>
+      </tbody>
+    </table>
+
+    <div class="frame-box">
+      <p>Now add prepositions: <strong>There is a library next to the park.</strong></p>
+      <p><strong>There are two cafés opposite the cinema.</strong></p>
+      <p><strong>Is there a bus stop near the school? — Yes, there is!</strong></p>
+    </div>
+
+    <div class="activity-box">
+      <h3>⚡ Speed Round — 5 sentences in 3 minutes</h3>
+      <p>Draw 5 tiny maps (a cinema with a café next to it, etc.). Dea writes one sentence per picture as fast as she can. Use the preposition diagrams above!</p>
+    </div>
+
+    <div class="field-label">Dea writes 6 sentences: there is/are + prepositions</div>
+    <div class="editable tall" id="grammar-practice" contenteditable="true" data-placeholder="e.g. There is a park next to my school. There are two cafés in the centre. There isn't a cinema in my town."></div>
+    <div class="field-label">Grammar notes</div>
+    <div class="editable" id="grammar-notes" contenteditable="true" data-placeholder="is/are agreement? Preposition choices? What clicked?"></div>
+  </div>
+</div>
+
+<!-- TASK -->
+<div class="section task">
+  <div class="sec-head"><span class="icon">🎨</span> Task — My Dream Town Map <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="teacher-note"><strong>Materials:</strong> A3 or large A4 paper, colored pens</div>
+
+    <!-- VISUAL MAP TEMPLATE -->
+    <h3>Visual: town map grid template (reproduce on paper for Dea)</h3>
+    <div class="map-template">
+      <div class="mt-title">🗺️ MY DREAM TOWN — draw &amp; label at least 8 places</div>
+      <div class="map-grid">
+        <div class="map-block">place 1<br>🏗️</div>
+        <div class="map-block">place 2<br>🏗️</div>
+        <div class="map-block">place 3<br>🏗️</div>
+        <div class="map-block">place 4<br>🏗️</div>
+        <div class="map-road-h">——— MAIN STREET ———</div>
+        <div class="map-block">place 5<br>🏗️</div>
+        <div class="map-block">place 6<br>🏗️</div>
+        <div class="map-block">🌳 park</div>
+        <div class="map-block">place 7<br>🏗️</div>
+        <div class="map-road-h">——— SIDE ROAD ———</div>
+        <div class="map-block">place 8<br>🏗️</div>
+        <div class="map-block">place 9<br>🏗️</div>
+        <div class="map-block">place 10<br>🏗️</div>
+        <div class="map-block">🔮 unusual place!</div>
+      </div>
+      <div class="map-road-note">Draw your map freely — add rivers, bridges, mountains, anything you want! Then label each building in English.</div>
+    </div>
+
+    <h3>Writing template (on the back of the map)</h3>
+    <div class="task-frame">
+      <p>🏙️ My dream town is called ___________________.</p>
+      <p>🌳 There is a ___________________ in the centre.</p>
+      <p>📍 Next to the ___________________, there is a ___________________.</p>
+      <p>🏘️ There are ___________________ in my town.</p>
+      <p>❌ There isn't a ___________________, but there is a ___________________.</p>
+      <p>😊 I love my town because it is ___________________ and ___________________.</p>
+    </div>
+
+    <h3>Cumulative recycling questions (ask during presentation)</h3>
+    <div class="frame-box">
+      <p>🐬 <em>"Can you swim in the river in your town?"</em> → <strong>can (S5)</strong></p>
+      <p>🍕 <em>"Do you like the café in your town?"</em> → <strong>like (S4)</strong></p>
+      <p>😊 <em>"Is your town friendly?"</em> → <strong>adjectives (S1)</strong></p>
+      <p>⏰ <em>"What time does the library open?"</em> → <strong>present simple (S2)</strong></p>
+    </div>
+
+    <div class="field-label">Dea's town name + sentences</div>
+    <div class="editable tall" id="task-output" contenteditable="true" data-placeholder="Town name: …  Sentences: …"></div>
+    <div class="field-label">Presentation notes</div>
+    <div class="editable" id="task-notes" contenteditable="true" data-placeholder="Map creativity, sentence fluency, what she was proud of…"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE ROUND -->
+<div class="section" style="overflow:hidden;border-radius:14px;margin-bottom:22px;box-shadow:0 3px 10px rgba(0,0,0,0.09)">
+  <div class="sec-head" style="background:#E65100"><span class="icon">⚡</span> Challenge Round <span class="timing">10–12 min</span></div>
+  <div class="sec-body" style="background:#FFF3E0">
+
+    <h3>Fill the Preposition 🔍</h3>
+    <p style="font-size:13px;color:#777;margin-bottom:10px">Hint: <em>next to | between | opposite | in front of | behind | near</em></p>
+    <div class="qa-item">
+      <div class="q">1. "The cinema is <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> the library <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> the hospital."</div>
+      <div class="editable" id="cr1" contenteditable="true" data-placeholder="Prepositions: … / …"></div>
+    </div>
+    <div class="qa-item">
+      <div class="q">2. "The bus stop is <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> the supermarket."</div>
+      <div class="editable" id="cr2" contenteditable="true" data-placeholder="Preposition: …"></div>
+    </div>
+    <div class="qa-item">
+      <div class="q">3. "The school is <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> the park."</div>
+      <div class="editable" id="cr3" contenteditable="true" data-placeholder="Preposition: …"></div>
+    </div>
+    <div class="qa-item">
+      <div class="q">4. "The café is <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> the park."</div>
+      <div class="editable" id="cr4" contenteditable="true" data-placeholder="Preposition: …"></div>
+    </div>
+    <div class="frame-box" style="margin-top:6px"><p style="font-size:13px;color:#555"><strong>Answers:</strong> 1. between / and &nbsp;|&nbsp; 2. in front of &nbsp;|&nbsp; 3. behind &nbsp;|&nbsp; 4. next to</p></div>
+
+    <h3 style="margin-top:18px">Negative Forms 🔄</h3>
+    <p style="font-size:13px;color:#777;margin-bottom:10px">Hint: <em>there is → there isn't &nbsp;|&nbsp; there are → there aren't any</em></p>
+    <div class="qa-item">
+      <div class="q">"There is a cinema." → "There <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> a cinema in my town."</div>
+      <div class="editable" id="cr5" contenteditable="true" data-placeholder="isn't"></div>
+    </div>
+    <div class="qa-item">
+      <div class="q">"There are restaurants." → "There <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> any restaurants."</div>
+      <div class="editable" id="cr6" contenteditable="true" data-placeholder="aren't"></div>
+    </div>
+    <div class="qa-item">
+      <div class="q">"There is a shopping mall." → "There <span style="background:#ffe0b2;border-radius:4px;padding:1px 6px">___</span> a shopping mall in Millbrook." (true! It's small)</div>
+      <div class="editable" id="cr7" contenteditable="true" data-placeholder="isn't"></div>
+    </div>
+
+    <h3 style="margin-top:18px">Write Your Own ✍️</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:8px">Write a paragraph (4–5 sentences) about your town or a town you know. Use 4 different prepositions and <em>there is / there are</em>.</p>
+    <p style="font-size:13px;color:#888;font-style:italic;margin-bottom:8px">Example: In my town, there is a big school. Next to the school, there is a park…</p>
+    <div class="editable xlarge" id="cr-write" contenteditable="true" data-placeholder="Write your paragraph here…"></div>
+
+    <h3 style="margin-top:18px">Word Power 💡</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
+      <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+        <div style="font-size:26px;margin-bottom:6px">⛲</div>
+        <div style="font-weight:800;font-size:13px;color:#E65100;margin-bottom:6px">fountain</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">a structure in a park or square where water shoots up into the air</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+        <div style="font-size:26px;margin-bottom:6px">🏛️</div>
+        <div style="font-weight:800;font-size:13px;color:#E65100;margin-bottom:6px">columns</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">tall stone or metal pillars that hold up a building or decorate its front</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+        <div style="font-size:26px;margin-bottom:6px">🧳</div>
+        <div style="font-weight:800;font-size:13px;color:#E65100;margin-bottom:6px">visitor</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">a person who goes to a place for a short time, not to live there</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FINAL CELEBRATION -->
+<div class="section final">
+  <div class="sec-head"><span class="icon">🏆</span> Final Celebration — English Bingo + Portfolio <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <!-- ACHIEVEMENT CERTIFICATE -->
+    <div class="certificate">
+      <div class="cert-stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+      <div class="cert-title">🎉 Congratulations, Dea! 🎉</div>
+      <div class="cert-sub">You have completed <strong>6 English sessions</strong>!<br>Look at everything you can do now — in English:</div>
+      <div class="cert-skills">
+        <span class="cert-skill cs-green">I can introduce myself ✅</span>
+        <span class="cert-skill cs-orange">I can describe my day ✅</span>
+        <span class="cert-skill cs-blue">I can talk about school ✅</span>
+        <span class="cert-skill cs-red">I can talk about food ✅</span>
+        <span class="cert-skill cs-green">I can describe animals ✅</span>
+        <span class="cert-skill cs-purple">I can describe my town ✅</span>
+      </div>
+      <p style="font-size:14px;color:#555;margin-top:8px">Spread out all your work from Sessions 1–6 and look at everything you made! 🌟</p>
+    </div>
+
+    <div class="activity-box">
+      <h3>🎲 English Bingo — all 6 sessions</h3>
+      <p>Draw a 4×4 grid. Fill it with words from all sessions. Call each word with a definition or mime. First full row or column: <strong>BINGO!</strong></p>
+      <p style="font-size:13px;color:#666;margin-top:6px"><em>Suggestion words: funny, wake up, notebook, pasta, dolphin, next to, park, has, clever, go to school, cheese, eagle, library, can't, there are, friendly, kind, homework, creative, supermarket…</em></p>
+    </div>
+
+    <h3>Portfolio Homework — "What I Know in English"</h3>
+    <div class="task-frame">
+      <p>📖 Write <strong>one full page</strong> called <em>"What I Know in English"</em></p>
+      <ul style="margin-top:8px">
+        <li>4 sentences about yourself (S1)</li>
+        <li>3 sentences about your day (S2)</li>
+        <li>3 sentences about your favourite animal (S5)</li>
+        <li>4 sentences about your dream town with location words (S6)</li>
+      </ul>
+      <p style="margin-top:10px">📌 <strong>This is your English portfolio page — keep it forever!</strong></p>
+    </div>
+
+    <h3 style="margin-top:18px">Session Self-Evaluation</h3>
+    <div class="check-item"><input type="checkbox" id="ev1"><label for="ev1">Dea used there is/are + prepositions correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="ev2"><label for="ev2">Dea drew and presented her dream town map</label></div>
+    <div class="check-item"><input type="checkbox" id="ev3"><label for="ev3">Dea recycled vocabulary from 2+ previous sessions</label></div>
+    <div class="check-item"><input type="checkbox" id="ev4"><label for="ev4">Dea won (at least partially) the English Bingo</label></div>
+    <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">All 6 sessions' work spread out and celebrated</label></div>
+    <div class="check-item"><input type="checkbox" id="ev6"><label for="ev6">Portfolio homework explained and Dea felt proud</label></div>
+
+    <div class="field-label">What Dea mastered — what still needs practice</div>
+    <div class="editable tall" id="course-notes" contenteditable="true" data-placeholder="Strongest areas, areas to continue, Dea's confidence, favourite activities…"></div>
+
+    <div class="field-label">Final overall notes — the full course</div>
+    <div class="editable xlarge" id="final-notes" contenteditable="true" data-placeholder="Your final reflections: what worked, what you'd change, how Dea grew across 6 sessions, next steps…"></div>
+  </div>
+</div>
+
+</div>
+
+<!-- COURSE COMPLETE BANNER + GAME NAV -->
+<div style="max-width:940px;margin:0 auto;padding:0 18px 20px">
+  <div style="background:linear-gradient(135deg,#FBC02D,#F9A825,#FFD54F,#FFF176,#FBC02D);border-radius:20px;padding:28px 32px;text-align:center;box-shadow:0 6px 24px rgba(251,192,45,0.35);margin-bottom:20px">
+    <div style="font-size:32px;margin-bottom:10px">🎓 🌟 🎉</div>
+    <div style="font-size:22px;font-weight:900;color:#4A148C;margin-bottom:8px">Congratulations! You completed all 6 sessions!</div>
+    <div style="font-size:15px;color:#5D4037;font-weight:600">You can talk about yourself, your day, your school, food, animals, and your town — all in English! 🌟</div>
+  </div>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+    <a href="session6_game.html" style="display:inline-block;background:#303F9F;color:white;text-decoration:none;padding:14px 28px;border-radius:28px;font-size:16px;font-weight:800;box-shadow:0 4px 14px rgba(48,63,159,0.35);letter-spacing:0.3px">🎮 Play Digital Game</a>
+    <a href="game6.html" style="display:inline-block;background:#6A1B9A;color:white;text-decoration:none;padding:14px 28px;border-radius:28px;font-size:16px;font-weight:800;box-shadow:0 4px 14px rgba(106,27,154,0.35);letter-spacing:0.3px">🎲 Print Board Game</a>
+  </div>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print</button>
+<button class="reset-btn" onclick="resetSession()">↺ Clear</button>
+<script>
+const KEY='dea_s6_';let timer;
+function showSaved(){const s=document.getElementById('save-status');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1800);}
+function save(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id)localStorage.setItem(KEY+el.id,el.innerHTML);});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id)localStorage.setItem(KEY+cb.id,cb.checked);});showSaved();}
+function load(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){const v=localStorage.getItem(KEY+el.id);if(v!==null)el.innerHTML=v;}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){const v=localStorage.getItem(KEY+cb.id);if(v!==null)cb.checked=(v==='true');}});}
+function resetSession(){if(!confirm('Clear all notes for Session 6?'))return;document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){localStorage.removeItem(KEY+el.id);el.innerHTML='';}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){localStorage.removeItem(KEY+cb.id);cb.checked=false;}});}
+document.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(save,600);});
+document.addEventListener('change',()=>{clearTimeout(timer);timer=setTimeout(save,300);});
+window.addEventListener('load',load);
+</script>
+<div class="live-banner">🔴 ÉLŐÓRA — Képernyőmegosztás aktív</div>
+<div class="online-bar">
+  <button class="online-btn btn-save" onclick="saveDeaWork(6)">💾 Dea munkájának mentése</button>
+  <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+</div>
+<script>
+function saveDeaWork(n){
+  var out='Dea válaszai — Session '+n+'\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\n',count=0;
+  document.querySelectorAll('[contenteditable][id]').forEach(function(el){
+    var t=el.innerText.trim();
+    if(t&&t.length>2){out+='['+el.id+']\n'+t+'\n\n';count++;}
+  });
+  if(count===0){alert('Még nincs kitöltött mező! Töltsd ki Dea válaszait először.');return;}
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+var _ss=false;
+function toggleSS(){
+  _ss=!_ss;
+  document.body.classList.toggle('screen-share',_ss);
+  var b=document.getElementById('ss-btn');
+  b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
+  b.classList.toggle('active',_ss);
+}
+</script>
+</body>
+</html>

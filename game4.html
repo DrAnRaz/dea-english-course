@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Bingo! 🎯🍕 — Session 4</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;background:#FCE4EC;color:#1a1a1a}
+
+/* SCREEN NAV */
+.screen-only{display:block}
+.screen-nav{background:#C62828;color:white;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.screen-nav h1{font-size:18px;font-weight:800;flex:1}
+.screen-nav a{color:white;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:16px;font-size:13px;font-weight:700}
+.screen-nav a:hover{background:rgba(255,255,255,0.35)}
+.print-btn-top{background:#E91E63;color:white;border:none;padding:8px 20px;border-radius:16px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* PAGES */
+.page{max-width:800px;margin:20px auto;background:white;border-radius:16px;padding:36px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.page + .page{margin-top:24px}
+
+/* PAGE 1 — INSTRUCTIONS */
+.bingo-title{text-align:center;font-size:36px;font-weight:800;color:#C62828;margin-bottom:4px}
+.bingo-subtitle{text-align:center;font-size:15px;color:#888;margin-bottom:28px;font-style:italic}
+
+.instructions-box{background:#FFF3E0;border-radius:14px;padding:24px 28px;margin-bottom:20px}
+.instructions-box h2{color:#E65100;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+.instructions-box ol{padding-left:22px}
+.instructions-box ol li{margin:10px 0;font-size:14px;color:#333;line-height:1.6}
+.instructions-box ol li strong{color:#C62828}
+
+.speaking-box{background:#FFEBEE;border:3px solid #EF9A9A;border-radius:14px;padding:20px 24px;margin-top:16px;text-align:center}
+.speaking-box h3{color:#C62828;font-size:15px;font-weight:800;margin-bottom:8px}
+.speaking-box p{font-size:14px;color:#555}
+
+/* BINGO CARDS */
+.card-page{page-break-before:always}
+.card-title{font-size:20px;font-weight:800;color:#C62828;text-align:center;margin-bottom:4px}
+.card-sub{font-size:12px;color:#888;text-align:center;margin-bottom:16px}
+.card-label{display:inline-block;background:#C62828;color:white;padding:4px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:12px}
+
+.bingo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 auto;max-width:560px}
+.bingo-cell{background:#FFF3E0;border:2px solid #EF9A9A;border-radius:10px;padding:14px 6px;text-align:center;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background 0.15s}
+.bingo-cell.marked{background:#C62828;border-color:#B71C1C}
+.bingo-cell.marked .cell-emoji{filter:brightness(10)}
+.bingo-cell.marked .cell-name{color:white}
+.cell-emoji{font-size:30px;margin-bottom:5px;display:block}
+.cell-name{font-size:12px;font-weight:700;color:#C62828}
+
+/* CALLER PAGE */
+.caller-page{page-break-before:always}
+.caller-title{font-size:20px;font-weight:800;color:#C62828;margin-bottom:4px}
+.caller-note{font-size:13px;color:#888;margin-bottom:20px;font-style:italic}
+.caller-list{counter-reset:caller}
+.caller-item{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;margin:6px 0;background:#FFF3E0;border-radius:10px;border-left:4px solid #C62828}
+.caller-num{font-weight:800;color:#C62828;font-size:14px;min-width:24px}
+.caller-sent{font-size:14px;color:#333}
+.caller-food{font-weight:700;color:#E65100}
+
+/* MARKERS */
+.markers-section{page-break-before:always}
+.markers-title{font-size:16px;font-weight:800;color:#C62828;margin-bottom:12px;text-align:center}
+.markers-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;max-width:560px;margin:0 auto}
+.marker{width:56px;height:56px;border-radius:50%;background:#C62828;color:white;font-size:22px;display:flex;align-items:center;justify-content:center;border:3px dashed #B71C1C}
+.cut-line{border-top:2px dashed #ccc;margin:14px 0;text-align:center;font-size:11px;color:#aaa;padding-top:4px}
+
+/* PRINT */
+@media print{
+  body{background:white;font-size:12px}
+  .screen-only{display:none!important}
+  .page{max-width:100%;margin:0;padding:24px;box-shadow:none;border-radius:0;border:none}
+  .card-page,.caller-page,.markers-section{page-break-before:always;padding:24px}
+  .bingo-cell{min-height:80px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bingo-cell.marked{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .instructions-box,.speaking-box,.caller-item,.card-label{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .screen-nav,.print-btn-top{display:none!important}
+  .bingo-grid{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN NAV (hidden in print) -->
+<div class="screen-nav screen-only">
+  <h1>🎯 Food Bingo — Session 4</h1>
+  <a href="session4.html">← Back to Session 4</a>
+  <a href="session4_game.html">🎮 Digital Game</a>
+  <button class="print-btn-top" onclick="window.print()">🖨️ Print All Cards</button>
+</div>
+
+<!-- PAGE 1: INSTRUCTIONS -->
+<div class="page">
+  <div class="bingo-title">Food Bingo! 🎯🍕</div>
+  <div class="bingo-subtitle">A vocabulary and speaking game about food</div>
+
+  <div class="instructions-box">
+    <h2>HOW TO PLAY</h2>
+    <ol>
+      <li>Print <strong>ONE bingo card</strong> for each player (Cards A, B, C, or D).</li>
+      <li>The teacher (or one player) reads sentences from the <strong>Caller List</strong>.</li>
+      <li>Listen carefully! Find the <strong>FOOD</strong> mentioned in the sentence on your card. Mark it!</li>
+      <li>First player with <strong>4 in a row</strong> — across, down, or diagonal — shouts <strong>"BINGO!"</strong></li>
+      <li><strong>IMPORTANT RULE:</strong> To WIN, you must say your OWN sentence about one of the foods in your row!<br>
+        <span style="color:#2E7D32">Good example: <em>"I love pizza!"</em> or <em>"I don't like broccoli."</em></span><br>
+        <span style="color:#C62828">Not accepted: just saying the food name.</span></li>
+      <li>Play again and try to get a <strong>full house</strong> (all 16 squares)!</li>
+    </ol>
+  </div>
+
+  <div class="speaking-box">
+    <h3>🗣️ Speaking Challenge</h3>
+    <p>Can you say a sentence for EVERY food on your card?<br>
+    Use: <em>I love…, I really like…, I don't like…, I absolutely hate…</em></p>
+  </div>
+</div>
+
+<!-- CARD A -->
+<div class="page card-page">
+  <div style="text-align:center;margin-bottom:16px">
+    <div class="card-label">CARD A</div>
+    <div class="card-title">🍕 Food Bingo — Card A</div>
+    <div class="card-sub">Name: _________________________ &nbsp;&nbsp; Date: _____________</div>
+  </div>
+  <div class="bingo-grid" id="cardA">
+    <!-- Row 1 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍕</span><span class="cell-name">pizza</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍣</span><span class="cell-name">sushi</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥦</span><span class="cell-name">broccoli</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🧀</span><span class="cell-name">cheese</span></div>
+    <!-- Row 2 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍫</span><span class="cell-name">chocolate</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥗</span><span class="cell-name">salad</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍝</span><span class="cell-name">pasta</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍩</span><span class="cell-name">doughnut</span></div>
+    <!-- Row 3 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍎</span><span class="cell-name">apple</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍚</span><span class="cell-name">rice</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍗</span><span class="cell-name">chicken</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥕</span><span class="cell-name">carrot</span></div>
+    <!-- Row 4 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍰</span><span class="cell-name">cake</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍦</span><span class="cell-name">ice cream</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍔</span><span class="cell-name">burger</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🐟</span><span class="cell-name">fish</span></div>
+  </div>
+</div>
+
+<!-- CARD B -->
+<div class="page card-page">
+  <div style="text-align:center;margin-bottom:16px">
+    <div class="card-label">CARD B</div>
+    <div class="card-title">🍕 Food Bingo — Card B</div>
+    <div class="card-sub">Name: _________________________ &nbsp;&nbsp; Date: _____________</div>
+  </div>
+  <div class="bingo-grid">
+    <!-- Row 1 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🌮</span><span class="cell-name">taco</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥦</span><span class="cell-name">broccoli</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍫</span><span class="cell-name">chocolate</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍝</span><span class="cell-name">pasta</span></div>
+    <!-- Row 2 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍣</span><span class="cell-name">sushi</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🧀</span><span class="cell-name">cheese</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🌶️</span><span class="cell-name">curry</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍎</span><span class="cell-name">apple</span></div>
+    <!-- Row 3 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍕</span><span class="cell-name">pizza</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥗</span><span class="cell-name">salad</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍚</span><span class="cell-name">rice</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥪</span><span class="cell-name">sandwich</span></div>
+    <!-- Row 4 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍩</span><span class="cell-name">doughnut</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍗</span><span class="cell-name">chicken</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🐟</span><span class="cell-name">fish</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍌</span><span class="cell-name">banana</span></div>
+  </div>
+</div>
+
+<!-- CARD C -->
+<div class="page card-page">
+  <div style="text-align:center;margin-bottom:16px">
+    <div class="card-label">CARD C</div>
+    <div class="card-title">🍕 Food Bingo — Card C</div>
+    <div class="card-sub">Name: _________________________ &nbsp;&nbsp; Date: _____________</div>
+  </div>
+  <div class="bingo-grid">
+    <!-- Row 1 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🧀</span><span class="cell-name">cheese</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍝</span><span class="cell-name">pasta</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍎</span><span class="cell-name">apple</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍦</span><span class="cell-name">ice cream</span></div>
+    <!-- Row 2 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥦</span><span class="cell-name">broccoli</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍫</span><span class="cell-name">chocolate</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥪</span><span class="cell-name">sandwich</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍔</span><span class="cell-name">burger</span></div>
+    <!-- Row 3 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🌮</span><span class="cell-name">taco</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍚</span><span class="cell-name">rice</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🌶️</span><span class="cell-name">curry</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🐟</span><span class="cell-name">fish</span></div>
+    <!-- Row 4 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍕</span><span class="cell-name">pizza</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥕</span><span class="cell-name">carrot</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥗</span><span class="cell-name">salad</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍰</span><span class="cell-name">cake</span></div>
+  </div>
+</div>
+
+<!-- CARD D -->
+<div class="page card-page">
+  <div style="text-align:center;margin-bottom:16px">
+    <div class="card-label">CARD D</div>
+    <div class="card-title">🍕 Food Bingo — Card D</div>
+    <div class="card-sub">Name: _________________________ &nbsp;&nbsp; Date: _____________</div>
+  </div>
+  <div class="bingo-grid">
+    <!-- Row 1 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍫</span><span class="cell-name">chocolate</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🌶️</span><span class="cell-name">curry</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍔</span><span class="cell-name">burger</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥕</span><span class="cell-name">carrot</span></div>
+    <!-- Row 2 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍝</span><span class="cell-name">pasta</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍎</span><span class="cell-name">apple</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥦</span><span class="cell-name">broccoli</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍕</span><span class="cell-name">pizza</span></div>
+    <!-- Row 3 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍚</span><span class="cell-name">rice</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🥪</span><span class="cell-name">sandwich</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🐟</span><span class="cell-name">fish</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍰</span><span class="cell-name">cake</span></div>
+    <!-- Row 4 -->
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🧀</span><span class="cell-name">cheese</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍣</span><span class="cell-name">sushi</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍩</span><span class="cell-name">doughnut</span></div>
+    <div class="bingo-cell" onclick="this.classList.toggle('marked')"><span class="cell-emoji">🍌</span><span class="cell-name">banana</span></div>
+  </div>
+</div>
+
+<!-- CALLER LIST -->
+<div class="page caller-page">
+  <div class="caller-title">📋 Caller List — Teacher's Page</div>
+  <div class="caller-note">Read each sentence aloud. Students find the food and mark it on their card.</div>
+  <div class="caller-list">
+    <div class="caller-item"><span class="caller-num">1</span><span class="caller-sent">"I love <span class="caller-food">pizza</span>! It's my favourite food."</span></div>
+    <div class="caller-item"><span class="caller-num">2</span><span class="caller-sent">"I don't like <span class="caller-food">sushi</span> — it's raw fish!"</span></div>
+    <div class="caller-item"><span class="caller-num">3</span><span class="caller-sent">"She loves <span class="caller-food">tacos</span> from Mexico."</span></div>
+    <div class="caller-item"><span class="caller-num">4</span><span class="caller-sent">"I really don't like <span class="caller-food">broccoli</span> at all."</span></div>
+    <div class="caller-item"><span class="caller-num">5</span><span class="caller-sent">"I love <span class="caller-food">cheese</span> on my pasta."</span></div>
+    <div class="caller-item"><span class="caller-num">6</span><span class="caller-sent">"She absolutely loves <span class="caller-food">chocolate</span>!"</span></div>
+    <div class="caller-item"><span class="caller-num">7</span><span class="caller-sent">"I don't really like <span class="caller-food">salad</span>."</span></div>
+    <div class="caller-item"><span class="caller-num">8</span><span class="caller-sent">"He loves <span class="caller-food">curry</span> — he likes spicy food!"</span></div>
+    <div class="caller-item"><span class="caller-num">9</span><span class="caller-sent">"My favourite <span class="caller-food">pasta</span> is tomato pasta."</span></div>
+    <div class="caller-item"><span class="caller-num">10</span><span class="caller-sent">"Do you like <span class="caller-food">doughnuts</span>? They're sweet!"</span></div>
+    <div class="caller-item"><span class="caller-num">11</span><span class="caller-sent">"She eats an <span class="caller-food">apple</span> every day."</span></div>
+    <div class="caller-item"><span class="caller-num">12</span><span class="caller-sent">"He likes <span class="caller-food">rice</span> with chicken."</span></div>
+    <div class="caller-item"><span class="caller-num">13</span><span class="caller-sent">"I don't like <span class="caller-food">sandwiches</span> — I prefer hot food."</span></div>
+    <div class="caller-item"><span class="caller-num">14</span><span class="caller-sent">"She loves <span class="caller-food">chicken</span> with vegetables."</span></div>
+    <div class="caller-item"><span class="caller-num">15</span><span class="caller-sent">"I don't like <span class="caller-food">carrots</span> — they taste strange."</span></div>
+    <div class="caller-item"><span class="caller-num">16</span><span class="caller-sent">"We love <span class="caller-food">cake</span> at birthday parties!"</span></div>
+    <div class="caller-item"><span class="caller-num">17</span><span class="caller-sent">"Do you like <span class="caller-food">ice cream</span>? I love it!"</span></div>
+    <div class="caller-item"><span class="caller-num">18</span><span class="caller-sent">"He doesn't like <span class="caller-food">burgers</span> — he's vegetarian."</span></div>
+    <div class="caller-item"><span class="caller-num">19</span><span class="caller-sent">"I don't like <span class="caller-food">fish</span> — it smells funny!"</span></div>
+    <div class="caller-item"><span class="caller-num">20</span><span class="caller-sent">"She loves <span class="caller-food">bananas</span> — she eats one every morning!"</span></div>
+  </div>
+</div>
+
+<!-- CUT-OUT MARKERS -->
+<div class="page markers-section">
+  <div class="markers-title">✂️ Cut-Out Markers</div>
+  <p style="text-align:center;font-size:13px;color:#888;margin-bottom:16px">Cut out these circles to use as markers on your bingo card!</p>
+  <div class="cut-line">✂ — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —</div>
+  <div class="markers-grid">
+    <div class="marker">🍕</div><div class="marker">🍝</div><div class="marker">🧀</div><div class="marker">🍫</div>
+    <div class="marker">🥦</div><div class="marker">🍣</div><div class="marker">🌮</div><div class="marker">🥗</div>
+    <div class="marker">🍔</div><div class="marker">🍦</div><div class="marker">🍎</div><div class="marker">🍩</div>
+    <div class="marker">🍗</div><div class="marker">🍚</div><div class="marker">🥪</div><div class="marker">🥕</div>
+  </div>
+  <div class="cut-line" style="margin-top:20px">✂ — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —</div>
+</div>
+
+</body>
+</html>

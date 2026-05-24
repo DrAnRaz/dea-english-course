@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 3 — My School | Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;background:#f4f6f9;color:#1a1a1a}
+.page-header{background:linear-gradient(135deg,#1565C0,#1976D2);color:white;padding:28px 36px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header .subtitle{font-size:13px;opacity:0.82;margin-top:5px}
+.page-header .badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap;margin-top:4px}
+#save-status{position:fixed;top:14px;right:20px;background:#43A047;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.5s;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+#save-status.show{opacity:1}
+.container{max-width:940px;margin:0 auto;padding:28px 18px 80px}
+.section{border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+.sec-head{padding:13px 22px;color:white;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-head .icon{font-size:20px}
+.sec-head .timing{margin-left:auto;font-size:12px;opacity:0.85;font-weight:400;background:rgba(255,255,255,0.18);padding:3px 10px;border-radius:12px}
+.sec-body{padding:22px 24px}
+.goal .sec-head{background:#2E7D32}.goal .sec-body{background:#E8F5E9}
+.dea-corner .sec-head{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}.dea-corner .sec-body{background:linear-gradient(135deg,#F3E5F5,#FCE4EC)}
+.warmup .sec-head{background:#E65100}.warmup .sec-body{background:#FFF8F1}
+.vocab .sec-head{background:#1565C0}.vocab .sec-body{background:#E3F2FD}
+.reading .sec-head{background:#6A1B9A}.reading .sec-body{background:#F3E5F5}
+.grammar .sec-head{background:#AD1457}.grammar .sec-body{background:#FCE4EC}
+.task .sec-head{background:#00695C}.task .sec-body{background:#E0F7FA}
+.review .sec-head{background:#BF360C}.review .sec-body{background:#FFF3E0}
+h3{font-size:14px;font-weight:700;color:#333;margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.4px}
+p{font-size:14px;margin:6px 0;color:#333}
+ul,ol{padding-left:20px;font-size:14px;color:#333}
+li{margin:5px 0}
+strong{color:#111}
+
+/* ── VISUAL AIDS ── */
+/* Classroom SVG area */
+.classroom-visual{background:white;border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+.classroom-visual svg{display:block;margin:0 auto}
+
+/* Subject badge grid */
+.subject-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.subj-badge{background:white;border-radius:12px;padding:12px 10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid}
+.subj-badge .sb-emoji{font-size:28px;margin-bottom:6px}
+.subj-badge .sb-word{font-weight:800;font-size:13px}
+.subj-badge input{margin-top:6px;width:16px;height:16px;accent-color:#2E7D32}
+.sb-maths{border-color:#AD1457}.sb-eng{border-color:#1565C0}.sb-sci{border-color:#2E7D32}.sb-art{border-color:#E65100}.sb-pe{border-color:#6A1B9A}.sb-hist{border-color:#BF360C}.sb-music{border-color:#00695C}
+
+/* Object card grid */
+.obj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.obj-card{background:white;border-radius:10px;padding:10px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.07);font-size:13px}
+.obj-card .oc-emoji{font-size:24px;margin-bottom:4px}
+.obj-card .oc-word{font-weight:700;color:#1565C0;font-size:12px}
+.obj-card input{margin-top:4px;width:14px;height:14px;accent-color:#2E7D32}
+
+/* there is / there are visual */
+.there-visual{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0}
+.tv-card{background:white;border-radius:12px;padding:18px 16px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.tv-card .tv-header{font-weight:800;font-size:15px;padding:6px 12px;border-radius:8px;color:white;margin-bottom:12px;display:inline-block}
+.tv-is .tv-header{background:#AD1457}
+.tv-are .tv-header{background:#1565C0}
+.tv-objects{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0;font-size:24px}
+.tv-rule{font-size:13px;color:#555;font-style:italic;margin-top:8px}
+.tv-example{background:#f5f5f5;border-radius:8px;padding:8px 12px;font-size:13px;margin-top:8px;font-weight:600}
+
+/* Mini-book visual */
+.minibook-guide{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.mb-page{background:white;border-radius:10px;padding:12px 10px;border:2px solid #1565C0;text-align:center;font-size:12px}
+.mb-page.mb-cover{background:#1565C0;color:white}
+.mb-page .mb-num{font-weight:800;font-size:10px;opacity:0.6;margin-bottom:4px}
+.mb-page .mb-icon{font-size:22px;margin:6px 0}
+.mb-page .mb-label{font-weight:700;font-size:12px}
+.mb-page .mb-desc{font-size:10px;color:#777;margin-top:4px}
+.mb-cover .mb-desc{color:rgba(255,255,255,0.7)}
+
+/* Dea's corner */
+.dc-challenge{background:white;border-radius:12px;padding:16px 20px;margin:12px 0;border:2px solid #CE93D8}
+.dc-challenge h4{color:#6A1B9A;font-size:15px;margin-bottom:8px}
+.dc-fact{background:#FFF9C4;border-radius:10px;padding:12px 16px;margin:10px 0;border-left:4px solid #F9A825}
+.dc-fact strong{color:#E65100}
+.dc-editable{background:rgba(255,255,255,0.8);border:2px dashed #CE93D8;border-radius:10px;padding:12px 16px;min-height:60px;font-size:14px;margin:8px 0}
+.dc-editable:focus{outline:none;border-color:#6A1B9A}
+.dc-editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#CE93D8;font-style:italic}
+.star-row{font-size:22px;letter-spacing:6px;margin:8px 0;text-align:center}
+
+.reading-text{background:white;border-left:5px solid #7B1FA2;padding:16px 20px;border-radius:0 10px 10px 0;font-size:15px;line-height:1.9;margin:12px 0;font-style:italic;color:#2a2a2a}
+.editable{background:white;border:2px dashed #bbb;border-radius:10px;padding:12px 16px;min-height:56px;font-size:14px;color:#333;margin:8px 0;transition:border-color 0.2s}
+.editable:focus{outline:none;border-color:#1565C0;box-shadow:0 0 0 3px rgba(21,101,192,0.12)}
+.editable.tall{min-height:110px}
+.editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#bbb;font-style:italic;pointer-events:none}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin:14px 0 3px}
+.frame-box{background:white;border:2px solid rgba(0,0,0,0.09);border-radius:10px;padding:14px 18px;margin:10px 0}
+.teacher-note{background:#FFFDE7;border-left:4px solid #FBC02D;padding:10px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin:10px 0}
+.activity-box{background:rgba(255,255,255,0.65);border-radius:10px;padding:14px 18px;margin:10px 0;border:1px solid rgba(0,0,0,0.07)}
+.activity-box h3{margin-top:0}
+.task-frame{background:rgba(255,255,255,0.7);border:2px solid rgba(0,105,92,0.2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.check-item:last-child{border-bottom:none}
+.check-item label{font-size:14px;cursor:pointer;flex:1}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;flex-shrink:0}
+.qa-item{margin:10px 0}.qa-item .q{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+
+@media print{body{background:white;font-size:12px}#save-status,.print-btn,.reset-btn{display:none!important}.section{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}.sec-head,.sec-body,.page-header,.dea-corner .sec-head,.dea-corner .sec-body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.editable,.dc-editable{border:1px solid #ccc}.subject-grid{grid-template-columns:repeat(4,1fr)}.obj-grid{grid-template-columns:repeat(4,1fr)}.there-visual{grid-template-columns:1fr 1fr}.minibook-guide{grid-template-columns:repeat(4,1fr)}}
+.print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
+.print-btn{right:24px;background:#1565C0}.reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+.online-bar{position:fixed;bottom:70px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
+.online-btn:hover{transform:translateY(-2px)}
+.btn-save{background:#1B5E20;color:white}
+.btn-ss{background:#0D47A1;color:white}
+.btn-ss.active{background:#B71C1C}
+.live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
+body.screen-share .live-banner{display:block}
+body.screen-share .content{font-size:18px!important}
+@media print{.online-bar,.live-banner{display:none!important}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>🏫 Session 3 — My School</h1>
+    <div class="subtitle">Dea's English Mini-Course · Right on! 2 (Jenny Dooley, Express Publishing)</div>
+    <div class="subtitle">Hungarian L1 · Age 11 · A1–A2</div>
+  </div>
+  <div><div class="badge">⏱ 45–60 min</div></div>
+</div>
+<div id="save-status">✓ Saved</div>
+<div class="container">
+
+<!-- GOAL -->
+<div class="section goal">
+  <div class="sec-head"><span class="icon">🎯</span> Goal &amp; Introduction <span class="timing">2 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Today we talk about school — your favourite subjects and what's in a classroom. You will make your own mini-book about your school day!"</em></p></div>
+    <ul>
+      <li>Learn school subjects and classroom objects</li>
+      <li>Use <strong>have / has</strong> for possession</li>
+      <li>Use <strong>there is / there are</strong> for describing places</li>
+      <li>Create a 4-page "My School" mini-book</li>
+    </ul>
+    <div class="field-label">S2 homework check + session notes</div>
+    <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="Homework check + pre-session notes…"></div>
+  </div>
+</div>
+
+<!-- DEA'S CORNER -->
+<div class="section dea-corner">
+  <div class="sec-head"><span class="icon">🌟</span> Dea's Corner — Just for You! <span class="timing">Read this, Dea!</span></div>
+  <div class="sec-body">
+    <div class="star-row">📚 ✏️ 🎒</div>
+    <div class="dc-challenge">
+      <h4>🏆 Hey Dea! Today is School Challenge Day!</h4>
+      <p style="font-size:14px;color:#333;margin:8px 0">Quick question: what's your <strong>favourite subject</strong> at school? And which subject do you find the most difficult? 🤔</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:24px;margin-bottom:4px">😍</div>
+          <div style="font-size:12px;font-weight:700;color:#2E7D32;margin-bottom:6px">MY FAVOURITE SUBJECT</div>
+          <div style="border-bottom:2px dashed #CE93D8;height:24px"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:24px;margin-bottom:4px">😅</div>
+          <div style="font-size:12px;font-weight:700;color:#AD1457;margin-bottom:6px">THE HARDEST SUBJECT</div>
+          <div style="border-bottom:2px dashed #CE93D8;height:24px"></div>
+        </div>
+      </div>
+      <p style="font-size:14px;color:#555">Today you'll make a <strong>mini-book</strong> about YOUR school. Think of it as your own English school magazine! 📰</p>
+    </div>
+    <div class="dc-fact">
+      <strong>💡 Did you know?</strong> In England, "PE" means Physical Education — but English kids just say "PE" (pee-EE). No one says the full name! And "Maths" (with an S!) is what British people say — Americans say "Math." Both are correct! 🏃‍♀️
+    </div>
+    <div class="field-label">Dea writes: One sentence about her favourite subject</div>
+    <div class="dc-editable" id="dea-subj" contenteditable="true" data-placeholder="My favourite subject is ___ because…"></div>
+  </div>
+</div>
+
+<!-- WARM-UP -->
+<div class="section warmup">
+  <div class="sec-head"><span class="icon">⚡</span> Warm-Up — School Bag Hunt <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>How to play</h3>
+      <ol>
+        <li>Dea takes out 5 things from her school bag and names them in English.</li>
+        <li>Write the words she already knows. Introduce the missing ones from today's list.</li>
+      </ol>
+    </div>
+    <div class="teacher-note"><strong>Recycling S1+S2:</strong> "Is English your favourite subject?" (to be) and "What time does your English class start?" (present simple -s)</div>
+    <div class="field-label">Warm-up notes</div>
+    <div class="editable" id="warmup-notes" contenteditable="true" data-placeholder="What she already knew in English…"></div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="section vocab">
+  <div class="sec-head"><span class="icon">📝</span> Vocabulary — Subjects &amp; Classroom Objects <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <h3>School subjects — mime what happens in each class</h3>
+    <div class="subject-grid">
+      <div class="subj-badge sb-maths"><div class="sb-emoji">🔢</div><div class="sb-word">Maths</div><input type="checkbox" id="v1"></div>
+      <div class="subj-badge sb-eng"><div class="sb-emoji">🇬🇧</div><div class="sb-word">English</div><input type="checkbox" id="v2"></div>
+      <div class="subj-badge sb-sci"><div class="sb-emoji">🔬</div><div class="sb-word">Science</div><input type="checkbox" id="v3"></div>
+      <div class="subj-badge sb-art"><div class="sb-emoji">🎨</div><div class="sb-word">Art</div><input type="checkbox" id="v4"></div>
+      <div class="subj-badge sb-pe"><div class="sb-emoji">🏃</div><div class="sb-word">PE</div><input type="checkbox" id="v5"></div>
+      <div class="subj-badge sb-hist"><div class="sb-emoji">🏛️</div><div class="sb-word">History</div><input type="checkbox" id="v6"></div>
+      <div class="subj-badge sb-music"><div class="sb-emoji">🎵</div><div class="sb-word">Music</div><input type="checkbox" id="v7"></div>
+    </div>
+
+    <h3>Classroom objects — point and name from your drawing</h3>
+    <div class="obj-grid">
+      <div class="obj-card"><div class="oc-emoji">📓</div><div class="oc-word">notebook</div><input type="checkbox" id="v8"></div>
+      <div class="obj-card"><div class="oc-emoji">📏</div><div class="oc-word">ruler</div><input type="checkbox" id="v9"></div>
+      <div class="obj-card"><div class="oc-emoji">🖊️</div><div class="oc-word">pencil case</div><input type="checkbox" id="v10"></div>
+      <div class="obj-card"><div class="oc-emoji">🗒️</div><div class="oc-word">whiteboard</div><input type="checkbox" id="v11"></div>
+      <div class="obj-card"><div class="oc-emoji">🎒</div><div class="oc-word">schoolbag</div><input type="checkbox" id="v12"></div>
+      <div class="obj-card"><div class="oc-emoji">🪑</div><div class="oc-word">desk</div><input type="checkbox" id="v13"></div>
+      <div class="obj-card"><div class="oc-emoji">📅</div><div class="oc-word">timetable</div><input type="checkbox" id="v14"></div>
+    </div>
+
+    <!-- CLASSROOM VISUAL -->
+    <h3>Visual: simple classroom diagram</h3>
+    <div class="classroom-visual">
+      <svg width="500" height="200" viewBox="0 0 500 200" style="max-width:100%;height:auto">
+        <!-- Whiteboard -->
+        <rect x="60" y="20" width="380" height="60" rx="6" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <text x="250" y="57" text-anchor="middle" font-size="16" fill="#1565C0" font-weight="bold">📋 whiteboard</text>
+        <!-- Teacher desk -->
+        <rect x="180" y="100" width="140" height="30" rx="4" fill="#FFF9C4" stroke="#F9A825" stroke-width="2"/>
+        <text x="250" y="120" text-anchor="middle" font-size="13" fill="#E65100" font-weight="bold">🪑 teacher's desk</text>
+        <!-- Student desks -->
+        <rect x="60" y="150" width="70" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="95" y="170" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">desk</text>
+        <rect x="150" y="150" width="70" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="185" y="170" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">desk</text>
+        <rect x="240" y="150" width="70" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="275" y="170" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">desk</text>
+        <rect x="330" y="150" width="70" height="30" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="365" y="170" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="bold">desk</text>
+        <!-- Labels -->
+        <text x="30" y="57" font-size="11" fill="#888" text-anchor="middle">wall</text>
+        <line x1="30" y1="20" x2="30" y2="190" stroke="#ccc" stroke-width="1" stroke-dasharray="4"/>
+      </svg>
+      <p style="text-align:center;font-size:12px;color:#888;margin-top:6px">Point to each item and say: "There is a whiteboard." / "There are four desks."</p>
+    </div>
+
+    <div class="activity-box">
+      <h3>🎲 Bingo!</h3>
+      <p>Dea makes a 3×3 grid, writes 9 words randomly. You call them out. First to get 3 in a row: BINGO!</p>
+    </div>
+    <div class="field-label">Vocabulary notes</div>
+    <div class="editable" id="vocab-notes" contenteditable="true" data-placeholder="Tricky words, bingo winner, what she enjoyed…"></div>
+  </div>
+</div>
+
+<!-- READING -->
+<div class="section reading">
+  <div class="sec-head"><span class="icon">📖</span> Reading — "Our Perfect Classroom" <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="reading-text">
+      <strong>Our Perfect Classroom</strong><br><br>
+      Hi! I'm Emma. Today I want to tell you about my classroom. It is my favourite place in school!<br><br>
+      Our classroom is big and bright. There is a large whiteboard at the front. The teacher writes vocabulary words on it every day. There are two windows on the left side — they are always open in summer because our classroom gets very warm.<br><br>
+      There are twenty-five desks in our classroom. Each student has a desk and a chair. I sit next to Maya, my best friend. We have pencil cases on our desks. Mine has two pens, three pencils, a ruler, and an eraser. Maya has a big green pencil case with stickers on it!<br><br>
+      There is a bookshelf at the back of the room. It has lots of books — dictionaries, reading books, and art books. There are also some science models on the shelf. My favourite is a model of the human eye.<br><br>
+      Our teacher has a big desk at the front. She has a computer and lots of papers on it. There is also a plant next to her desk. The plant has beautiful red flowers.<br><br>
+      On the walls, there are posters and maps. There is a world map, a grammar poster, and our class's artwork. Every student has a picture on the wall!<br><br>
+      I love our classroom because it is colourful and friendly. Do you like your classroom?
+    </div>
+    <div class="qa-item"><div class="q">1. Where is the whiteboard?</div><div class="editable" id="q1" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">2. How many desks are in the classroom?</div><div class="editable" id="q2" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">3. What does Emma have in her pencil case?</div><div class="editable" id="q3" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">4. What is Emma's favourite science model?</div><div class="editable" id="q4" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">5. 🔍 Inference: Why are the windows always open in summer?</div><div class="editable" id="q5" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">6. 📖 Vocabulary: Find a word in the text that means "a large furniture piece that holds books".</div><div class="editable" id="q6" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">7. 💬 Your turn: Describe something in YOUR classroom using "there is" or "there are".</div><div class="editable" id="q7" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="activity-box" style="margin-top:14px">
+      <h3>✏️ Follow-up — Color-code</h3>
+      <ul>
+        <li><strong style="color:#1565C0">🔵 Blue:</strong> Underline every <em>have / has</em></li>
+        <li><strong style="color:#6A1B9A">🟣 Purple:</strong> Circle <em>there is / there are</em></li>
+        <li>Discuss the difference: <em>have/has</em> = someone owns something / <em>there is/are</em> = what exists in a place</li>
+      </ul>
+    </div>
+    <div class="field-label">Reading notes</div>
+    <div class="editable" id="reading-notes" contenteditable="true" data-placeholder="Fluency, comprehension, errors…"></div>
+  </div>
+</div>
+
+<!-- GRAMMAR -->
+<div class="section grammar">
+  <div class="sec-head"><span class="icon">🔧</span> Grammar — have/has + there is/there are <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <!-- VISUAL: there is vs there are -->
+    <h3>Visual: there IS (one) vs there ARE (many)</h3>
+    <div class="there-visual">
+      <div class="tv-card tv-is">
+        <div class="tv-header">there IS</div>
+        <div class="tv-objects">📋</div>
+        <div class="tv-rule">= ONE thing</div>
+        <div class="tv-example">There <strong>is</strong> a whiteboard.</div>
+      </div>
+      <div class="tv-card tv-are">
+        <div class="tv-header">there ARE</div>
+        <div class="tv-objects">🪑 🪑 🪑 🪑</div>
+        <div class="tv-rule">= MORE THAN ONE</div>
+        <div class="tv-example">There <strong>are</strong> four desks.</div>
+      </div>
+    </div>
+
+    <div class="frame-box">
+      <p><strong>have/has:</strong> I <strong>have</strong> · you <strong>have</strong> · she <strong>has</strong> · he <strong>has</strong></p>
+      <p><strong>there is/are:</strong> There <strong>is</strong> a whiteboard. · There <strong>are</strong> 20 desks.</p>
+    </div>
+
+    <div class="teacher-note"><strong>Hungarian note:</strong> "Van egy tábla az osztályteremben" = There is a whiteboard in the classroom. Very similar structure! Hungarian speakers often find <em>there is/are</em> easier. Celebrate this win!</div>
+
+    <div class="activity-box">
+      <h3>🖼️ Activity — Describe the classroom drawing</h3>
+      <p>Look at the classroom SVG above. Dea writes or says 5 sentences using <em>There is / There are</em> and <em>I have / I have</em>.</p>
+    </div>
+
+    <div class="field-label">Dea writes 5 sentences using have/has OR there is/are</div>
+    <div class="editable tall" id="grammar-practice" contenteditable="true" data-placeholder="e.g. I have a blue pencil case. There is a big whiteboard in my classroom. My teacher has a red pen."></div>
+    <div class="field-label">Grammar notes</div>
+    <div class="editable" id="grammar-notes" contenteditable="true" data-placeholder="is/are errors? What clicked?"></div>
+  </div>
+</div>
+
+<!-- TASK -->
+<div class="section task">
+  <div class="sec-head"><span class="icon">🎨</span> Task — My School Mini-Book <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="teacher-note"><strong>Make the mini-book:</strong> Fold one A4 in half, then in half again. Cut the fold on one side only → 4 pages.</div>
+
+    <!-- VISUAL MINI-BOOK GUIDE -->
+    <h3>Visual: 4-page mini-book layout</h3>
+    <div class="minibook-guide">
+      <div class="mb-page mb-cover">
+        <div class="mb-num">COVER</div>
+        <div class="mb-icon">🏫</div>
+        <div class="mb-label" style="color:white">My School</div>
+        <div class="mb-desc">Draw your school building</div>
+      </div>
+      <div class="mb-page">
+        <div class="mb-num">PAGE 2</div>
+        <div class="mb-icon">📅</div>
+        <div class="mb-label">My Timetable</div>
+        <div class="mb-desc">3–4 subjects + their days</div>
+      </div>
+      <div class="mb-page">
+        <div class="mb-num">PAGE 3</div>
+        <div class="mb-icon">🗒️</div>
+        <div class="mb-label">My Classroom</div>
+        <div class="mb-desc">Draw + 3 there is/are sentences</div>
+      </div>
+      <div class="mb-page">
+        <div class="mb-num">PAGE 4</div>
+        <div class="mb-icon">🎒</div>
+        <div class="mb-label">My Schoolbag</div>
+        <div class="mb-desc">Draw 5 things + I have a…</div>
+      </div>
+    </div>
+
+    <div class="field-label">Dea's mini-book sentences (copy key sentences)</div>
+    <div class="editable tall" id="task-output" contenteditable="true" data-placeholder="Timetable: … Classroom: … Schoolbag: …"></div>
+    <div class="field-label">Task notes</div>
+    <div class="editable" id="task-notes" contenteditable="true" data-placeholder="Engagement, errors, what she was proud of…"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE ROUND -->
+<div class="section" style="border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)">
+  <div class="sec-head" style="background:#E65100"><span class="icon">⚡</span> Challenge Round <span class="timing">10 min</span></div>
+  <div class="sec-body" style="background:#FFF3E0">
+
+    <div class="activity-box">
+      <h3>Spot the Mistake 🔍</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:10px">Each sentence has ONE grammar mistake. Write the correct version in the box.</p>
+      <div class="qa-item">
+        <div class="q">1. "There is twenty-five desks." — What's wrong? Write the correct sentence:</div>
+        <div class="editable" id="ch1" contenteditable="true" data-placeholder="Correct sentence…"></div>
+      </div>
+      <div class="qa-item">
+        <div class="q">2. "She have a computer on her desk." — What's wrong? Write the correct sentence:</div>
+        <div class="editable" id="ch2" contenteditable="true" data-placeholder="Correct sentence…"></div>
+      </div>
+      <div class="qa-item">
+        <div class="q">3. "There are a plant next to the teacher's desk." — What's wrong? Write the correct sentence:</div>
+        <div class="editable" id="ch3" contenteditable="true" data-placeholder="Correct sentence…"></div>
+      </div>
+      <div class="teacher-note">💡 Hint: Is it one thing or many things? Is it he/she/it?</div>
+    </div>
+
+    <div class="activity-box">
+      <h3>Negative Forms 🔄</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:10px">Change these positive sentences to negative. Fill in the blank.</p>
+      <div class="qa-item">
+        <div class="q">1. There is a TV in the classroom. → There ___ a TV.</div>
+        <div class="editable" id="neg1" contenteditable="true" data-placeholder="Fill in the negative form…"></div>
+      </div>
+      <div class="qa-item">
+        <div class="q">2. We have a swimming pool. → We ___ have a swimming pool.</div>
+        <div class="editable" id="neg2" contenteditable="true" data-placeholder="Fill in the negative form…"></div>
+      </div>
+      <div class="qa-item">
+        <div class="q">3. The classroom has a piano. → The classroom ___ have a piano.</div>
+        <div class="editable" id="neg3" contenteditable="true" data-placeholder="Fill in the negative form…"></div>
+      </div>
+      <div style="background:#FFF9C4;border-radius:10px;padding:10px 16px;border-left:4px solid #F9A825;font-size:13px;margin-top:8px">
+        💡 Hint box: <strong>there is → there isn't</strong> &nbsp;|&nbsp; <strong>have → don't have</strong> &nbsp;|&nbsp; <strong>has → doesn't have</strong>
+      </div>
+    </div>
+
+    <div class="activity-box">
+      <h3>Write Your Own ✍️</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px">Describe your classroom! Write 5 sentences using: <strong>there is, there are, have, has.</strong><br>Example: <em>There is a big window. I have a red pencil case.</em></p>
+      <div class="editable tall" id="ch-write" contenteditable="true" data-placeholder="Describe your classroom! Write 5 sentences using: there is, there are, have, has. Example: There is a big window. I have a red pencil case."></div>
+    </div>
+
+    <div class="activity-box">
+      <h3>Word Power 💡</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:10px">Three advanced classroom words — read and remember!</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);border-top:4px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">🔬</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">laboratory</div>
+          <div style="font-size:12px;color:#555">the science room where you do experiments</div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);border-top:4px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">🚶</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">corridor</div>
+          <div style="font-size:12px;color:#555">the hallway connecting classrooms</div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08);border-top:4px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">🎭</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">assembly hall</div>
+          <div style="font-size:12px;color:#555">a large room where the whole school meets together</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REVIEW & HOMEWORK -->
+<div class="section review">
+  <div class="sec-head"><span class="icon">🏠</span> Review &amp; Homework <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>⚡ Quick Review — There is / I have?</h3>
+      <p>Hold up pictures one by one. Dea decides: <em>"There is…"</em> OR <em>"I have…"</em> — which is correct? One full sentence each.</p>
+    </div>
+    <h3>Homework</h3>
+    <div class="task-frame">
+      <p>🏠 <strong>Draw your classroom from memory.</strong></p>
+      <p>✏️ Write <strong>5 sentences</strong> using <em>There is…</em> or <em>There are…</em></p>
+      <p>Example: <em>There is a big window. There are 25 desks.</em></p>
+    </div>
+    <div class="field-label">Homework result (fill in at Session 4)</div>
+    <div class="editable" id="hw-check" contenteditable="true" data-placeholder="Did she do it? is/are correct? Article use?"></div>
+    <h3 style="margin-top:18px">Session Self-Evaluation</h3>
+    <div class="check-item"><input type="checkbox" id="ev1"><label for="ev1">Dea used have/has correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="ev2"><label for="ev2">Dea used there is/there are correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="ev3"><label for="ev3">Dea completed her mini-book</label></div>
+    <div class="check-item"><input type="checkbox" id="ev4"><label for="ev4">Dea read the text fluently</label></div>
+    <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
+    <div class="field-label">Session notes / carry into Session 4</div>
+    <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit?"></div>
+  </div>
+</div>
+
+</div>
+<div style="position:fixed;bottom:24px;left:24px;display:flex;gap:10px;z-index:900">
+  <a href="session3_game.html" style="display:inline-block;background:#1565C0;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🎮 Play Digital Game</a>
+  <a href="game3.html" style="display:inline-block;background:#00695C;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🎯 Print Bingo Game</a>
+</div>
+<button class="print-btn" onclick="window.print()">🖨️ Print</button>
+<button class="reset-btn" onclick="resetSession()">↺ Clear</button>
+<script>
+const KEY='dea_s3_';let timer;
+function showSaved(){const s=document.getElementById('save-status');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1800);}
+function save(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id)localStorage.setItem(KEY+el.id,el.innerHTML);});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id)localStorage.setItem(KEY+cb.id,cb.checked);});showSaved();}
+function load(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){const v=localStorage.getItem(KEY+el.id);if(v!==null)el.innerHTML=v;}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){const v=localStorage.getItem(KEY+cb.id);if(v!==null)cb.checked=(v==='true');}});}
+function resetSession(){if(!confirm('Clear all notes for Session 3?'))return;document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){localStorage.removeItem(KEY+el.id);el.innerHTML='';}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){localStorage.removeItem(KEY+cb.id);cb.checked=false;}});}
+document.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(save,600);});
+document.addEventListener('change',()=>{clearTimeout(timer);timer=setTimeout(save,300);});
+window.addEventListener('load',load);
+</script>
+<div class="live-banner">🔴 ÉLŐÓRA — Képernyőmegosztás aktív</div>
+<div class="online-bar">
+  <button class="online-btn btn-save" onclick="saveDeaWork(3)">💾 Dea munkájának mentése</button>
+  <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+</div>
+<script>
+function saveDeaWork(n){
+  var out='Dea válaszai — Session '+n+'\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\n',count=0;
+  document.querySelectorAll('[contenteditable][id]').forEach(function(el){
+    var t=el.innerText.trim();
+    if(t&&t.length>2){out+='['+el.id+']\n'+t+'\n\n';count++;}
+  });
+  if(count===0){alert('Még nincs kitöltött mező! Töltsd ki Dea válaszait először.');return;}
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+var _ss=false;
+function toggleSS(){
+  _ss=!_ss;
+  document.body.classList.toggle('screen-share',_ss);
+  var b=document.getElementById('ss-btn');
+  b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
+  b.classList.toggle('active',_ss);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 Game — Me and My World 🌟</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F3E5F5;color:#1a1a1a;min-height:100vh}
+
+/* HEADER */
+.game-header{background:linear-gradient(135deg,#7B1FA2,#AB47BC);color:white;padding:16px 20px;position:sticky;top:0;z-index:200;box-shadow:0 3px 10px rgba(0,0,0,0.2)}
+.header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.header-title{font-size:18px;font-weight:800}
+.header-meta{display:flex;align-items:center;gap:14px}
+.round-indicator{background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700}
+.score-badge{background:#AB47BC;border:2px solid rgba(255,255,255,0.4);padding:5px 16px;border-radius:20px;font-size:14px;font-weight:800}
+.score-flash{animation:flash 0.5s ease}
+@keyframes flash{0%,100%{transform:scale(1)}50%{transform:scale(1.3);background:#FF6F00}}
+.nav-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.nav-links a{color:rgba(255,255,255,0.85);font-size:13px;text-decoration:none;font-weight:600;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.3)}
+.nav-links a:hover{color:white}
+
+/* PROGRESS BAR */
+.progress-bar-wrap{background:rgba(255,255,255,0.25);height:6px;width:100%;margin-top:10px;border-radius:3px}
+.progress-bar-fill{background:white;height:6px;border-radius:3px;transition:width 0.5s ease}
+
+/* CONTAINER */
+.container{max-width:820px;margin:0 auto;padding:24px 16px 100px}
+
+/* ROUND PANELS */
+.round-panel{display:none}
+.round-panel.active{display:block}
+.round-title{text-align:center;font-size:22px;font-weight:800;color:#6A1B9A;margin-bottom:6px}
+.round-subtitle{text-align:center;font-size:14px;color:#888;margin-bottom:24px}
+
+/* ── ROUND 1: MEMORY FLIP ── */
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;max-width:560px;margin-left:auto;margin-right:auto}
+.mem-card{width:100%;aspect-ratio:1;cursor:pointer;perspective:800px;user-select:none}
+.mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.4s ease}
+.mem-card.flipped .mem-card-inner{transform:rotateY(180deg)}
+.mem-card.matched .mem-card-inner{transform:rotateY(180deg)}
+.mem-card-front,.mem-card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;font-weight:700;padding:8px;text-align:center}
+.mem-card-front{background:linear-gradient(135deg,#7B1FA2,#AB47BC);color:white;font-size:28px}
+.mem-card-back{background:white;color:#1a1a1a;transform:rotateY(180deg);font-size:13px;line-height:1.3;box-shadow:0 2px 8px rgba(0,0,0,0.12);border:3px solid #E1BEE7}
+.mem-card.matched .mem-card-back{border-color:#43A047;background:#E8F5E9}
+.mem-stats{display:flex;justify-content:center;gap:24px;margin:12px 0;font-size:14px;color:#666}
+.mem-stats span{font-weight:700;color:#7B1FA2}
+.r1-complete-msg{display:none;background:#E8F5E9;border:2px solid #43A047;border-radius:14px;padding:18px 22px;text-align:center;margin:18px 0}
+.r1-complete-msg h3{color:#2E7D32;font-size:18px;margin-bottom:8px}
+
+/* ── ROUND 2: FIX THE SENTENCE ── */
+.sentence-display{background:white;border-radius:14px;padding:22px 26px;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,0.09);margin:16px 0;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sentence-display .sent-text{font-size:20px;font-weight:700;color:#1a1a1a;line-height:1.6}
+.sentence-display .sent-text .blank{display:inline-block;width:52px;height:32px;background:#F3E5F5;border-bottom:3px solid #7B1FA2;border-radius:6px 6px 0 0;vertical-align:bottom;margin:0 6px}
+.verb-buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:16px 0}
+.verb-btn{padding:12px 28px;border:none;border-radius:30px;font-size:16px;font-weight:800;cursor:pointer;background:#7B1FA2;color:white;transition:all 0.2s;box-shadow:0 3px 8px rgba(123,31,162,0.3)}
+.verb-btn:hover:not(:disabled){background:#6A1B9A;transform:translateY(-2px)}
+.verb-btn.correct{background:#2E7D32;animation:none}
+.verb-btn.wrong{background:#C62828;animation:shake 0.4s ease}
+.verb-btn:disabled{cursor:default;opacity:0.8}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.r2-feedback{min-height:36px;text-align:center;font-size:15px;font-weight:700;margin:8px 0;color:#2E7D32}
+.r2-counter{text-align:center;font-size:13px;color:#888;margin-bottom:12px}
+.points-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;font-weight:900;color:#7B1FA2;pointer-events:none;animation:pointsFly 0.8s ease forwards;z-index:500}
+@keyframes pointsFly{0%{opacity:1;transform:translate(-50%,-50%) scale(0.5)}60%{opacity:1;transform:translate(-50%,-70%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-100%) scale(1)}}
+
+/* ── ROUND 3: MATCH CHARACTERS ── */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.match-col-header{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#7B1FA2;text-align:center;margin-bottom:8px}
+.match-chip{padding:12px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;background:white;border:3px solid #E1BEE7;transition:all 0.2s;margin-bottom:8px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.match-chip:hover:not(.locked):not(.shaking){border-color:#AB47BC;background:#F3E5F5}
+.match-chip.selected{background:#7B1FA2;color:white;border-color:#7B1FA2}
+.match-chip.correct{background:#E8F5E9;border-color:#43A047;color:#2E7D32;cursor:default}
+.match-chip.locked{cursor:default}
+.match-chip.shaking{animation:shake 0.4s ease;border-color:#C62828;background:#FFEBEE}
+.r3-hint{text-align:center;font-size:13px;color:#888;min-height:24px;margin:8px 0}
+.check-score-btn{display:block;margin:18px auto;padding:12px 32px;background:#7B1FA2;color:white;border:none;border-radius:30px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(123,31,162,0.3)}
+.check-score-btn:hover{background:#6A1B9A}
+
+/* NEXT BUTTON (shared) */
+.next-btn{display:block;margin:16px auto;padding:13px 36px;background:#7B1FA2;color:white;border:none;border-radius:30px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(123,31,162,0.3);transition:all 0.2s}
+.next-btn:hover{background:#6A1B9A;transform:translateY(-2px)}
+
+/* ── FINAL SCREEN ── */
+#final-screen{display:none;text-align:center;padding:30px 16px}
+#final-screen h2{font-size:28px;font-weight:900;color:#6A1B9A;margin-bottom:12px}
+.stars-display{font-size:54px;letter-spacing:8px;margin:16px 0;animation:pop 0.5s ease}
+@keyframes pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.final-score{font-size:22px;font-weight:800;color:#1a1a1a;margin:10px 0}
+.final-msg{font-size:16px;color:#555;margin:10px 0 24px}
+.final-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px}
+.final-buttons a,.final-buttons button{padding:12px 26px;border-radius:30px;font-size:15px;font-weight:700;text-decoration:none;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.btn-replay{background:#7B1FA2;color:white}
+.btn-session{background:#1565C0;color:white}
+.btn-cardgame{background:#C2185B;color:white}
+
+@media(max-width:500px){
+  .memory-grid{grid-template-columns:repeat(4,1fr);gap:7px}
+  .mem-card-back{font-size:11px}
+  .verb-btn{padding:10px 20px;font-size:14px}
+  .match-chip{font-size:13px;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="game-header">
+  <div class="header-row">
+    <div class="header-title">🌟 Me and My World — Game Time!</div>
+    <div class="header-meta">
+      <div class="round-indicator" id="round-indicator">Round 1 of 3</div>
+      <div class="score-badge" id="score-badge">⭐ 0 pts</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="session1.html">← Back to Session 1</a>
+    <a href="game1.html">🃏 Print Game</a>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════
+     ROUND 1 — MEMORY FLIP
+══════════════════════════════════════════ -->
+<div class="round-panel active" id="round1">
+  <div class="round-title">Round 1 — Memory Flip! 🧠</div>
+  <div class="round-subtitle">Find all 8 matching pairs! Click a card to flip it.</div>
+  <div class="mem-stats">Moves: <span id="moves-count">0</span></div>
+  <div class="memory-grid" id="memory-grid"></div>
+  <div class="r1-complete-msg" id="r1-complete">
+    <h3>Amazing! 🎉</h3>
+    <p id="r1-msg">You found all the pairs!</p>
+    <button class="next-btn" onclick="goToRound(2)">Next Round →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ROUND 2 — FIX THE SENTENCE
+══════════════════════════════════════════ -->
+<div class="round-panel" id="round2">
+  <div class="round-title">Round 2 — Choose the Right Verb! 🔧</div>
+  <div class="round-subtitle">Pick <strong>am</strong>, <strong>is</strong>, or <strong>are</strong> to complete each sentence.</div>
+  <div class="r2-counter" id="r2-counter">Sentence 1 of 5</div>
+  <div class="sentence-display" id="r2-sentence"></div>
+  <div class="verb-buttons" id="verb-buttons">
+    <button class="verb-btn" onclick="checkVerb(this,'am')">am</button>
+    <button class="verb-btn" onclick="checkVerb(this,'is')">is</button>
+    <button class="verb-btn" onclick="checkVerb(this,'are')">are</button>
+  </div>
+  <div class="r2-feedback" id="r2-feedback"></div>
+  <button class="next-btn" id="r2-next" style="display:none" onclick="nextSentence()">Next →</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ROUND 3 — MATCH CHARACTERS
+══════════════════════════════════════════ -->
+<div class="round-panel" id="round3">
+  <div class="round-title">Round 3 — Who is Who? 🎭</div>
+  <div class="round-subtitle">Click a name, then click their description to match!</div>
+  <div class="match-grid">
+    <div>
+      <div class="match-col-header">👤 Characters</div>
+      <div id="name-chips"></div>
+    </div>
+    <div>
+      <div class="match-col-header">💬 Adjectives</div>
+      <div id="adj-chips"></div>
+    </div>
+  </div>
+  <div class="r3-hint" id="r3-hint">Click a name to start!</div>
+  <button class="check-score-btn" id="check-score-btn" style="display:none" onclick="showFinal()">Check My Score! 🏆</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FINAL SCREEN
+══════════════════════════════════════════ -->
+<div id="final-screen">
+  <h2>Game Complete! 🎊</h2>
+  <div class="stars-display" id="stars-display">⭐⭐⭐</div>
+  <div class="final-score" id="final-score">You got 25/25 points!</div>
+  <div class="final-msg" id="final-msg">You're a vocabulary superstar! 🌟</div>
+  <div class="final-buttons">
+    <button class="btn-replay" onclick="replayAll()">🔄 Play Again</button>
+    <a class="btn-session" href="session1.html">← Back to Session 1</a>
+    <a class="btn-cardgame" href="game1.html">🃏 Try the Card Game</a>
+    <button onclick="saveGameResult(1, totalScore, MAX_SCORE)" style="background:#1B5E20;color:white;border:none;padding:10px 22px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;margin:8px;box-shadow:0 3px 10px rgba(0,0,0,0.2)">💾 Eredmény mentése (.txt)</button>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════
+   STATE
+═══════════════════════════ */
+let totalScore = 0;
+const MAX_SCORE = 25; // R1:5pts bonus + R2:10pts×5 + R3:2pts×5? — adjusted below
+
+/* ═══════════════════════════
+   PROGRESS / SCORE UTILS
+═══════════════════════════ */
+function updateProgress(pct){
+  document.getElementById('progress-fill').style.width = pct+'%';
+}
+function updateScore(pts){
+  totalScore += pts;
+  const badge = document.getElementById('score-badge');
+  badge.textContent = '⭐ '+totalScore+' pts';
+  badge.classList.remove('score-flash');
+  void badge.offsetWidth;
+  badge.classList.add('score-flash');
+  // points fly-up
+  const el = document.createElement('div');
+  el.className='points-flash';
+  el.textContent = '+'+pts;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 900);
+}
+function updateRoundIndicator(r){
+  document.getElementById('round-indicator').textContent = 'Round '+r+' of 3';
+}
+function goToRound(r){
+  document.querySelectorAll('.round-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('round'+r).classList.add('active');
+  updateRoundIndicator(r);
+  updateProgress(r===2?34:r===3?67:100);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(r===2) initR2();
+  if(r===3) initR3();
+}
+
+/* ═══════════════════════════
+   ROUND 1 — MEMORY FLIP
+═══════════════════════════ */
+const memPairs = [
+  {word:'tall',       clue:'🧍 Tall person'},
+  {word:'short',      clue:'🤏 Small person'},
+  {word:'funny',      clue:'😄 Loves telling jokes'},
+  {word:'shy',        clue:'🫣 Hides from crowds'},
+  {word:'brave',      clue:'🦁 Faces fears'},
+  {word:'kind',       clue:'🤝 Helps others'},
+  {word:'creative',   clue:'🎨 Makes art'},
+  {word:'confident',  clue:'💪 Believes in themselves'},
+];
+let r1Cards=[], r1Flipped=[], r1Matched=0, r1Moves=0, r1CanFlip=true;
+
+function buildMemoryGame(){
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML='';
+  r1Cards=[]; r1Flipped=[]; r1Matched=0; r1Moves=0; r1CanFlip=true;
+  document.getElementById('moves-count').textContent='0';
+  document.getElementById('r1-complete').style.display='none';
+
+  let deck=[];
+  memPairs.forEach((p,i)=>{
+    deck.push({id:i,type:'word',text:p.word,pair:i});
+    deck.push({id:i+8,type:'clue',text:p.clue,pair:i});
+  });
+  // shuffle
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+  deck.forEach((card,idx)=>{
+    const div=document.createElement('div');
+    div.className='mem-card';
+    div.dataset.pair=card.pair;
+    div.dataset.idx=idx;
+    div.innerHTML=`
+      <div class="mem-card-inner">
+        <div class="mem-card-front">?</div>
+        <div class="mem-card-back">${card.text}</div>
+      </div>`;
+    div.addEventListener('click',()=>flipCard(div));
+    grid.appendChild(div);
+    r1Cards.push(div);
+  });
+}
+
+function flipCard(card){
+  if(!r1CanFlip) return;
+  if(card.classList.contains('flipped')||card.classList.contains('matched')) return;
+  if(r1Flipped.length>=2) return;
+  card.classList.add('flipped');
+  r1Flipped.push(card);
+  if(r1Flipped.length===2){
+    r1CanFlip=false;
+    r1Moves++;
+    document.getElementById('moves-count').textContent=r1Moves;
+    const [a,b]=r1Flipped;
+    if(a.dataset.pair===b.dataset.pair){
+      a.classList.add('matched'); b.classList.add('matched');
+      r1Matched++;
+      r1Flipped=[];
+      r1CanFlip=true;
+      if(r1Matched===8){
+        setTimeout(()=>{
+          const bonus = Math.max(0, 10 - Math.floor((r1Moves-8)/2));
+          if(bonus>0) updateScore(bonus);
+          document.getElementById('r1-msg').textContent=
+            'You found all pairs in '+r1Moves+' moves! Bonus: +'+bonus+' points 🎉';
+          document.getElementById('r1-complete').style.display='block';
+          updateProgress(33);
+        },300);
+      }
+    } else {
+      setTimeout(()=>{
+        a.classList.remove('flipped'); b.classList.remove('flipped');
+        r1Flipped=[];
+        r1CanFlip=true;
+      },800);
+    }
+  }
+}
+
+buildMemoryGame();
+
+/* ═══════════════════════════
+   ROUND 2 — FIX THE SENTENCE
+═══════════════════════════ */
+const r2Sentences=[
+  {text:'Emma ___ twelve years old.',  answer:'is'},
+  {text:'Tom and Claire ___ parents.', answer:'are'},
+  {text:'I ___ not shy at all.',        answer:'am'},
+  {text:'Lucy ___ small and quiet.',   answer:'is'},
+  {text:'Maya and Emma ___ best friends.', answer:'are'},
+];
+let r2Idx=0, r2Answered=false;
+
+function initR2(){
+  r2Idx=0; r2Answered=false;
+  renderSentence();
+}
+function renderSentence(){
+  const s=r2Sentences[r2Idx];
+  document.getElementById('r2-counter').textContent='Sentence '+(r2Idx+1)+' of 5';
+  const parts=s.text.split('___');
+  document.getElementById('r2-sentence').innerHTML=
+    `<div class="sent-text">${parts[0]}<span class="blank"></span>${parts[1]}</div>`;
+  document.getElementById('r2-feedback').textContent='';
+  document.getElementById('r2-next').style.display='none';
+  document.querySelectorAll('.verb-btn').forEach(b=>{
+    b.disabled=false;
+    b.className='verb-btn';
+  });
+  r2Answered=false;
+}
+function checkVerb(btn, choice){
+  if(r2Answered) return;
+  r2Answered=true;
+  const correct=r2Sentences[r2Idx].answer;
+  document.querySelectorAll('.verb-btn').forEach(b=>b.disabled=true);
+  if(choice===correct){
+    btn.classList.add('correct');
+    document.getElementById('r2-feedback').innerHTML='✓ Correct! <strong>'+correct+'</strong> is right!';
+    document.getElementById('r2-feedback').style.color='#2E7D32';
+    updateScore(5);
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('r2-feedback').innerHTML='✗ The correct answer is <strong style="color:#2E7D32">'+correct+'</strong>';
+    document.getElementById('r2-feedback').style.color='#C62828';
+    // show correct in green
+    document.querySelectorAll('.verb-btn').forEach(b=>{
+      if(b.textContent===correct) b.classList.add('correct');
+    });
+  }
+  // show Next or Finish
+  const nextBtn=document.getElementById('r2-next');
+  nextBtn.style.display='block';
+  if(r2Idx===4) nextBtn.textContent='See Round 3 →';
+  else nextBtn.textContent='Next →';
+}
+function nextSentence(){
+  r2Idx++;
+  if(r2Idx>=r2Sentences.length){
+    goToRound(3);
+  } else {
+    renderSentence();
+  }
+}
+
+/* ═══════════════════════════
+   ROUND 3 — MATCH CHARACTERS
+═══════════════════════════ */
+const r3Pairs=[
+  {name:'Emma',  adj:'funny + creative'},
+  {name:'Tom',   adj:'serious + tall'},
+  {name:'Lucy',  adj:'small + quiet'},
+  {name:'Jack',  adj:'sporty + smart'},
+  {name:'Maya',  adj:'energetic + confident'},
+];
+let r3SelectedName=null, r3Matched=0;
+
+function initR3(){
+  r3SelectedName=null; r3Matched=0;
+  document.getElementById('r3-hint').textContent='Click a name to start!';
+  document.getElementById('check-score-btn').style.display='none';
+
+  const nameContainer=document.getElementById('name-chips');
+  const adjContainer=document.getElementById('adj-chips');
+  nameContainer.innerHTML=''; adjContainer.innerHTML='';
+
+  // shuffle order of display
+  const shuffledPairs=[...r3Pairs].sort(()=>Math.random()-0.5);
+  const shuffledAdj=[...r3Pairs].map(p=>p.adj).sort(()=>Math.random()-0.5);
+
+  shuffledPairs.forEach(p=>{
+    const chip=document.createElement('div');
+    chip.className='match-chip';
+    chip.textContent=p.name;
+    chip.dataset.name=p.name;
+    chip.addEventListener('click',()=>selectName(chip,p.name));
+    nameContainer.appendChild(chip);
+  });
+  shuffledAdj.forEach(a=>{
+    const chip=document.createElement('div');
+    chip.className='match-chip';
+    chip.textContent=a;
+    chip.dataset.adj=a;
+    chip.addEventListener('click',()=>selectAdj(chip,a));
+    adjContainer.appendChild(chip);
+  });
+}
+
+function selectName(chip, name){
+  if(chip.classList.contains('locked')) return;
+  document.querySelectorAll('#name-chips .match-chip').forEach(c=>{
+    if(!c.classList.contains('locked')) c.classList.remove('selected');
+  });
+  chip.classList.add('selected');
+  r3SelectedName=name;
+  document.getElementById('r3-hint').textContent='Now click the matching adjectives →';
+}
+function selectAdj(chip, adj){
+  if(!r3SelectedName){
+    document.getElementById('r3-hint').textContent='Pick a name first! 👈';
+    return;
+  }
+  if(chip.classList.contains('locked')) return;
+  const correct=r3Pairs.find(p=>p.name===r3SelectedName).adj;
+  if(adj===correct){
+    // find name chip
+    const nameChip=document.querySelector('#name-chips .match-chip[data-name="'+r3SelectedName+'"]');
+    nameChip.classList.remove('selected');
+    nameChip.classList.add('correct','locked');
+    chip.classList.add('correct','locked');
+    r3Matched++;
+    updateScore(2);
+    r3SelectedName=null;
+    document.getElementById('r3-hint').textContent='Great match! '+(5-r3Matched)+' more to go 👇';
+    if(r3Matched===5){
+      document.getElementById('r3-hint').textContent='All matched! Check your score! 🎉';
+      document.getElementById('check-score-btn').style.display='block';
+    }
+  } else {
+    chip.classList.add('shaking');
+    setTimeout(()=>chip.classList.remove('shaking'),450);
+    document.getElementById('r3-hint').textContent='Not quite! Try a different adjective group.';
+    // deselect name
+    document.querySelectorAll('#name-chips .match-chip').forEach(c=>c.classList.remove('selected'));
+    r3SelectedName=null;
+  }
+}
+
+/* ═══════════════════════════
+   FINAL SCREEN
+═══════════════════════════ */
+function showFinal(){
+  document.querySelectorAll('.round-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('final-screen').style.display='block';
+  updateProgress(100);
+  updateRoundIndicator(3);
+
+  const pct = totalScore/MAX_SCORE;
+  let stars='⭐',msg='Good try! Play again! 🎮';
+  if(pct>=0.8){stars='⭐⭐⭐';msg='You\'re a vocabulary superstar! 🌟';}
+  else if(pct>=0.6){stars='⭐⭐';msg='Great work! Keep practising! 💪';}
+  else if(pct>=0.4){stars='⭐';msg='Good try! Play again! 🎮';}
+
+  document.getElementById('stars-display').textContent=stars;
+  document.getElementById('final-score').textContent='You got '+totalScore+'/'+MAX_SCORE+' points!';
+  document.getElementById('final-msg').textContent=msg;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function replayAll(){
+  totalScore=0;
+  document.getElementById('score-badge').textContent='⭐ 0 pts';
+  document.getElementById('final-screen').style.display='none';
+  updateProgress(0);
+  updateRoundIndicator(1);
+  buildMemoryGame();
+  document.getElementById('round1').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function saveGameResult(n,score,max){
+  var pct=Math.round(score/max*100);
+  var stars=pct>=80?'★★★':pct>=60?'★★':'★';
+  var out='Dea játékeredménye — Session '+n+' Játék\n';
+  out+='Dátum: '+new Date().toLocaleDateString('hu-HU')+'\n';
+  out+='='.repeat(40)+'\n\n';
+  out+='Pontszám: '+score+'/'+max+' pont ('+pct+'%)\n';
+  out+='Értékelés: '+stars+'\n';
+  if(pct>=80)out+='\nSzép munka! Kiváló eredmény! ★★★';
+  else if(pct>=60)out+='\nJó munka! ★★';
+  else out+='\nGyakoroljunk még együtt! ★';
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_Game_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+</script>
+</body>
+</html>

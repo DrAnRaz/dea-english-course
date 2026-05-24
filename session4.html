@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 4 — Food and Me | Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;background:#f4f6f9;color:#1a1a1a}
+.page-header{background:linear-gradient(135deg,#E91E63,#F06292);color:white;padding:28px 36px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header .subtitle{font-size:13px;opacity:0.82;margin-top:5px}
+.page-header .badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap;margin-top:4px}
+#save-status{position:fixed;top:14px;right:20px;background:#43A047;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.5s;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+#save-status.show{opacity:1}
+.container{max-width:940px;margin:0 auto;padding:28px 18px 80px}
+.section{border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+.sec-head{padding:13px 22px;color:white;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-head .icon{font-size:20px}
+.sec-head .timing{margin-left:auto;font-size:12px;opacity:0.85;font-weight:400;background:rgba(255,255,255,0.18);padding:3px 10px;border-radius:12px}
+.sec-body{padding:22px 24px}
+.goal .sec-head{background:#2E7D32}.goal .sec-body{background:#E8F5E9}
+.dea-corner .sec-head{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}.dea-corner .sec-body{background:linear-gradient(135deg,#F3E5F5,#FCE4EC)}
+.warmup .sec-head{background:#E65100}.warmup .sec-body{background:#FFF8F1}
+.vocab .sec-head{background:#1565C0}.vocab .sec-body{background:#E3F2FD}
+.reading .sec-head{background:#6A1B9A}.reading .sec-body{background:#F3E5F5}
+.grammar .sec-head{background:#AD1457}.grammar .sec-body{background:#FCE4EC}
+.task .sec-head{background:#00695C}.task .sec-body{background:#E0F7FA}
+.review .sec-head{background:#BF360C}.review .sec-body{background:#FFF3E0}
+h3{font-size:14px;font-weight:700;color:#333;margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.4px}
+p{font-size:14px;margin:6px 0;color:#333}
+ul,ol{padding-left:20px;font-size:14px;color:#333}
+li{margin:5px 0}
+strong{color:#111}
+
+/* ── VISUAL AIDS ── */
+/* Food card grid */
+.food-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}
+.fc{background:white;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E91E63;cursor:pointer;transition:transform 0.1s}
+.fc:hover{transform:scale(1.04)}
+.fc .fc-emoji{font-size:28px;margin-bottom:5px}
+.fc .fc-word{font-weight:800;font-size:13px;color:#AD1457;margin-bottom:2px}
+.fc .fc-taste{font-size:10px;color:#888;font-style:italic;margin-bottom:5px}
+.fc input{width:14px;height:14px;accent-color:#2E7D32}
+
+/* Drink cards */
+.drink-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+.dc-card{background:white;border-radius:10px;padding:10px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-bottom:2px solid #1565C0}
+.dc-card .dc-emoji{font-size:22px;margin-bottom:4px}
+.dc-card .dc-word{font-weight:700;font-size:12px;color:#1565C0}
+.dc-card input{margin-top:4px;width:13px;height:13px;accent-color:#2E7D32}
+
+/* Opinion spectrum */
+.opinion-spectrum{background:white;border-radius:14px;padding:20px 24px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.spectrum-bar{height:14px;border-radius:7px;background:linear-gradient(to right,#c62828,#E91E63,#aaa,#2E7D32,#1B5E20);margin:12px 0;position:relative}
+.spectrum-labels{display:flex;justify-content:space-between;font-size:12px;font-weight:700}
+.spec-love{color:#1B5E20}.spec-like{color:#2E7D32}.spec-neutral{color:#aaa}.spec-dislike{color:#E91E63}.spec-hate{color:#c62828}
+.spec-emoji-row{display:flex;justify-content:space-between;font-size:20px;margin:4px 0}
+
+/* Grammar visual: like pattern */
+.like-pattern{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.lp-card{background:white;border-radius:12px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.lp-card .lp-title{font-size:12px;font-weight:700;text-transform:uppercase;color:#AD1457;margin-bottom:10px}
+.lp-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.lp-chip{padding:3px 12px;border-radius:6px;font-weight:800;font-size:13px;color:white}
+.lp-green{background:#2E7D32}.lp-red{background:#c62828}.lp-blue{background:#1565C0}
+
+/* Menu visual */
+.menu-visual{background:white;border:3px solid #00695C;border-radius:16px;padding:22px;margin:14px auto;max-width:400px;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+.menu-visual .mv-title{text-align:center;font-size:18px;font-weight:800;color:#00695C;margin-bottom:4px}
+.menu-visual .mv-sub{text-align:center;font-size:12px;color:#888;margin-bottom:16px;font-style:italic}
+.menu-section{margin:12px 0}
+.menu-section .ms-head{font-size:12px;font-weight:700;text-transform:uppercase;color:#AD1457;border-bottom:1px solid #FCE4EC;padding-bottom:4px;margin-bottom:8px}
+.menu-item{display:flex;justify-content:space-between;font-size:13px;margin:6px 0}
+.menu-item .mi-name{color:#333}
+.menu-item .mi-price{color:#888;font-weight:600}
+
+/* Taste word grid */
+.taste-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.taste-card{background:white;border-radius:10px;padding:10px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+.taste-card .t-emoji{font-size:22px;margin-bottom:4px}
+.taste-card .t-word{font-weight:800;font-size:13px;color:#AD1457}
+.taste-card input{margin-top:4px;width:14px;height:14px;accent-color:#2E7D32}
+
+/* Dea's corner */
+.dc-challenge{background:white;border-radius:12px;padding:16px 20px;margin:12px 0;border:2px solid #CE93D8}
+.dc-challenge h4{color:#6A1B9A;font-size:15px;margin-bottom:8px}
+.dc-fact{background:#FFF9C4;border-radius:10px;padding:12px 16px;margin:10px 0;border-left:4px solid #F9A825}
+.dc-fact strong{color:#E65100}
+.dc-editable{background:rgba(255,255,255,0.8);border:2px dashed #CE93D8;border-radius:10px;padding:12px 16px;min-height:60px;font-size:14px;margin:8px 0}
+.dc-editable:focus{outline:none;border-color:#6A1B9A}
+.dc-editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#CE93D8;font-style:italic}
+.star-row{font-size:22px;letter-spacing:6px;margin:8px 0;text-align:center}
+
+.reading-text{background:white;border-left:5px solid #7B1FA2;padding:16px 20px;border-radius:0 10px 10px 0;font-size:15px;line-height:1.9;margin:12px 0;font-style:italic;color:#2a2a2a}
+.editable{background:white;border:2px dashed #bbb;border-radius:10px;padding:12px 16px;min-height:56px;font-size:14px;color:#333;margin:8px 0;transition:border-color 0.2s}
+.editable:focus{outline:none;border-color:#1565C0;box-shadow:0 0 0 3px rgba(21,101,192,0.12)}
+.editable.tall{min-height:110px}
+.editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#bbb;font-style:italic;pointer-events:none}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin:14px 0 3px}
+.frame-box{background:white;border:2px solid rgba(0,0,0,0.09);border-radius:10px;padding:14px 18px;margin:10px 0}
+.teacher-note{background:#FFFDE7;border-left:4px solid #FBC02D;padding:10px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin:10px 0}
+.activity-box{background:rgba(255,255,255,0.65);border-radius:10px;padding:14px 18px;margin:10px 0;border:1px solid rgba(0,0,0,0.07)}
+.activity-box h3{margin-top:0}
+.task-frame{background:rgba(255,255,255,0.7);border:2px solid rgba(0,105,92,0.2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.check-item:last-child{border-bottom:none}
+.check-item label{font-size:14px;cursor:pointer;flex:1}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;flex-shrink:0}
+.qa-item{margin:10px 0}.qa-item .q{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+
+@media print{body{background:white;font-size:12px}#save-status,.print-btn,.reset-btn{display:none!important}.section{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}.sec-head,.sec-body,.page-header,.dea-corner .sec-head,.dea-corner .sec-body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.editable,.dc-editable{border:1px solid #ccc}.food-grid{grid-template-columns:repeat(5,1fr)}.drink-grid{grid-template-columns:repeat(5,1fr)}.taste-grid{grid-template-columns:repeat(3,1fr)}.like-pattern{grid-template-columns:1fr 1fr}}
+.print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
+.print-btn{right:24px;background:#1565C0}.reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+.online-bar{position:fixed;bottom:70px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
+.online-btn:hover{transform:translateY(-2px)}
+.btn-save{background:#1B5E20;color:white}
+.btn-ss{background:#0D47A1;color:white}
+.btn-ss.active{background:#B71C1C}
+.live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
+body.screen-share .live-banner{display:block}
+body.screen-share .container{font-size:18px!important}
+@media print{.online-bar,.live-banner{display:none!important}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>🍕 Session 4 — Food and Me</h1>
+    <div class="subtitle">Dea's English Mini-Course · Right on! 2 (Jenny Dooley, Express Publishing)</div>
+    <div class="subtitle">Hungarian L1 · Age 11 · A1–A2</div>
+  </div>
+  <div><div class="badge">⏱ 45–60 min</div></div>
+</div>
+<div id="save-status">✓ Saved</div>
+<div class="container">
+
+<!-- GOAL -->
+<div class="section goal">
+  <div class="sec-head"><span class="icon">🎯</span> Goal &amp; Introduction <span class="timing">2 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Today we talk about food — what you love, what you hate, and what's healthy. At the end, you will design the menu for your dream restaurant!"</em></p></div>
+    <ul>
+      <li>Learn food, drink, and taste vocabulary</li>
+      <li>Use <strong>I like / I don't like + noun</strong> and <strong>Do you like…?</strong></li>
+      <li>Read "Sam's Lunch Box" and answer questions</li>
+      <li>Design a dream restaurant menu + roleplay</li>
+    </ul>
+    <div class="field-label">S3 homework check + session notes</div>
+    <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="Homework check + pre-session notes…"></div>
+  </div>
+</div>
+
+<!-- DEA'S CORNER -->
+<div class="section dea-corner">
+  <div class="sec-head"><span class="icon">🌟</span> Dea's Corner — Just for You! <span class="timing">Read this, Dea!</span></div>
+  <div class="sec-body">
+    <div class="star-row">🍕 🍰 🥗</div>
+    <div class="dc-challenge">
+      <h4>👩‍🍳 Hey Dea! Today you're opening your own restaurant!</h4>
+      <p style="font-size:14px;color:#333;margin:8px 0">But first — let's find out what kind of chef you are! Sort these foods quickly:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:12px">
+          <div style="font-size:14px;font-weight:700;color:#2E7D32;margin-bottom:8px">😍 I LOVE these foods:</div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px;margin-bottom:6px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px;margin-bottom:6px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.8);border-radius:10px;padding:12px">
+          <div style="font-size:14px;font-weight:700;color:#c62828;margin-bottom:8px">🤢 I HATE these foods:</div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px;margin-bottom:6px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px;margin-bottom:6px"></div>
+          <div style="border-bottom:1px dashed #CE93D8;height:22px"></div>
+        </div>
+      </div>
+      <p style="font-size:14px;color:#555">Your restaurant can only have food that YOU love. Dream big! 🌟</p>
+    </div>
+    <div class="dc-fact">
+      <strong>💡 Did you know?</strong> The word "restaurant" comes from the French language! English has SO many words from French — like "café," "menu," "chef," and "cuisine." That's because England and France are very close neighbors! 🥐
+    </div>
+    <div class="field-label">Dea writes: My dream restaurant name is…</div>
+    <div class="dc-editable" id="dea-restaurant" contenteditable="true" data-placeholder="My restaurant is called ___. It is ___ and ___."></div>
+  </div>
+</div>
+
+<!-- WARM-UP -->
+<div class="section warmup">
+  <div class="sec-head"><span class="icon">⚡</span> Warm-Up — Yum or Yuck? <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>How to play</h3>
+      <ol>
+        <li>Say a food word or show a picture. Dea reacts: 👍 <strong>Yum!</strong> or 👎 <strong>Yuck!</strong></li>
+        <li>She says a full sentence: <em>"I like pizza!"</em> or <em>"I don't like broccoli!"</em></li>
+        <li>Start with familiar foods, then speed up.</li>
+      </ol>
+    </div>
+    <div class="teacher-note"><strong>Recycling S1:</strong> Ask <em>"Is pizza your favourite food?"</em> — recycles <em>to be</em> naturally.</div>
+    <div class="field-label">Warm-up notes</div>
+    <div class="editable" id="warmup-notes" contenteditable="true" data-placeholder="Food words she already knew, reactions…"></div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="section vocab">
+  <div class="sec-head"><span class="icon">📝</span> Vocabulary — Food, Drinks &amp; Tastes <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <h3>Food — click the ones Dea learns ✓</h3>
+    <div class="food-grid">
+      <div class="fc"><div class="fc-emoji">🍎</div><div class="fc-word">apple</div><div class="fc-taste">sweet</div><input type="checkbox" id="v1"></div>
+      <div class="fc"><div class="fc-emoji">🍞</div><div class="fc-word">bread</div><div class="fc-taste">salty</div><input type="checkbox" id="v2"></div>
+      <div class="fc"><div class="fc-emoji">🧀</div><div class="fc-word">cheese</div><div class="fc-taste">salty</div><input type="checkbox" id="v3"></div>
+      <div class="fc"><div class="fc-emoji">🍗</div><div class="fc-word">chicken</div><div class="fc-taste">yummy</div><input type="checkbox" id="v4"></div>
+      <div class="fc"><div class="fc-emoji">🍝</div><div class="fc-word">pasta</div><div class="fc-taste">delicious</div><input type="checkbox" id="v5"></div>
+      <div class="fc"><div class="fc-emoji">🥗</div><div class="fc-word">salad</div><div class="fc-taste">fresh</div><input type="checkbox" id="v6"></div>
+      <div class="fc"><div class="fc-emoji">🎂</div><div class="fc-word">cake</div><div class="fc-taste">sweet</div><input type="checkbox" id="v7"></div>
+      <div class="fc"><div class="fc-emoji">🥚</div><div class="fc-word">egg</div><div class="fc-taste">mild</div><input type="checkbox" id="v8"></div>
+      <div class="fc"><div class="fc-emoji">🍚</div><div class="fc-word">rice</div><div class="fc-taste">mild</div><input type="checkbox" id="v9"></div>
+    </div>
+
+    <h3>Drinks</h3>
+    <div class="drink-grid">
+      <div class="dc-card"><div class="dc-emoji">💧</div><div class="dc-word">water</div><input type="checkbox" id="v10"></div>
+      <div class="dc-card"><div class="dc-emoji">🍹</div><div class="dc-word">juice</div><input type="checkbox" id="v11"></div>
+      <div class="dc-card"><div class="dc-emoji">🥛</div><div class="dc-word">milk</div><input type="checkbox" id="v12"></div>
+      <div class="dc-card"><div class="dc-emoji">🍵</div><div class="dc-word">tea</div><input type="checkbox" id="v13"></div>
+      <div class="dc-card"><div class="dc-emoji">🍋</div><div class="dc-word">lemonade</div><input type="checkbox" id="v14"></div>
+    </div>
+
+    <h3>Taste words — mime each one!</h3>
+    <div class="taste-grid">
+      <div class="taste-card"><div class="t-emoji">😊</div><div class="t-word">sweet</div><input type="checkbox" id="v15"></div>
+      <div class="taste-card"><div class="t-emoji">🧂</div><div class="t-word">salty</div><input type="checkbox" id="v16"></div>
+      <div class="taste-card"><div class="t-emoji">😖</div><div class="t-word">sour</div><input type="checkbox" id="v17"></div>
+      <div class="taste-card"><div class="t-emoji">🌶️</div><div class="t-word">spicy</div><input type="checkbox" id="v18"></div>
+      <div class="taste-card"><div class="t-emoji">😋</div><div class="t-word">delicious</div><input type="checkbox" id="v19"></div>
+      <div class="taste-card"><div class="t-emoji">🤢</div><div class="t-word">horrible</div><input type="checkbox" id="v20"></div>
+    </div>
+
+    <!-- VISUAL: opinion spectrum -->
+    <h3>Visual: the opinion spectrum</h3>
+    <div class="opinion-spectrum">
+      <div class="spec-emoji-row"><span>😍</span><span>😊</span><span>😐</span><span>😕</span><span>🤢</span></div>
+      <div class="spectrum-bar"></div>
+      <div class="spectrum-labels">
+        <span class="spec-love">LOVE</span>
+        <span class="spec-like">LIKE</span>
+        <span class="spec-neutral">OK</span>
+        <span class="spec-dislike">DON'T LIKE</span>
+        <span class="spec-hate">HATE</span>
+      </div>
+      <p style="font-size:12px;color:#888;margin-top:10px;text-align:center">Where on this line is each food for Dea? Point and say the sentence!</p>
+    </div>
+
+    <div class="field-label">Vocabulary notes</div>
+    <div class="editable" id="vocab-notes" contenteditable="true" data-placeholder="Tricky words, what she loved or hated, pronunciation issues…"></div>
+  </div>
+</div>
+
+<!-- READING -->
+<div class="section reading">
+  <div class="sec-head"><span class="icon">📖</span> Reading — "Food Around the World" <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="reading-text">
+      <p style="font-style:normal;font-weight:800;font-size:16px;color:#6A1B9A;margin-bottom:12px">Food Around the World</p>
+      <p>Food is amazing! People eat different things in different countries. I love learning about food from around the world.</p>
+      <p style="margin-top:10px">My name is Emma and I love food. My favourite food is pasta. I eat pasta at least three times a week! I really like tomato pasta and cheese pasta. I also love pizza — especially with mushrooms and olives on top.</p>
+      <p style="margin-top:10px">But I don't like everything. I don't like spicy food at all. When I eat something spicy, my eyes water and my face goes red! I also don't like fish very much. My mum loves fish, but I think it smells funny.</p>
+      <p style="margin-top:10px">My friend Maya loves different food. She likes rice and chicken, and she loves plantain — it's a type of banana that you cook. Maya doesn't like cheese. She says it's too strong. We always laugh about this because I love cheese and she hates it!</p>
+      <p style="margin-top:10px">In Japan, people eat a lot of sushi and rice. Sushi is raw fish with rice. Some people love it, some people hate it! In Mexico, people eat tacos — they are delicious! In India, people love curry with spices. In France, people love bread and cheese.</p>
+      <p style="margin-top:10px">I think the best thing about food is that everyone is different. Some people love sweet things, some people prefer salty or spicy food. What about you? What do you love? What don't you like? Food is a great way to learn about other cultures and countries!</p>
+    </div>
+    <div class="qa-item"><div class="q">1. What is Emma's favourite food?</div><div class="editable" id="q1" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">2. What does Maya love to eat?</div><div class="editable" id="q2" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">3. Why doesn't Emma like spicy food?</div><div class="editable" id="q3" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">4. What is plantain?</div><div class="editable" id="q4" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">🔍 5. Inference: Why do Emma and Maya "always laugh" about cheese?</div><div class="editable" id="q5" contenteditable="true" data-placeholder="Think about it… (hint: one loves it, one hates it!)"></div></div>
+    <div class="qa-item"><div class="q">📖 6. Vocabulary: Find a word in the text that means "not cooked" (as in raw fish).</div><div class="editable" id="q6" contenteditable="true" data-placeholder="The word is…"></div></div>
+    <div class="qa-item"><div class="q">💬 7. Your turn: Which country's food from the text would you most like to try? Why?</div><div class="editable" id="q7" contenteditable="true" data-placeholder="I would like to try… because…"></div></div>
+    <div class="activity-box" style="margin-top:14px">
+      <h3>✏️ Follow-up — Color-code</h3>
+      <ul>
+        <li><strong style="color:#E65100">🟠 Orange:</strong> Circle all food words</li>
+        <li><strong style="color:#AD1457">🩷 Pink:</strong> Underline <em>I love / I like / I don't like</em></li>
+        <li><strong style="color:#1565C0">🔵 Blue:</strong> Find every <em>a / an</em> — why "an apple" not "a apple"?</li>
+      </ul>
+    </div>
+    <div class="teacher-note"><strong>Article tip:</strong> Hungarian has no articles — always challenging. Keep it light: "In English, every single thing needs a little word: 'a' or 'an'."</div>
+    <div class="field-label">Reading notes</div>
+    <div class="editable" id="reading-notes" contenteditable="true" data-placeholder="Fluency, comprehension, article use, errors…"></div>
+  </div>
+</div>
+
+<!-- GRAMMAR -->
+<div class="section grammar">
+  <div class="sec-head"><span class="icon">🔧</span> Grammar — I like / I don't like / Do you like…? <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+
+    <!-- VISUAL: like patterns -->
+    <h3>Visual: two ways to use "like"</h3>
+    <div class="like-pattern">
+      <div class="lp-card">
+        <div class="lp-title">Pattern 1 — Like + noun (a thing)</div>
+        <div class="lp-row"><span class="lp-chip lp-green">I like</span> pizza.</div>
+        <div class="lp-row"><span class="lp-chip lp-red">I don't like</span> spinach.</div>
+        <div class="lp-row"><span class="lp-chip lp-blue">She likes</span> pasta. (-s!)</div>
+        <div class="lp-row"><span class="lp-chip lp-red">He doesn't like</span> eggs.</div>
+      </div>
+      <div class="lp-card">
+        <div class="lp-title">Pattern 2 — Like + verb-ing (an activity)</div>
+        <div class="lp-row"><span class="lp-chip lp-green">I like</span> swim<strong>ming</strong>.</div>
+        <div class="lp-row"><span class="lp-chip lp-green">I like</span> danc<strong>ing</strong>.</div>
+        <div class="lp-row"><span class="lp-chip lp-red">I don't like</span> wait<strong>ing</strong>.</div>
+        <div style="margin-top:8px;font-size:12px;color:#888;font-style:italic">Verb + -ing = "I enjoy doing this"</div>
+      </div>
+    </div>
+
+    <div class="frame-box">
+      <p><strong>Question:</strong> Do you like chocolate? → <strong>Yes, I do.</strong> / <strong>No, I don't.</strong></p>
+      <p><strong>He/She:</strong> Does she like pasta? → <strong>Yes, she does.</strong> / <strong>No, she doesn't.</strong></p>
+    </div>
+
+    <div class="activity-box">
+      <h3>🎙️ Food Reporter Interview</h3>
+      <p>You are a food reporter. Ask Dea questions — she answers in full sentences:</p>
+      <ul>
+        <li><em>"Do you like cheese?"</em> | <em>"Does your mum like coffee?"</em> (she uses <em>does/she likes</em>)</li>
+        <li><em>"Do you like cooking?"</em> | <em>"What does your best friend like eating?"</em></li>
+      </ul>
+    </div>
+
+    <div class="field-label">Dea writes 6 sentences (mix I like / I don't like / She likes)</div>
+    <div class="editable tall" id="grammar-practice" contenteditable="true" data-placeholder="e.g. I like pasta. I don't like eggs. My mum likes tea. She doesn't like coffee."></div>
+    <div class="field-label">Grammar notes</div>
+    <div class="editable" id="grammar-notes" contenteditable="true" data-placeholder="like/likes errors, do/does confusion…"></div>
+  </div>
+</div>
+
+<!-- TASK -->
+<div class="section task">
+  <div class="sec-head"><span class="icon">🎨</span> Task — My Dream Restaurant Menu <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="teacher-note"><strong>Materials:</strong> A4 folded into thirds, colored pens, food pictures optional</div>
+
+    <!-- VISUAL MENU TEMPLATE -->
+    <h3>Visual menu template (model to show Dea)</h3>
+    <div class="menu-visual">
+      <div class="mv-title">🌟 _______________ 🌟</div>
+      <div class="mv-sub">Write your restaurant name above ↑</div>
+      <div class="menu-section">
+        <div class="ms-head">🥣 Starters</div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+      </div>
+      <div class="menu-section">
+        <div class="ms-head">🍽️ Main Courses</div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+      </div>
+      <div class="menu-section">
+        <div class="ms-head">🍰 Desserts</div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+        <div class="menu-item"><span class="mi-name">_______________________</span><span class="mi-price">___ RSD</span></div>
+      </div>
+    </div>
+
+    <h3>Roleplay: Customer &amp; Waiter</h3>
+    <div class="frame-box">
+      <p>You (customer): <em>"What do you recommend?"</em> → Dea (waiter): <em>"I recommend the ___. It is ___."</em></p>
+      <p>You: <em>"Do you have pasta?"</em> → Dea: <em>"Yes, we have pasta with chicken."</em></p>
+    </div>
+
+    <div class="field-label">Dea's menu (restaurant name + dishes)</div>
+    <div class="editable tall" id="task-output" contenteditable="true" data-placeholder="Restaurant name: …  Starters: …  Mains: …  Desserts: …"></div>
+    <div class="field-label">Roleplay notes</div>
+    <div class="editable" id="task-notes" contenteditable="true" data-placeholder="How did the roleplay go? Creativity? Errors?"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE ROUND -->
+<div class="section" style="overflow:hidden;border-radius:14px;margin-bottom:22px;box-shadow:0 3px 10px rgba(0,0,0,0.09)">
+  <div class="sec-head" style="background:#E65100"><span class="icon">⚡</span> Challenge Round <span class="timing">10 min</span></div>
+  <div class="sec-body" style="background:#FFF3E0">
+
+    <h3>Spot the Mistake 🔍</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">Each sentence has ONE mistake. Can you find it and write the correct sentence?</p>
+    <div class="frame-box">
+      <div style="margin:10px 0">
+        <p style="font-size:14px;color:#c62828;font-weight:700">❌ "I like eat chocolate."</p>
+        <div class="field-label">Correct sentence:</div>
+        <div class="editable" id="cr1" contenteditable="true" data-placeholder="I like…"></div>
+      </div>
+      <div style="margin:10px 0">
+        <p style="font-size:14px;color:#c62828;font-weight:700">❌ "She don't likes fish."</p>
+        <div class="field-label">Correct sentence:</div>
+        <div class="editable" id="cr2" contenteditable="true" data-placeholder="She doesn't…"></div>
+      </div>
+      <div style="margin:10px 0">
+        <p style="font-size:14px;color:#c62828;font-weight:700">❌ "He really love pizza."</p>
+        <div class="field-label">Correct sentence:</div>
+        <div class="editable" id="cr3" contenteditable="true" data-placeholder="He really…"></div>
+      </div>
+    </div>
+    <div class="teacher-note"><strong>Hint:</strong> After 'like/love/hate': use the -ing form (like <em>eating</em>). He/She/It needs -s!</div>
+
+    <h3 style="margin-top:18px">Add the Intensifier 💪</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">Fill in the blank with the best intensifier. Look at the scale below!</p>
+    <div style="background:white;border-radius:10px;padding:14px 18px;margin:10px 0;box-shadow:0 1px 4px rgba(0,0,0,0.07)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:12px;color:#888;font-weight:700">weak</span>
+        <span style="font-size:12px;color:#888;font-weight:700">strong</span>
+      </div>
+      <div style="height:10px;border-radius:5px;background:linear-gradient(to right,#aaa,#E65100,#c62828);margin-bottom:6px"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800">
+        <span style="color:#aaa">quite</span>
+        <span style="color:#E65100">really</span>
+        <span style="color:#c62828">absolutely</span>
+      </div>
+    </div>
+    <div class="frame-box">
+      <div style="margin:10px 0">
+        <p style="font-size:14px;font-weight:600">1. "I ___ love chocolate." &nbsp;<span style="font-size:12px;color:#888">(really / absolutely)</span></p>
+        <div class="editable" id="int1" contenteditable="true" data-placeholder="I … love chocolate."></div>
+      </div>
+      <div style="margin:10px 0">
+        <p style="font-size:14px;font-weight:600">2. "She ___ doesn't like spicy food." &nbsp;<span style="font-size:12px;color:#888">(really / absolutely)</span></p>
+        <div class="editable" id="int2" contenteditable="true" data-placeholder="She … doesn't like spicy food."></div>
+      </div>
+      <div style="margin:10px 0">
+        <p style="font-size:14px;font-weight:600">3. "I ___ like salad — it's OK." &nbsp;<span style="font-size:12px;color:#888">(quite / a bit)</span></p>
+        <div class="editable" id="int3" contenteditable="true" data-placeholder="I … like salad."></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">Write Your Own ✍️</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:6px">Write a restaurant review! What do you love? What don't you like?<br>Use: <em>I love…, I really like…, I don't like…, I absolutely hate…</em></p>
+    <div style="font-size:12px;color:#E65100;margin-bottom:6px;font-style:italic">Example: I love the pizza here! I don't like the salad.</div>
+    <div class="editable tall" id="cr-review" contenteditable="true" data-placeholder="Write your restaurant review here…"></div>
+
+    <h3 style="margin-top:18px">Word Power 💡</h3>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
+      <div style="background:white;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-top:4px solid #E65100;text-align:center">
+        <div style="font-size:22px;margin-bottom:6px">🌍</div>
+        <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:6px">cuisine</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">the style of cooking from a particular country or culture</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-top:4px solid #E65100;text-align:center">
+        <div style="font-size:22px;margin-bottom:6px">🥄</div>
+        <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:6px">ingredient</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">one of the items of food that you use to make a dish</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-top:4px solid #E65100;text-align:center">
+        <div style="font-size:22px;margin-bottom:6px">📋</div>
+        <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:6px">menu</div>
+        <div style="font-size:12px;color:#555;line-height:1.5">the list of food and drink that a restaurant offers</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REVIEW & HOMEWORK -->
+<div class="section review">
+  <div class="sec-head"><span class="icon">🏠</span> Review &amp; Homework <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>⚡ Speed Game — Like / Don't Like</h3>
+      <p>Name a food fast. Dea gives a full sentence as fast as possible. Switch — she names foods, you answer.</p>
+    </div>
+    <h3>Homework</h3>
+    <div class="task-frame">
+      <p>📅 Write your <strong>real weekly lunch menu</strong> (Monday to Friday).</p>
+      <p>For each day: what you eat + one sentence: <em>"I like/love/don't like this because it is ___."</em></p>
+    </div>
+    <div class="field-label">Homework result (fill in at Session 5)</div>
+    <div class="editable" id="hw-check" contenteditable="true" data-placeholder="Did she do it? like/likes errors? Article use?"></div>
+    <h3 style="margin-top:18px">Session Self-Evaluation</h3>
+    <div class="check-item"><input type="checkbox" id="ev1"><label for="ev1">Dea used like/don't like correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="ev2"><label for="ev2">Dea answered Do you like…? questions fluently</label></div>
+    <div class="check-item"><input type="checkbox" id="ev3"><label for="ev3">Dea created and presented her menu</label></div>
+    <div class="check-item"><input type="checkbox" id="ev4"><label for="ev4">Dea did the roleplay confidently</label></div>
+    <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
+    <div class="field-label">Session notes / carry into Session 5</div>
+    <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit?"></div>
+  </div>
+</div>
+
+</div>
+<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:998">
+  <a href="session4_game.html" style="display:inline-block;background:#C62828;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🎮 Play Digital Game</a>
+  <a href="game4.html" style="display:inline-block;background:#E91E63;color:white;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🎯 Print Bingo Game</a>
+</div>
+<button class="print-btn" onclick="window.print()">🖨️ Print</button>
+<button class="reset-btn" onclick="resetSession()">↺ Clear</button>
+<script>
+const KEY='dea_s4_';let timer;
+function showSaved(){const s=document.getElementById('save-status');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1800);}
+function save(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id)localStorage.setItem(KEY+el.id,el.innerHTML);});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id)localStorage.setItem(KEY+cb.id,cb.checked);});showSaved();}
+function load(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){const v=localStorage.getItem(KEY+el.id);if(v!==null)el.innerHTML=v;}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){const v=localStorage.getItem(KEY+cb.id);if(v!==null)cb.checked=(v==='true');}});}
+function resetSession(){if(!confirm('Clear all notes for Session 4?'))return;document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){localStorage.removeItem(KEY+el.id);el.innerHTML='';}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){localStorage.removeItem(KEY+cb.id);cb.checked=false;}});}
+document.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(save,600);});
+document.addEventListener('change',()=>{clearTimeout(timer);timer=setTimeout(save,300);});
+window.addEventListener('load',load);
+</script>
+<div class="live-banner">🔴 ÉLŐÓRA — Képernyőmegosztás aktív</div>
+<div class="online-bar">
+  <button class="online-btn btn-save" onclick="saveDeaWork(4)">💾 Dea munkájának mentése</button>
+  <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+</div>
+<script>
+function saveDeaWork(n){
+  var out='Dea válaszai — Session '+n+'\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\n',count=0;
+  document.querySelectorAll('[contenteditable][id]').forEach(function(el){
+    var t=el.innerText.trim();
+    if(t&&t.length>2){out+='['+el.id+']\n'+t+'\n\n';count++;}
+  });
+  if(count===0){alert('Még nincs kitöltött mező! Töltsd ki Dea válaszait először.');return;}
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+var _ss=false;
+function toggleSS(){
+  _ss=!_ss;
+  document.body.classList.toggle('screen-share',_ss);
+  var b=document.getElementById('ss-btn');
+  b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
+  b.classList.toggle('active',_ss);
+}
+</script>
+</body>
+</html>

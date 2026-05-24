@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 5 Game — Animals and Nature 🦁</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6;background:#E8F5E9;color:#1a1a1a;min-height:100vh}
+.fixed-header{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#388E3C,#66BB6A);color:white;padding:12px 24px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.hdr-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.hdr-title{font-size:18px;font-weight:800}
+.hdr-links{display:flex;gap:10px}
+.hdr-links a{background:rgba(255,255,255,0.18);color:white;padding:5px 14px;border-radius:16px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+.hdr-links a:hover{background:rgba(255,255,255,0.3)}
+.hdr-meta{display:flex;align-items:center;gap:14px;font-size:13px}
+.round-badge{background:rgba(255,255,255,0.2);padding:4px 14px;border-radius:14px;font-weight:700;font-size:13px}
+.score-badge{background:#66BB6A;padding:4px 14px;border-radius:14px;font-weight:800;font-size:14px;border:2px solid rgba(255,255,255,0.4)}
+.progress-bar-wrap{height:6px;background:rgba(255,255,255,0.25);border-radius:3px;margin-top:8px}
+.progress-bar{height:6px;background:white;border-radius:3px;transition:width 0.5s}
+.container{max-width:860px;margin:0 auto;padding:110px 18px 60px}
+
+/* ROUND PANELS */
+.round-panel{display:none;animation:fadeIn 0.4s ease}
+.round-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.round-title{background:white;border-radius:16px;padding:18px 24px;margin-bottom:18px;box-shadow:0 3px 10px rgba(0,0,0,0.09);text-align:center}
+.round-title h2{font-size:20px;color:#388E3C;margin-bottom:4px}
+.round-title p{font-size:13px;color:#666}
+
+/* TRUE/FALSE */
+.tf-statement{background:white;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 3px 10px rgba(0,0,0,0.09);text-align:center}
+.tf-text{font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:20px;min-height:56px;display:flex;align-items:center;justify-content:center}
+.tf-btns{display:flex;gap:16px;justify-content:center;margin-bottom:12px}
+.tf-btn{padding:16px 40px;border-radius:14px;border:none;font-size:18px;font-weight:800;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.tf-btn.true-btn{background:#388E3C;color:white}
+.tf-btn.false-btn{background:#c62828;color:white}
+.tf-btn:hover{transform:scale(1.06);box-shadow:0 6px 18px rgba(0,0,0,0.2)}
+.tf-btn:disabled{opacity:0.5;cursor:default;transform:none}
+.tf-feedback{font-size:14px;min-height:36px;padding:8px 16px;border-radius:10px;font-weight:600;transition:all 0.3s;display:none}
+.tf-feedback.show{display:block}
+.tf-feedback.correct{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+.tf-feedback.wrong{background:#FFEBEE;color:#c62828;border:1px solid #FFCDD2}
+.tf-counter{font-size:13px;color:#888;margin-bottom:10px}
+.timer-display{font-size:13px;color:#388E3C;font-weight:700;background:#E8F5E9;padding:4px 14px;border-radius:12px;display:inline-block;margin-bottom:10px}
+.time-bonus{background:#FFF9C4;color:#F57F17;font-weight:800;padding:6px 16px;border-radius:12px;font-size:14px;display:inline-block;animation:fadeIn 0.4s}
+
+/* HABITAT SORT */
+.animal-cards-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px}
+.animal-card{background:white;border-radius:14px;padding:14px 16px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.09);border:3px solid transparent;transition:all 0.2s;min-width:90px}
+.animal-card:hover{transform:scale(1.05)}
+.animal-card.selected{border-color:#388E3C;background:#E8F5E9}
+.animal-card.placed{opacity:0.4;cursor:default;border-color:#ccc}
+.animal-card .a-emoji{font-size:32px;margin-bottom:4px}
+.animal-card .a-name{font-size:13px;font-weight:700;color:#388E3C}
+.habitat-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.hab-zone{background:white;border-radius:14px;padding:16px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.09);border:3px solid #ddd;min-height:100px;transition:all 0.2s;position:relative}
+.hab-zone:hover{border-color:#66BB6A;background:#F9FFF9}
+.hab-zone .hz-label{font-size:15px;font-weight:800;color:#388E3C;margin-bottom:6px}
+.hab-zone .hz-placed{font-size:11px;color:#888;margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.hab-zone .hz-placed span{background:#E8F5E9;padding:2px 8px;border-radius:8px}
+.hab-zone.correct-flash{animation:correctFlash 0.5s}
+@keyframes correctFlash{0%{background:#E8F5E9}50%{background:#A5D6A7}100%{background:white}}
+.hab-zone.wrong-shake{animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.hab-zone.done{border-color:#A5D6A7}
+.sort-hint{font-size:13px;color:#555;background:#F1F8E9;border-radius:10px;padding:10px 14px;margin-bottom:12px;text-align:center}
+
+/* FILL ROUND */
+.fill-card{background:white;border-radius:16px;padding:28px 24px;margin-bottom:16px;box-shadow:0 3px 10px rgba(0,0,0,0.09);text-align:center}
+.fill-sentence{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:24px;line-height:1.5}
+.fill-blank{display:inline-block;border-bottom:3px solid #388E3C;min-width:80px;color:#388E3C}
+.fill-btns{display:flex;gap:16px;justify-content:center;margin-bottom:12px}
+.fill-btn{padding:14px 44px;border-radius:14px;border:none;font-size:17px;font-weight:800;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.fill-btn.can-btn{background:#388E3C;color:white}
+.fill-btn.cant-btn{background:#c62828;color:white}
+.fill-btn:hover{transform:scale(1.06)}
+.fill-btn:disabled{opacity:0.45;cursor:default;transform:none}
+.fill-feedback{font-size:13px;min-height:32px;padding:7px 14px;border-radius:10px;font-weight:600;display:none}
+.fill-feedback.show{display:block}
+.fill-feedback.correct{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+.fill-feedback.wrong{background:#FFEBEE;color:#c62828;border:1px solid #FFCDD2}
+.fill-counter{font-size:13px;color:#888;margin-bottom:8px}
+
+/* NEXT / ACTION BUTTONS */
+.action-btn{display:block;margin:18px auto 0;padding:14px 40px;background:#388E3C;color:white;border:none;border-radius:24px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(56,142,60,0.35);transition:all 0.2s}
+.action-btn:hover{background:#2E7D32;transform:scale(1.04)}
+.action-btn:disabled{opacity:0.4;cursor:default;transform:none}
+
+/* SCORE RUNNING */
+.running-score{text-align:center;font-size:15px;color:#388E3C;font-weight:700;margin-bottom:12px}
+
+/* FINAL SCREEN */
+#final-screen{display:none;text-align:center;padding:20px}
+#final-screen .final-card{background:white;border-radius:20px;padding:36px 28px;box-shadow:0 6px 24px rgba(0,0,0,0.12);max-width:540px;margin:0 auto}
+.stars-row{font-size:44px;letter-spacing:8px;margin:14px 0}
+.final-score-num{font-size:52px;font-weight:900;color:#388E3C;margin:8px 0}
+.final-message{font-size:16px;color:#555;margin:8px 0 20px}
+.final-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.final-links a,.final-links button{padding:12px 22px;border-radius:20px;font-size:14px;font-weight:700;text-decoration:none;border:none;cursor:pointer;color:white;box-shadow:0 3px 10px rgba(0,0,0,0.15)}
+.fl-green{background:#388E3C}
+.fl-teal{background:#00695C}
+.fl-grey{background:#757575}
+</style>
+</head>
+<body>
+
+<div class="fixed-header">
+  <div class="hdr-inner">
+    <div class="hdr-title">🦁 Session 5 Game — Animals &amp; Nature</div>
+    <div class="hdr-links">
+      <a href="session5.html">← Back to Session 5</a>
+      <a href="game5.html">🃏 Print Memory Game</a>
+    </div>
+  </div>
+  <div class="hdr-inner" style="margin-top:6px">
+    <div class="hdr-meta">
+      <span class="round-badge" id="round-label">Round 1 of 3</span>
+    </div>
+    <div class="score-badge">⭐ Score: <span id="header-score">0</span></div>
+  </div>
+  <div class="hdr-inner" style="margin-top:6px">
+    <div class="progress-bar-wrap" style="flex:1">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ROUND 1: TRUE / FALSE -->
+<div class="round-panel active" id="round1">
+  <div class="round-title">
+    <h2>⚡ True or False? Animals and Can/Can't!</h2>
+    <p>10 statements — read each one and press TRUE or FALSE as fast as you can!</p>
+    <div class="timer-display">⏱ Time: <span id="tf-timer">0</span>s</div>
+  </div>
+
+  <div class="tf-statement">
+    <div class="tf-counter">Statement <span id="tf-current">1</span> of 10</div>
+    <div class="tf-text" id="tf-text">Loading…</div>
+    <div class="tf-btns">
+      <button class="tf-btn true-btn" id="btn-true" onclick="tfAnswer(true)">✅ TRUE</button>
+      <button class="tf-btn false-btn" id="btn-false" onclick="tfAnswer(false)">❌ FALSE</button>
+    </div>
+    <div class="tf-feedback" id="tf-feedback"></div>
+    <div class="running-score">Round score: <span id="tf-score">0</span> pts</div>
+  </div>
+
+  <button class="action-btn" id="tf-next-btn" style="display:none" onclick="tfNext()">Next ➜</button>
+</div>
+
+<!-- ROUND 2: HABITAT SORT -->
+<div class="round-panel" id="round2">
+  <div class="round-title">
+    <h2>🌍 Where do they live? Sort the animals!</h2>
+    <p>Click an animal to select it (green border), then click the correct habitat zone.</p>
+  </div>
+
+  <div class="sort-hint">🐾 Click an animal first, then click its habitat. All 8 animals must be placed!</div>
+
+  <div class="animal-cards-row" id="animal-cards-row"></div>
+
+  <div class="habitat-zones" id="habitat-zones">
+    <div class="hab-zone" id="zone-ocean" onclick="placeAnimal('Ocean')">
+      <div class="hz-label">🌊 Ocean</div>
+      <div class="hz-placed" id="placed-ocean"></div>
+    </div>
+    <div class="hab-zone" id="zone-forest" onclick="placeAnimal('Forest & Savanna')">
+      <div class="hz-label">🌿 Forest &amp; Savanna</div>
+      <div class="hz-placed" id="placed-forest"></div>
+    </div>
+    <div class="hab-zone" id="zone-sky" onclick="placeAnimal('Sky & Mountains')">
+      <div class="hz-label">🏔️ Sky &amp; Mountains</div>
+      <div class="hz-placed" id="placed-sky"></div>
+    </div>
+    <div class="hab-zone" id="zone-cold" onclick="placeAnimal('Cold Regions')">
+      <div class="hz-label">❄️ Cold Regions</div>
+      <div class="hz-placed" id="placed-cold"></div>
+    </div>
+  </div>
+
+  <div class="running-score">Round score: <span id="sort-score">0</span> pts · <span id="sort-placed">0</span>/8 placed</div>
+  <button class="action-btn" id="sort-next-btn" style="display:none" onclick="goRound3()">Round 3 ➜</button>
+</div>
+
+<!-- ROUND 3: CAN / CAN'T CLICK -->
+<div class="round-panel" id="round3">
+  <div class="round-title">
+    <h2>🏆 Can or can't? Click the right one!</h2>
+    <p>Read each sentence — choose CAN or CAN'T to complete it.</p>
+  </div>
+
+  <div class="fill-card">
+    <div class="fill-counter">Sentence <span id="fill-current">1</span> of 6</div>
+    <div class="fill-sentence" id="fill-sentence">Loading…</div>
+    <div class="fill-btns">
+      <button class="fill-btn can-btn" id="btn-can" onclick="fillAnswer('can')">can</button>
+      <button class="fill-btn cant-btn" id="btn-cant" onclick="fillAnswer('can\'t')">can't</button>
+    </div>
+    <div class="fill-feedback" id="fill-feedback"></div>
+    <div class="running-score">Round score: <span id="fill-score">0</span> pts</div>
+  </div>
+
+  <button class="action-btn" id="fill-next-btn" style="display:none" onclick="fillNext()">Next ➜</button>
+</div>
+
+<!-- FINAL SCREEN -->
+<div id="final-screen">
+  <div class="final-card">
+    <div style="font-size:28px;margin-bottom:8px">🎉 Game Complete!</div>
+    <div class="stars-row" id="final-stars">⭐⭐⭐</div>
+    <div class="final-score-num" id="final-score-num">0</div>
+    <div style="font-size:16px;color:#888;margin-bottom:4px">out of 200 points</div>
+    <div class="final-message" id="final-message">Great job!</div>
+    <div class="final-links">
+      <button class="fl-grey" onclick="restartGame()">🔄 Play Again</button>
+      <button onclick="saveGameResult(5,totalScore,200)" style="background:#1B5E20;color:white;border:none;padding:10px 22px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;margin:8px;box-shadow:0 3px 10px rgba(0,0,0,0.2)">💾 Eredmény mentése (.txt)</button>
+      <a class="fl-green" href="session5.html">← Back to Session 5</a>
+      <a class="fl-teal" href="game5.html">🃏 Try Memory Game</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ── SHARED STATE ──
+let totalScore = 0;
+function updateHeader(roundNum){
+  document.getElementById('round-label').textContent = 'Round '+roundNum+' of 3';
+  document.getElementById('header-score').textContent = totalScore;
+  const pct = ((roundNum-1)/3)*100;
+  document.getElementById('progress-bar').style.width = pct+'%';
+}
+function addScore(pts){
+  totalScore += pts;
+  document.getElementById('header-score').textContent = totalScore;
+}
+
+// ── ROUND 1: TRUE / FALSE ──
+const tfData = [
+  {text:'Dolphins can breathe underwater.',answer:false,fact:'Dolphins breathe air through a blowhole on top of their heads — not underwater!'},
+  {text:'Eagles can fly higher than mountains.',answer:true,fact:'Eagles soar at incredible heights — sometimes above 3,000 metres!'},
+  {text:'Cheetahs can run faster than cars on a normal road.',answer:true,fact:'Cheetahs reach 120 km/h — most road speed limits are only 60–100 km/h!'},
+  {text:'Penguins can fly.',answer:false,fact:'Penguins are birds, but their wings evolved into flippers for swimming.'},
+  {text:'Cheetahs can roar like lions.',answer:false,fact:"Cheetahs can't roar — they purr like pet cats instead!"},
+  {text:'Dolphins can jump out of the water.',answer:true,fact:'Dolphins can leap up to 6 metres into the air!'},
+  {text:'Eagles can see a mouse from 500 metres away.',answer:true,fact:"Eagle eyes have about 5× more detail than human eyes — that's super vision!"},
+  {text:'Penguins can swim.',answer:true,fact:'Penguins are brilliant swimmers — they use their wings as flippers underwater.'},
+  {text:'Dolphins are fish.',answer:false,fact:'Dolphins are mammals, just like us! They breathe air and feed their babies milk.'},
+  {text:'Cheetahs can purr like cats.',answer:true,fact:"Cheetahs are the only big cat that can purr both in AND out — they're really big domestic cats!"},
+];
+let tfIdx = 0, tfRoundScore = 0, tfStartTime = null, tfTimerInterval = null;
+
+function tfStart(){
+  tfIdx = 0; tfRoundScore = 0;
+  document.getElementById('tf-score').textContent = '0';
+  tfStartTime = Date.now();
+  tfTimerInterval = setInterval(()=>{
+    const s = Math.floor((Date.now()-tfStartTime)/1000);
+    document.getElementById('tf-timer').textContent = s;
+  },500);
+  tfShowStatement();
+  updateHeader(1);
+}
+
+function tfShowStatement(){
+  const q = tfData[tfIdx];
+  document.getElementById('tf-current').textContent = tfIdx+1;
+  document.getElementById('tf-text').textContent = q.text;
+  const fb = document.getElementById('tf-feedback');
+  fb.className = 'tf-feedback'; fb.textContent='';
+  document.getElementById('btn-true').disabled = false;
+  document.getElementById('btn-false').disabled = false;
+  document.getElementById('tf-next-btn').style.display='none';
+}
+
+function tfAnswer(userAnswer){
+  const q = tfData[tfIdx];
+  document.getElementById('btn-true').disabled = true;
+  document.getElementById('btn-false').disabled = true;
+  const fb = document.getElementById('tf-feedback');
+  if(userAnswer === q.answer){
+    tfRoundScore += 10; addScore(10);
+    document.getElementById('tf-score').textContent = tfRoundScore;
+    fb.textContent = '✓ Correct! '+q.fact;
+    fb.className = 'tf-feedback correct show';
+  } else {
+    fb.textContent = '✗ Not quite. '+q.fact;
+    fb.className = 'tf-feedback wrong show';
+  }
+  document.getElementById('tf-next-btn').style.display='block';
+  document.getElementById('tf-next-btn').textContent = tfIdx < tfData.length-1 ? 'Next ➜' : 'See Results ➜';
+}
+
+function tfNext(){
+  tfIdx++;
+  if(tfIdx >= tfData.length){
+    clearInterval(tfTimerInterval);
+    const elapsed = Math.floor((Date.now()-tfStartTime)/1000);
+    // show bonus if under 30s
+    const timerEl = document.getElementById('tf-timer');
+    if(elapsed <= 30){
+      timerEl.parentElement.innerHTML = '<span class="time-bonus">⚡ Time Bonus! Done in '+elapsed+'s!</span>';
+    }
+    goRound2();
+  } else {
+    tfShowStatement();
+  }
+}
+
+// ── ROUND 2: HABITAT SORT ──
+const sortAnimals = [
+  {emoji:'🐬',name:'Dolphin',habitat:'Ocean'},
+  {emoji:'🦅',name:'Eagle',habitat:'Sky & Mountains'},
+  {emoji:'🐆',name:'Cheetah',habitat:'Forest & Savanna'},
+  {emoji:'🐧',name:'Penguin',habitat:'Cold Regions'},
+  {emoji:'🦈',name:'Shark',habitat:'Ocean'},
+  {emoji:'🦜',name:'Parrot',habitat:'Forest & Savanna'},
+  {emoji:'🐻',name:'Bear',habitat:'Forest & Savanna'},
+  {emoji:'🦭',name:'Seal',habitat:'Cold Regions'},
+];
+const zoneIds = {'Ocean':'zone-ocean','Forest & Savanna':'zone-forest','Sky & Mountains':'zone-sky','Cold Regions':'zone-cold'};
+const placedIds = {'Ocean':'placed-ocean','Forest & Savanna':'placed-forest','Sky & Mountains':'placed-sky','Cold Regions':'placed-cold'};
+let selectedAnimal = null, sortPlaced = 0, sortRoundScore = 0;
+
+function sortInit(){
+  selectedAnimal = null; sortPlaced = 0; sortRoundScore = 0;
+  document.getElementById('sort-score').textContent = '0';
+  document.getElementById('sort-placed').textContent = '0';
+  document.getElementById('sort-next-btn').style.display='none';
+  // clear placed zones
+  ['placed-ocean','placed-forest','placed-sky','placed-cold'].forEach(id=>{document.getElementById(id).innerHTML='';});
+  ['zone-ocean','zone-forest','zone-sky','zone-cold'].forEach(id=>{document.getElementById(id).classList.remove('done');});
+  // render animal cards
+  const row = document.getElementById('animal-cards-row');
+  row.innerHTML = '';
+  sortAnimals.forEach((a,i)=>{
+    const d = document.createElement('div');
+    d.className='animal-card';
+    d.id='ac-'+i;
+    d.innerHTML='<div class="a-emoji">'+a.emoji+'</div><div class="a-name">'+a.name+'</div>';
+    d.onclick = ()=>selectAnimal(i);
+    row.appendChild(d);
+  });
+  updateHeader(2);
+}
+
+function selectAnimal(idx){
+  const card = document.getElementById('ac-'+idx);
+  if(card.classList.contains('placed')) return;
+  // deselect previous
+  sortAnimals.forEach((_,i)=>{
+    const c = document.getElementById('ac-'+i);
+    if(c && !c.classList.contains('placed')) c.classList.remove('selected');
+  });
+  selectedAnimal = idx;
+  card.classList.add('selected');
+}
+
+function placeAnimal(habitat){
+  if(selectedAnimal === null) return;
+  const animal = sortAnimals[selectedAnimal];
+  const zoneEl = document.getElementById(zoneIds[habitat]);
+  if(animal.habitat === habitat){
+    // correct
+    const card = document.getElementById('ac-'+selectedAnimal);
+    card.classList.remove('selected');
+    card.classList.add('placed');
+    const placedEl = document.getElementById(placedIds[habitat]);
+    const span = document.createElement('span');
+    span.textContent = animal.emoji+' '+animal.name;
+    placedEl.appendChild(span);
+    zoneEl.classList.add('correct-flash');
+    setTimeout(()=>zoneEl.classList.remove('correct-flash'),600);
+    sortPlaced++;
+    sortRoundScore += 10; addScore(10);
+    document.getElementById('sort-score').textContent = sortRoundScore;
+    document.getElementById('sort-placed').textContent = sortPlaced;
+    selectedAnimal = null;
+    if(sortPlaced === 8){
+      document.getElementById('sort-next-btn').style.display='block';
+    }
+  } else {
+    // wrong
+    zoneEl.classList.add('wrong-shake');
+    setTimeout(()=>zoneEl.classList.remove('wrong-shake'),500);
+  }
+}
+
+// ── ROUND 3: CAN / CAN'T ──
+const fillData = [
+  {sentence:"Dolphins ___ breathe underwater.",answer:"can't",explanation:"Dolphins breathe air — they must come to the surface!"},
+  {sentence:"Eagles ___ see very far.",answer:"can",explanation:"Eagles can spot a mouse from 500 metres away!"},
+  {sentence:"Penguins ___ fly.",answer:"can't",explanation:"Penguins are birds, but they swim instead of fly."},
+  {sentence:"Cheetahs ___ run very fast.",answer:"can",explanation:"120 km/h — the fastest land animal!"},
+  {sentence:"Cheetahs ___ roar like lions.",answer:"can't",explanation:"Cheetahs purr instead of roar."},
+  {sentence:"Dolphins ___ communicate with sounds.",answer:"can",explanation:"They use clicks and whistles to talk to each other!"},
+];
+let fillIdx = 0, fillRoundScore = 0;
+
+function fillStart(){
+  fillIdx = 0; fillRoundScore = 0;
+  document.getElementById('fill-score').textContent = '0';
+  fillShowSentence();
+  updateHeader(3);
+}
+
+function fillShowSentence(){
+  const q = fillData[fillIdx];
+  document.getElementById('fill-current').textContent = fillIdx+1;
+  document.getElementById('fill-sentence').innerHTML = q.sentence.replace('___','<span class="fill-blank">___</span>');
+  const fb = document.getElementById('fill-feedback');
+  fb.className='fill-feedback'; fb.textContent='';
+  document.getElementById('btn-can').disabled = false;
+  document.getElementById('btn-cant').disabled = false;
+  document.getElementById('fill-next-btn').style.display='none';
+}
+
+function fillAnswer(choice){
+  const q = fillData[fillIdx];
+  document.getElementById('btn-can').disabled = true;
+  document.getElementById('btn-cant').disabled = true;
+  // show answer in sentence
+  document.getElementById('fill-sentence').innerHTML = q.sentence.replace('___','<span class="fill-blank">'+q.answer+'</span>');
+  const fb = document.getElementById('fill-feedback');
+  if(choice === q.answer){
+    fillRoundScore += 10; addScore(10);
+    document.getElementById('fill-score').textContent = fillRoundScore;
+    fb.textContent = '✓ Correct! '+q.explanation;
+    fb.className = 'fill-feedback correct show';
+  } else {
+    fb.textContent = '✗ The answer is "'+q.answer+'". '+q.explanation;
+    fb.className = 'fill-feedback wrong show';
+  }
+  document.getElementById('fill-next-btn').style.display='block';
+  document.getElementById('fill-next-btn').textContent = fillIdx < fillData.length-1 ? 'Next ➜' : 'See Final Results! 🏆';
+}
+
+function fillNext(){
+  fillIdx++;
+  if(fillIdx >= fillData.length){
+    showFinal();
+  } else {
+    fillShowSentence();
+  }
+}
+
+// ── NAVIGATION ──
+function goRound2(){
+  document.getElementById('round1').classList.remove('active');
+  document.getElementById('round2').classList.add('active');
+  sortInit();
+}
+function goRound3(){
+  document.getElementById('round2').classList.remove('active');
+  document.getElementById('round3').classList.add('active');
+  fillStart();
+}
+function showFinal(){
+  document.getElementById('round3').classList.remove('active');
+  document.getElementById('final-screen').style.display='block';
+  document.getElementById('progress-bar').style.width='100%';
+  document.getElementById('round-label').textContent='Done!';
+  const pct = totalScore/200;
+  let stars='⭐',msg="Good effort! Keep practising!";
+  if(pct>=0.8){stars='⭐⭐⭐';msg="Amazing! You're an animal expert! 🦁";}
+  else if(pct>=0.6){stars='⭐⭐';msg="Well done! You know a lot about animals! 🐬";}
+  else if(pct>=0.4){stars='⭐';msg="Good try! Read the session again and play once more! 🐧";}
+  document.getElementById('final-stars').textContent=stars;
+  document.getElementById('final-score-num').textContent=totalScore;
+  document.getElementById('final-message').textContent=msg;
+}
+function restartGame(){
+  totalScore=0;
+  document.getElementById('header-score').textContent='0';
+  document.getElementById('progress-bar').style.width='0%';
+  document.getElementById('final-screen').style.display='none';
+  document.getElementById('round3').classList.remove('active');
+  // reset tf timer display
+  document.getElementById('tf-timer').textContent='0';
+  document.getElementById('tf-timer').parentElement.className='timer-display';
+  document.getElementById('tf-timer').parentElement.innerHTML='⏱ Time: <span id="tf-timer">0</span>s';
+  document.getElementById('round1').classList.add('active');
+  tfStart();
+}
+
+// ── INIT ──
+tfStart();
+function saveGameResult(n,s,max){
+  var pct=Math.round(s/max*100),stars=pct>=80?'★★★':pct>=60?'★★':'★';
+  var out='Dea játékeredménye — Session '+n+' Játék\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\nPontszám: '+s+'/'+max+' pont ('+pct+'%)\nÉrtékelés: '+stars+'\n';
+  out+=pct>=80?'\nSzép munka! Kiváló! ★★★':pct>=60?'\nJó munka! ★★':'\nGyakoroljunk még! ★';
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_Game_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+</script>
+</body>
+</html>

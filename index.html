@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dea's English Course — Session Index</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#1a237e,#283593);min-height:100vh;padding:40px 20px;color:#1a1a1a}
+.wrapper{max-width:820px;margin:0 auto}
+.hero{text-align:center;color:white;margin-bottom:40px}
+.hero h1{font-size:32px;font-weight:800;margin-bottom:10px;letter-spacing:-0.5px}
+.hero p{font-size:16px;opacity:0.85;max-width:520px;margin:0 auto;line-height:1.6}
+.hero .sub{font-size:13px;opacity:0.65;margin-top:8px}
+.hero .updated{display:inline-block;background:rgba(255,255,255,0.15);color:white;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:12px;letter-spacing:0.3px}
+
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.28)}
+.card-header{padding:18px 22px 14px;color:white;position:relative;display:block;text-decoration:none}
+.card-header .num{font-size:13px;font-weight:700;opacity:0.8;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px}
+.badge-new{background:rgba(255,255,255,0.3);color:white;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:0.4px}
+.card-header h2{font-size:20px;font-weight:800;margin-top:4px;letter-spacing:-0.2px}
+.card-header .icon{position:absolute;right:18px;top:14px;font-size:36px;opacity:0.25}
+.card-body{padding:16px 22px 18px}
+.card-body .topic{font-size:13px;color:#666;margin-bottom:10px;font-style:italic}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pill{background:#f0f0f0;color:#444;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:0.3px}
+.card-body .grammar{font-size:13px;color:#333;padding:8px 12px;border-radius:8px;background:#f8f8f8;border-left:3px solid}
+.card-body .hw{font-size:12px;color:#888;margin-top:8px}
+.card-body .time{font-size:12px;color:#888;margin-top:6px}
+
+.game-links{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.game-link{font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;text-decoration:none;color:white;transition:opacity 0.15s;white-space:nowrap}
+.game-link:hover{opacity:0.85}
+.game-link.digital{background:#5E35B1}
+.game-link.print{background:#00695C}
+
+/* Card colors */
+.s1 .card-header{background:linear-gradient(135deg,#2E7D32,#43A047)}
+.s1 .grammar{border-color:#2E7D32}
+.s1 .game-link.digital{background:#4527A0}
+.s1 .game-link.print{background:#2E7D32}
+.s2 .card-header{background:linear-gradient(135deg,#E65100,#FB8C00)}
+.s2 .grammar{border-color:#E65100}
+.s2 .game-link.digital{background:#BF360C}
+.s2 .game-link.print{background:#E65100}
+.s3 .card-header{background:linear-gradient(135deg,#1565C0,#1976D2)}
+.s3 .grammar{border-color:#1565C0}
+.s3 .game-link.digital{background:#0D47A1}
+.s3 .game-link.print{background:#00695C}
+.s4 .card-header{background:linear-gradient(135deg,#AD1457,#E91E63)}
+.s4 .grammar{border-color:#AD1457}
+.s4 .game-link.digital{background:#880E4F}
+.s4 .game-link.print{background:#AD1457}
+.s5 .card-header{background:linear-gradient(135deg,#2E7D32,#66BB6A)}
+.s5 .grammar{border-color:#2E7D32}
+.s5 .game-link.digital{background:#1B5E20}
+.s5 .game-link.print{background:#004D40}
+.s6 .card-header{background:linear-gradient(135deg,#4A148C,#7B1FA2)}
+.s6 .grammar{border-color:#4A148C}
+.s6 .game-link.digital{background:#311B92}
+.s6 .game-link.print{background:#1A237E}
+
+.legend{background:rgba(255,255,255,0.1);border-radius:12px;padding:18px 24px;margin-top:28px;color:white}
+.legend h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;opacity:0.8}
+.legend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.legend-item{font-size:13px;opacity:0.85}
+.legend-item span{font-weight:700}
+
+.games-note{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:16px 22px;margin-top:18px;color:white}
+.games-note h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;opacity:0.8;margin-bottom:10px}
+.games-note p{font-size:13px;opacity:0.85;line-height:1.6}
+
+.footer{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;margin-top:32px}
+
+@media(max-width:580px){
+  .cards{grid-template-columns:1fr}
+  .legend-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="hero">
+    <h1>📘 Dea's English Course</h1>
+    <p>6-session mini-course based on <strong>Right on! 2</strong> by Jenny Dooley (Express Publishing)</p>
+    <div class="sub">Hungarian L1 · Age 11 · A1–A2 · Visual &amp; Kinesthetic Learner</div>
+    <div class="updated">✨ Updated — now with interactive games, longer readings &amp; challenge rounds</div>
+  </div>
+
+  <div class="cards">
+
+    <div class="card s1" onclick="window.location='session1.html'">
+      <div class="card-header">
+        <div class="icon">👤</div>
+        <div class="num">Session 1 <span class="badge-new">New!</span></div>
+        <h2>Me and My World</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">Identity, family, personality adjectives</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Speaking</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> to be — am / is / are + adjectives</div>
+        <div class="hw">🎨 <strong>Task:</strong> Personal ID card</div>
+        <div class="time">⏱ 45–60 min · 12 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session1_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game1.html" onclick="event.stopPropagation()">🃏 Guess Who? Cards</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s2" onclick="window.location='session2.html'">
+      <div class="card-header">
+        <div class="icon">🌅</div>
+        <div class="num">Session 2 <span class="badge-new">New!</span></div>
+        <h2>My Day</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">Daily routines, times, morning to night</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Writing</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> Present simple — I wake up / She wakes up (-s rule)</div>
+        <div class="hw">🎨 <strong>Task:</strong> My Day poster with timeline</div>
+        <div class="time">⏱ 45–60 min · 12 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session2_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game2.html" onclick="event.stopPropagation()">🎲 Board Game</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s3" onclick="window.location='session3.html'">
+      <div class="card-header">
+        <div class="icon">🏫</div>
+        <div class="num">Session 3 <span class="badge-new">New!</span></div>
+        <h2>My School</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">School subjects, classroom objects</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Writing</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> have / has + there is / there are</div>
+        <div class="hw">🎨 <strong>Task:</strong> My School mini-book (4 pages)</div>
+        <div class="time">⏱ 45–60 min · 14 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session3_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game3.html" onclick="event.stopPropagation()">🎯 Classroom Bingo</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s4" onclick="window.location='session4.html'">
+      <div class="card-header">
+        <div class="icon">🍕</div>
+        <div class="num">Session 4 <span class="badge-new">New!</span></div>
+        <h2>Food and Me</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">Food, drinks, taste words, world cuisine</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Roleplay</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> I like / don't like + Do you like…?</div>
+        <div class="hw">🎨 <strong>Task:</strong> Dream restaurant menu + roleplay</div>
+        <div class="time">⏱ 45–60 min · 15 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session4_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game4.html" onclick="event.stopPropagation()">🎯 Food Bingo</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s5" onclick="window.location='session5.html'">
+      <div class="card-header">
+        <div class="icon">🐬</div>
+        <div class="num">Session 5 <span class="badge-new">New!</span></div>
+        <h2>Animals and Nature</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">Animals, body features, habitats, abilities</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Writing</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> can / can't for ability</div>
+        <div class="hw">🎨 <strong>Task:</strong> My favourite animal fact card</div>
+        <div class="time">⏱ 45–60 min · 14 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session5_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game5.html" onclick="event.stopPropagation()">🃏 Memory Card Game</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s6" onclick="window.location='session6.html'">
+      <div class="card-header">
+        <div class="icon">🏙️</div>
+        <div class="num">Session 6 🎉 <span class="badge-new">New!</span></div>
+        <h2>My Town</h2>
+      </div>
+      <div class="card-body">
+        <div class="topic">Places in town, prepositions of place</div>
+        <div class="pill-row">
+          <span class="pill">Reading</span>
+          <span class="pill">Vocabulary</span>
+          <span class="pill">Final Review</span>
+          <span class="pill">⚡ Challenge</span>
+        </div>
+        <div class="grammar">🔧 <strong>Grammar:</strong> there is/are + next to / between / opposite / in front of / behind / near</div>
+        <div class="hw">🎨 <strong>Task:</strong> Dream town map + Portfolio + Certificate</div>
+        <div class="time">⏱ 45–60 min · 15 vocab words · 7 reading questions</div>
+        <div class="game-links">
+          <a class="game-link digital" href="session6_game.html" onclick="event.stopPropagation()">🎮 Digital Game</a>
+          <a class="game-link print" href="game6.html" onclick="event.stopPropagation()">🎲 Town Board Game</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <h3>Every session includes</h3>
+    <div class="legend-grid">
+      <div class="legend-item">⚡ <span>Warm-up game</span> 5–10 min</div>
+      <div class="legend-item">📝 <span>Vocabulary</span> 10–15 min</div>
+      <div class="legend-item">📖 <span>Reading text</span> 10–15 min</div>
+      <div class="legend-item">🔧 <span>Grammar focus</span> 10–15 min</div>
+      <div class="legend-item">🎨 <span>Creative task</span> 10–15 min</div>
+      <div class="legend-item">⚡ <span>Challenge Round</span> 5–10 min</div>
+    </div>
+  </div>
+
+  <div class="games-note">
+    <h3>🎮 Games — two per session</h3>
+    <p><strong>Digital game</strong> (session1_game.html … session6_game.html): Mixed click, tap, and drag activities covering vocabulary, reading comprehension, and grammar. 3 rounds per session with score and star rating. Works on tablet and computer.<br><br>
+    <strong>Printable game</strong> (game1.html … game6.html): Physical card, board, or bingo games to cut out and play. No screen needed. Designed for 2–4 players. Research-backed formats: Guess Who (S1), Roll-and-Speak board (S2 &amp; S6), Picture Bingo (S3 &amp; S4), Memory card pairs (S5).</p>
+  </div>
+
+  <div class="footer">
+    Auto-saves all notes to your browser · Click Print inside each session · Right on! 2 — Jenny Dooley, Express Publishing
+  </div>
+</div>
+</body>
+</html>

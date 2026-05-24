@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Bingo! 🎯🏫 — Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#E3F2FD;color:#1a1a1a;font-size:14px}
+
+/* ── Screen-only elements ── */
+.screen-only{display:block}
+.screen-nav{background:linear-gradient(135deg,#1565C0,#1976D2);color:white;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.screen-nav h1{font-size:18px;font-weight:800}
+.screen-nav a{color:white;font-size:13px;font-weight:700;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:16px}
+.screen-nav a:hover{background:rgba(255,255,255,0.35)}
+
+/* ── Page layout ── */
+.print-page{background:white;max-width:900px;margin:20px auto;border-radius:12px;padding:32px 36px;box-shadow:0 3px 16px rgba(0,0,0,0.1)}
+.page-break{page-break-after:always;break-after:page}
+
+/* ── Instructions page ── */
+.inst-title{font-size:32px;font-weight:900;color:#1565C0;text-align:center;margin-bottom:4px}
+.inst-sub{font-size:16px;color:#555;text-align:center;margin-bottom:24px}
+.how-box{background:#E3F2FD;border-radius:12px;padding:20px 24px;margin-bottom:20px;border-left:5px solid #1976D2}
+.how-box h2{font-size:16px;font-weight:800;color:#1565C0;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.4px}
+.how-box ol{padding-left:20px}
+.how-box ol li{font-size:15px;margin:8px 0;color:#333;line-height:1.5}
+.how-box ol li strong{color:#1565C0}
+.tips-box{background:#FFF9C4;border-radius:12px;padding:14px 20px;border-left:5px solid #F9A825;font-size:14px;color:#555;margin-top:10px}
+.tips-box strong{color:#E65100}
+
+/* ── Bingo cards ── */
+.card-page{margin-bottom:0}
+.card-header{text-align:center;margin-bottom:12px}
+.card-label{display:inline-block;background:#1976D2;color:white;font-size:20px;font-weight:900;padding:6px 24px;border-radius:20px;letter-spacing:1px;margin-bottom:6px}
+.card-title{font-size:13px;color:#888}
+.bingo-table{width:100%;border-collapse:collapse;margin-bottom:10px}
+.bingo-table td{border:2px solid #90CAF9;padding:10px 6px;text-align:center;vertical-align:middle;width:25%;height:88px}
+.bingo-table td .cell-emoji{font-size:32px;display:block;margin-bottom:4px}
+.bingo-table td .cell-word{font-size:12px;font-weight:700;color:#1565C0;display:block;text-transform:uppercase;letter-spacing:0.3px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+
+/* ── Caller page ── */
+.caller-title{font-size:26px;font-weight:900;color:#1565C0;text-align:center;margin-bottom:4px}
+.caller-sub{font-size:14px;color:#888;text-align:center;margin-bottom:20px}
+.caller-badge{display:inline-block;background:#E65100;color:white;padding:4px 14px;border-radius:12px;font-size:12px;font-weight:700;margin-left:8px}
+.caller-list{list-style:none;padding:0;column-count:2;column-gap:24px}
+.caller-list li{font-size:14px;padding:8px 10px;border-bottom:1px solid #E3F2FD;break-inside:avoid;display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.caller-list li .num{font-weight:900;color:#1976D2;min-width:24px;font-size:15px}
+.caller-list li .sent{color:#333}
+.caller-box-outer{background:#E3F2FD;border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:5px solid #1976D2}
+
+/* ── Chips page ── */
+.chips-title{font-size:20px;font-weight:900;color:#1565C0;text-align:center;margin-bottom:4px}
+.chips-sub{font-size:13px;color:#888;text-align:center;margin-bottom:16px}
+.chips-instruction{background:#FFF9C4;border-radius:10px;padding:12px 16px;border-left:4px solid #F9A825;font-size:13px;margin-bottom:16px}
+.chips-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:20px}
+.chip{width:100%;aspect-ratio:1;border-radius:50%;border:2px solid rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white}
+.chip.red{background:#E53935}
+.chip.blue{background:#1976D2}
+.chip.green{background:#388E3C}
+.chip.yellow{background:#F9A825;color:#333}
+
+/* ── Print ── */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:white}
+  .screen-only,.screen-nav{display:none!important}
+  .print-page{max-width:100%;margin:0;padding:20px 24px;border-radius:0;box-shadow:none;border:none}
+  .page-break{page-break-after:always;break-after:page}
+  .bingo-table td{height:80px}
+  .bingo-table td .cell-emoji{font-size:28px}
+  .caller-list{column-count:2}
+  .chips-grid{grid-template-columns:repeat(10,1fr)}
+  .card-label{background:#1976D2!important;color:white!important}
+  .how-box{background:#E3F2FD!important}
+  .tips-box{background:#FFF9C4!important}
+  .bingo-table td{background:white}
+}
+
+.btn-print{background:#1565C0;color:white;border:none;padding:12px 28px;border-radius:24px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.15);margin:8px}
+.btn-print:hover{background:#1976D2}
+</style>
+</head>
+<body>
+
+<!-- Screen-only nav -->
+<div class="screen-only screen-nav">
+  <h1>🎯 Classroom Bingo — Print Version</h1>
+  <div style="display:flex;gap:10px;align-items:center">
+    <button class="btn-print" onclick="window.print()">🖨️ Print All Pages</button>
+    <a href="session3.html">← Back to Session 3</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 1: INSTRUCTIONS
+═══════════════════════════════════════════════ -->
+<div class="print-page page-break">
+  <div class="inst-title">Classroom Bingo! 🎯🏫</div>
+  <div class="inst-sub">A vocabulary game about classroom objects · Dea's English · Session 3</div>
+
+  <div class="how-box">
+    <h2>How to Play</h2>
+    <ol>
+      <li>Print <strong>ONE bingo card</strong> for each player (Cards A, B, C, or D — each player gets a <strong>DIFFERENT</strong> card).</li>
+      <li>Print the <strong>Caller List</strong> on a separate page for the teacher.</li>
+      <li>The teacher reads sentences from the list <strong>OUT LOUD</strong> — one at a time.</li>
+      <li>Find the matching object on your bingo card and <strong>mark it</strong> with a coin or bingo chip.</li>
+      <li>When you have <strong>4 in a row</strong> (across ➡️, down ⬇️, or diagonal ↗️), shout <strong>"BINGO!"</strong></li>
+      <li style="background:rgba(25,118,210,0.08);border-radius:8px;padding:8px 10px;list-style:none;margin-left:-4px"><strong>IMPORTANT:</strong> To WIN, you must say one <strong>full sentence</strong> about an object in your winning row!<br>
+        Example: <em style="color:#1565C0">"There is a whiteboard in our classroom." ✓</em></li>
+    </ol>
+  </div>
+
+  <div class="tips-box">
+    <strong>💡 Tips for the teacher:</strong> Listen carefully! Mark only one item per sentence. You may repeat a sentence once if asked. The game ends when the first player correctly wins — or keep playing until all players win!
+  </div>
+
+  <div style="margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+    <div style="background:#E3F2FD;border-radius:10px;padding:14px;text-align:center;border-top:4px solid #1976D2">
+      <div style="font-size:22px;margin-bottom:4px">🃏</div>
+      <div style="font-weight:800;font-size:14px;color:#1565C0">Card A</div>
+      <div style="font-size:11px;color:#777;margin-top:4px">Player 1</div>
+    </div>
+    <div style="background:#E8F5E9;border-radius:10px;padding:14px;text-align:center;border-top:4px solid #2E7D32">
+      <div style="font-size:22px;margin-bottom:4px">🃏</div>
+      <div style="font-weight:800;font-size:14px;color:#2E7D32">Card B</div>
+      <div style="font-size:11px;color:#777;margin-top:4px">Player 2</div>
+    </div>
+    <div style="background:#FCE4EC;border-radius:10px;padding:14px;text-align:center;border-top:4px solid #AD1457">
+      <div style="font-size:22px;margin-bottom:4px">🃏</div>
+      <div style="font-weight:800;font-size:14px;color:#AD1457">Card C</div>
+      <div style="font-size:11px;color:#777;margin-top:4px">Player 3</div>
+    </div>
+    <div style="background:#FFF3E0;border-radius:10px;padding:14px;text-align:center;border-top:4px solid #E65100">
+      <div style="font-size:22px;margin-bottom:4px">🃏</div>
+      <div style="font-weight:800;font-size:14px;color:#E65100">Card D</div>
+      <div style="font-size:11px;color:#777;margin-top:4px">Player 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 2: CARDS A & B
+═══════════════════════════════════════════════ -->
+<div class="print-page page-break">
+  <div class="cards-grid">
+
+    <!-- CARD A -->
+    <div>
+      <div class="card-header">
+        <div class="card-label">CARD A</div>
+        <div class="card-title">Player 1 — Classroom Bingo</div>
+      </div>
+      <table class="bingo-table">
+        <tr>
+          <td><span class="cell-emoji">📋</span><span class="cell-word">whiteboard</span></td>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pen</span></td>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">book</span></td>
+          <td><span class="cell-emoji">🪟</span><span class="cell-word">window</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">desk</span></td>
+          <td><span class="cell-emoji">📏</span><span class="cell-word">ruler</span></td>
+          <td><span class="cell-emoji">🌺</span><span class="cell-word">plant</span></td>
+          <td><span class="cell-emoji">🗑️</span><span class="cell-word">bin</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">chair</span></td>
+          <td><span class="cell-emoji">💻</span><span class="cell-word">computer</span></td>
+          <td><span class="cell-emoji">🗺️</span><span class="cell-word">map</span></td>
+          <td><span class="cell-emoji">🕐</span><span class="cell-word">clock</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pencil case</span></td>
+          <td><span class="cell-emoji">🧹</span><span class="cell-word">eraser</span></td>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">bookshelf</span></td>
+          <td><span class="cell-emoji">🚪</span><span class="cell-word">door</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CARD B -->
+    <div>
+      <div class="card-header">
+        <div class="card-label" style="background:#2E7D32">CARD B</div>
+        <div class="card-title">Player 2 — Classroom Bingo</div>
+      </div>
+      <table class="bingo-table">
+        <tr>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pen</span></td>
+          <td><span class="cell-emoji">📋</span><span class="cell-word">whiteboard</span></td>
+          <td><span class="cell-emoji">🗺️</span><span class="cell-word">map</span></td>
+          <td><span class="cell-emoji">🗑️</span><span class="cell-word">bin</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">book</span></td>
+          <td><span class="cell-emoji">🌺</span><span class="cell-word">plant</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">desk</span></td>
+          <td><span class="cell-emoji">🕐</span><span class="cell-word">clock</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">📏</span><span class="cell-word">ruler</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">chair</span></td>
+          <td><span class="cell-emoji">🪟</span><span class="cell-word">window</span></td>
+          <td><span class="cell-emoji">🚪</span><span class="cell-word">door</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">💻</span><span class="cell-word">computer</span></td>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pencil case</span></td>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">bookshelf</span></td>
+          <td><span class="cell-emoji">🌍</span><span class="cell-word">globe</span></td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 3: CARDS C & D
+═══════════════════════════════════════════════ -->
+<div class="print-page page-break">
+  <div class="cards-grid">
+
+    <!-- CARD C -->
+    <div>
+      <div class="card-header">
+        <div class="card-label" style="background:#AD1457">CARD C</div>
+        <div class="card-title">Player 3 — Classroom Bingo</div>
+      </div>
+      <table class="bingo-table">
+        <tr>
+          <td><span class="cell-emoji">💻</span><span class="cell-word">computer</span></td>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">book</span></td>
+          <td><span class="cell-emoji">📋</span><span class="cell-word">whiteboard</span></td>
+          <td><span class="cell-emoji">🕐</span><span class="cell-word">clock</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🌺</span><span class="cell-word">plant</span></td>
+          <td><span class="cell-emoji">📏</span><span class="cell-word">ruler</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">chair</span></td>
+          <td><span class="cell-emoji">🚪</span><span class="cell-word">door</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🗺️</span><span class="cell-word">map</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">desk</span></td>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pen</span></td>
+          <td><span class="cell-emoji">🌍</span><span class="cell-word">globe</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🪟</span><span class="cell-word">window</span></td>
+          <td><span class="cell-emoji">🗑️</span><span class="cell-word">bin</span></td>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pencil case</span></td>
+          <td><span class="cell-emoji">🧹</span><span class="cell-word">eraser</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CARD D -->
+    <div>
+      <div class="card-header">
+        <div class="card-label" style="background:#E65100">CARD D</div>
+        <div class="card-title">Player 4 — Classroom Bingo</div>
+      </div>
+      <table class="bingo-table">
+        <tr>
+          <td><span class="cell-emoji">🪟</span><span class="cell-word">window</span></td>
+          <td><span class="cell-emoji">💻</span><span class="cell-word">computer</span></td>
+          <td><span class="cell-emoji">📚</span><span class="cell-word">book</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">desk</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">📏</span><span class="cell-word">ruler</span></td>
+          <td><span class="cell-emoji">🌺</span><span class="cell-word">plant</span></td>
+          <td><span class="cell-emoji">🗺️</span><span class="cell-word">map</span></td>
+          <td><span class="cell-emoji">🪑</span><span class="cell-word">chair</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pen</span></td>
+          <td><span class="cell-emoji">🌍</span><span class="cell-word">globe</span></td>
+          <td><span class="cell-emoji">📋</span><span class="cell-word">whiteboard</span></td>
+          <td><span class="cell-emoji">🖊️</span><span class="cell-word">pencil case</span></td>
+        </tr>
+        <tr>
+          <td><span class="cell-emoji">🚪</span><span class="cell-word">door</span></td>
+          <td><span class="cell-emoji">🧹</span><span class="cell-word">eraser</span></td>
+          <td><span class="cell-emoji">🕐</span><span class="cell-word">clock</span></td>
+          <td><span class="cell-emoji">🗑️</span><span class="cell-word">bin</span></td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 4: CALLER LIST (TEACHER'S PAGE)
+═══════════════════════════════════════════════ -->
+<div class="print-page page-break">
+  <div class="caller-title">Caller List <span class="caller-badge">TEACHER ONLY</span></div>
+  <div class="caller-sub">Read each sentence aloud — one at a time. Pause between sentences.</div>
+
+  <div class="caller-box-outer">
+    <p style="font-size:13px;color:#555"><strong>Tip:</strong> Read slowly and clearly. You may repeat a sentence once if asked. Tick each sentence as you read it.</p>
+  </div>
+
+  <ul class="caller-list">
+    <li><span class="num">1</span><span class="sent">"There is a <strong>whiteboard</strong> at the front of the classroom."</span></li>
+    <li><span class="num">2</span><span class="sent">"Each student has a <strong>desk</strong>."</span></li>
+    <li><span class="num">3</span><span class="sent">"Everyone sits on a <strong>chair</strong>."</span></li>
+    <li><span class="num">4</span><span class="sent">"Maya has a <strong>pencil case</strong> on her desk."</span></li>
+    <li><span class="num">5</span><span class="sent">"She writes with a <strong>pen</strong>."</span></li>
+    <li><span class="num">6</span><span class="sent">"Emma uses a <strong>pencil</strong> to draw."</span></li>
+    <li><span class="num">7</span><span class="sent">"There is a <strong>ruler</strong> in her pencil case."</span></li>
+    <li><span class="num">8</span><span class="sent">"She has an <strong>eraser</strong> for corrections."</span></li>
+    <li><span class="num">9</span><span class="sent">"There is a <strong>book</strong> on every desk."</span></li>
+    <li><span class="num">10</span><span class="sent">"There is a big <strong>bookshelf</strong> at the back."</span></li>
+    <li><span class="num">11</span><span class="sent">"The teacher has a <strong>computer</strong>."</span></li>
+    <li><span class="num">12</span><span class="sent">"There is a <strong>plant</strong> next to the teacher's desk."</span></li>
+    <li><span class="num">13</span><span class="sent">"There are colourful <strong>posters</strong> on the wall."</span></li>
+    <li><span class="num">14</span><span class="sent">"There is a world <strong>map</strong> on the wall."</span></li>
+    <li><span class="num">15</span><span class="sent">"There are <strong>windows</strong> in the classroom."</span></li>
+    <li><span class="num">16</span><span class="sent">"There is a <strong>door</strong> at the back of the room."</span></li>
+    <li><span class="num">17</span><span class="sent">"There is a <strong>bin</strong> next to the teacher's desk."</span></li>
+    <li><span class="num">18</span><span class="sent">"There is a <strong>clock</strong> on the wall above the whiteboard."</span></li>
+    <li><span class="num">19</span><span class="sent">"Students put their <strong>bags</strong> under their desks."</span></li>
+    <li><span class="num">20</span><span class="sent">"There is a <strong>globe</strong> on the bookshelf."</span></li>
+  </ul>
+
+  <div style="margin-top:20px;background:#E8F5E9;border-radius:10px;padding:14px 18px;border-left:4px solid #2E7D32">
+    <strong style="color:#2E7D32">When a player shouts BINGO:</strong> Ask them to read one full sentence about an object in their winning row. Example: <em>"There is a whiteboard in our classroom."</em> — If correct, they WIN!
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 5: BINGO CHIPS (CUT-OUTS)
+═══════════════════════════════════════════════ -->
+<div class="print-page">
+  <div class="chips-title">Bingo Chips — Cut Out &amp; Use! ✂️</div>
+  <div class="chips-sub">Cut out the circles and use as markers. Each colour = one player.</div>
+
+  <div class="chips-instruction">
+    <strong>Alternative:</strong> Use coins, small stones, pasta pieces, or torn paper — anything works! You need about 16 markers per player.
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+    <div>
+      <div style="font-weight:800;color:#E53935;margin-bottom:8px;font-size:13px">🔴 PLAYER 1 — Red</div>
+      <div class="chips-grid">
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+        <div class="chip red" style="width:36px;height:36px;border-radius:50%;background:#E53935;border:2px solid #B71C1C"></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:800;color:#1565C0;margin-bottom:8px;font-size:13px">🔵 PLAYER 2 — Blue</div>
+      <div class="chips-grid">
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+        <div class="chip blue" style="width:36px;height:36px;border-radius:50%;background:#1976D2;border:2px solid #0D47A1"></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:800;color:#2E7D32;margin-bottom:8px;font-size:13px">🟢 PLAYER 3 — Green</div>
+      <div class="chips-grid">
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+        <div class="chip green" style="width:36px;height:36px;border-radius:50%;background:#388E3C;border:2px solid #1B5E20"></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:800;color:#E65100;margin-bottom:8px;font-size:13px">🟡 PLAYER 4 — Yellow</div>
+      <div class="chips-grid">
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+        <div class="chip yellow" style="width:36px;height:36px;border-radius:50%;background:#F9A825;border:2px solid #E65100"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;text-align:center;font-size:12px;color:#aaa">
+    Dea's English · Session 3 — My School · Classroom Bingo Game
+  </div>
+</div>
+
+</body>
+</html>

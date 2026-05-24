@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 4 Game — Food and Me 🍕</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#FCE4EC;color:#1a1a1a;min-height:100vh;padding-bottom:40px}
+
+/* HEADER */
+.game-header{background:#C62828;color:white;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:0 3px 10px rgba(0,0,0,0.2)}
+.game-header h1{font-size:20px;font-weight:800;flex:1}
+.header-nav{display:flex;gap:10px;align-items:center;font-size:13px}
+.header-nav a{color:rgba(255,255,255,0.9);text-decoration:none;background:rgba(255,255,255,0.18);padding:6px 14px;border-radius:16px;font-weight:600;white-space:nowrap}
+.header-nav a:hover{background:rgba(255,255,255,0.3)}
+.round-badge{background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:16px;font-weight:700;font-size:13px;white-space:nowrap}
+.score-badge{background:#EF9A9A;color:#C62828;padding:6px 16px;border-radius:16px;font-weight:800;font-size:15px}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#EF9A9A;height:8px}
+.progress-fill{background:#C62828;height:8px;transition:width 0.4s ease;width:0%}
+
+/* CONTAINER */
+.container{max-width:860px;margin:0 auto;padding:28px 18px}
+
+/* ROUND PANEL */
+.round-panel{display:none}
+.round-panel.active{display:block}
+.round-title{font-size:22px;font-weight:800;color:#C62828;margin-bottom:8px}
+.round-sub{font-size:14px;color:#555;margin-bottom:20px}
+
+/* FOOD GRID (Round 1) */
+.food-items-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0}
+@media(max-width:600px){.food-items-grid{grid-template-columns:repeat(3,1fr)}}
+.food-chip{background:white;border:3px solid #EF9A9A;border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.15s;user-select:none}
+.food-chip:hover{transform:scale(1.05)}
+.food-chip.selected{border-color:#C62828;box-shadow:0 0 0 3px rgba(198,40,40,0.3);background:#FFEBEE}
+.food-chip.placed{opacity:0.4;pointer-events:none}
+.food-chip .chip-emoji{font-size:28px;margin-bottom:4px}
+.food-chip .chip-name{font-size:12px;font-weight:700;color:#AD1457}
+
+.zones-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+@media(max-width:600px){.zones-grid{grid-template-columns:repeat(2,1fr)}}
+.zone{background:white;border:3px dashed #EF9A9A;border-radius:14px;min-height:120px;padding:10px;cursor:pointer;transition:border-color 0.15s}
+.zone:hover{border-color:#C62828;background:#FFF8F8}
+.zone.zone-love{border-color:#2E7D32}
+.zone.zone-like{border-color:#1565C0}
+.zone.zone-dontlike{border-color:#E65100}
+.zone.zone-hate{border-color:#C62828}
+.zone-label{font-size:13px;font-weight:800;text-align:center;margin-bottom:6px}
+.zone-label.love{color:#2E7D32}.zone-label.like{color:#1565C0}.zone-label.dontlike{color:#E65100}.zone-label.hate{color:#C62828}
+.zone-chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px}
+.zone-chip{background:#FCE4EC;border-radius:8px;padding:3px 8px;font-size:11px;font-weight:700;color:#C62828}
+
+/* SENTENCE BUILDER (Round 2) */
+.sentence-progress{font-size:13px;color:#888;margin-bottom:12px}
+.building-area{background:white;border:2px solid #EF9A9A;border-radius:12px;min-height:52px;padding:12px 16px;margin:12px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:16px;font-weight:700;color:#1a1a1a}
+.building-area .built-chip{background:#C62828;color:white;border-radius:8px;padding:4px 12px;font-size:15px;font-weight:700}
+.building-area.correct{border-color:#2E7D32;background:#F1F8E9}
+.word-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.word-chip{background:white;border:2px solid #EF9A9A;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:15px;font-weight:700;color:#C62828;transition:all 0.15s;user-select:none}
+.word-chip:hover{background:#FCE4EC;border-color:#C62828}
+.word-chip.selected{background:#C62828;color:white;border-color:#C62828}
+.word-chip.wrong{background:#FFCDD2;border-color:#c62828;animation:shake 0.3s}
+.word-chip.used{opacity:0.3;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.feedback-box{border-radius:12px;padding:14px 18px;margin:12px 0;font-size:14px;font-weight:600;display:none}
+.feedback-box.correct{background:#E8F5E9;color:#2E7D32;border:2px solid #A5D6A7;display:block}
+.feedback-box.wrong{background:#FFEBEE;color:#C62828;border:2px solid #FFCDD2;display:block}
+
+/* TRUE / FALSE (Round 3) */
+.tf-statement{background:white;border-radius:14px;padding:20px 24px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+.tf-statement p{font-size:16px;font-weight:600;margin-bottom:14px;color:#1a1a1a}
+.tf-buttons{display:flex;gap:12px}
+.tf-btn{flex:1;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;transition:all 0.15s}
+.tf-btn.true-btn{background:#E8F5E9;color:#2E7D32;border:2px solid #A5D6A7}
+.tf-btn.false-btn{background:#FFEBEE;color:#C62828;border:2px solid #FFCDD2}
+.tf-btn:hover{transform:scale(1.03)}
+.tf-btn.correct-answer{background:#2E7D32;color:white}
+.tf-btn.wrong-answer{background:#C62828;color:white}
+.tf-btn:disabled{cursor:not-allowed;transform:none}
+.tf-explanation{background:#FFF3E0;border-left:4px solid #E65100;padding:10px 14px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin-top:10px;display:none}
+.tf-explanation.show{display:block}
+
+/* NEXT BUTTON */
+.next-btn{background:#C62828;color:white;border:none;padding:14px 32px;border-radius:24px;font-size:15px;font-weight:800;cursor:pointer;margin-top:18px;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.18);transition:background 0.15s}
+.next-btn:hover{background:#B71C1C}
+.next-btn.show{display:inline-block}
+
+/* RESULTS */
+#results-panel{display:none}
+#results-panel.active{display:block}
+.results-card{background:white;border-radius:20px;padding:36px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,0.1)}
+.stars-row{font-size:40px;letter-spacing:8px;margin:12px 0}
+.results-score{font-size:48px;font-weight:800;color:#C62828;margin:8px 0}
+.results-msg{font-size:18px;font-weight:700;color:#1a1a1a;margin:8px 0}
+.results-sub{font-size:14px;color:#555;margin:4px 0 20px}
+.results-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.results-btns a,.results-btns button{padding:14px 24px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;border:none;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.15)}
+.btn-replay{background:#C62828;color:white}
+.btn-back{background:#EF9A9A;color:#C62828}
+.btn-bingo{background:#E91E63;color:white}
+
+/* SUMMARY BOX */
+.summary-box{background:#FFF3E0;border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px;color:#555;display:none}
+.summary-box.show{display:block}
+.summary-box .sum-title{font-weight:700;color:#E65100;margin-bottom:6px;font-size:15px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="game-header">
+  <h1>🍕 Session 4 Game — Food and Me</h1>
+  <div class="header-nav">
+    <a href="session4.html">← Back to Session 4</a>
+    <a href="game4.html">🎯 Print Bingo</a>
+  </div>
+  <div class="round-badge" id="round-badge">Round 1 of 3</div>
+  <div class="score-badge">⭐ <span id="score-display">0</span> pts</div>
+</div>
+<div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="container">
+
+<!-- ROUND 1: OPINION SORTER -->
+<div class="round-panel active" id="round1">
+  <div class="round-title">Round 1: Opinion Sorter 🍕</div>
+  <div class="round-sub">Sort the food! Click a food, then click where it goes. There are no wrong answers — it's YOUR opinion!</div>
+
+  <div class="food-items-grid" id="food-grid">
+    <div class="food-chip" data-food="pizza" onclick="selectFood(this)"><div class="chip-emoji">🍕</div><div class="chip-name">pizza</div></div>
+    <div class="food-chip" data-food="sushi" onclick="selectFood(this)"><div class="chip-emoji">🍣</div><div class="chip-name">sushi</div></div>
+    <div class="food-chip" data-food="taco" onclick="selectFood(this)"><div class="chip-emoji">🌮</div><div class="chip-name">taco</div></div>
+    <div class="food-chip" data-food="broccoli" onclick="selectFood(this)"><div class="chip-emoji">🥦</div><div class="chip-name">broccoli</div></div>
+    <div class="food-chip" data-food="cheese" onclick="selectFood(this)"><div class="chip-emoji">🧀</div><div class="chip-name">cheese</div></div>
+    <div class="food-chip" data-food="chocolate" onclick="selectFood(this)"><div class="chip-emoji">🍫</div><div class="chip-name">chocolate</div></div>
+    <div class="food-chip" data-food="salad" onclick="selectFood(this)"><div class="chip-emoji">🥗</div><div class="chip-name">salad</div></div>
+    <div class="food-chip" data-food="spicy curry" onclick="selectFood(this)"><div class="chip-emoji">🌶️</div><div class="chip-name">spicy curry</div></div>
+    <div class="food-chip" data-food="pasta" onclick="selectFood(this)"><div class="chip-emoji">🍝</div><div class="chip-name">pasta</div></div>
+    <div class="food-chip" data-food="doughnut" onclick="selectFood(this)"><div class="chip-emoji">🍩</div><div class="chip-name">doughnut</div></div>
+  </div>
+
+  <div class="zones-grid">
+    <div class="zone zone-love" onclick="placeFood('love')">
+      <div class="zone-label love">❤️ LOVE</div>
+      <div class="zone-chips" id="zone-love"></div>
+    </div>
+    <div class="zone zone-like" onclick="placeFood('like')">
+      <div class="zone-label like">😊 LIKE</div>
+      <div class="zone-chips" id="zone-like"></div>
+    </div>
+    <div class="zone zone-dontlike" onclick="placeFood('dontlike')">
+      <div class="zone-label dontlike">😕 DON'T LIKE</div>
+      <div class="zone-chips" id="zone-dontlike"></div>
+    </div>
+    <div class="zone zone-hate" onclick="placeFood('hate')">
+      <div class="zone-label hate">😫 HATE</div>
+      <div class="zone-chips" id="zone-hate"></div>
+    </div>
+  </div>
+
+  <div class="summary-box" id="r1-summary">
+    <div class="sum-title">🎉 Done! Your food opinions!</div>
+    <div id="r1-summary-text"></div>
+  </div>
+
+  <button class="next-btn" id="r1-next" onclick="goRound2()">Next Round →</button>
+</div>
+
+<!-- ROUND 2: SENTENCE BUILDER -->
+<div class="round-panel" id="round2">
+  <div class="round-title">Round 2: Sentence Builder 🔨</div>
+  <div class="round-sub">Click the words in the correct order to build the sentence!</div>
+  <div class="sentence-progress" id="sent-progress">Sentence 1 of 5</div>
+
+  <div class="building-area" id="building-area"></div>
+
+  <div class="word-chips" id="word-chips"></div>
+
+  <div class="feedback-box" id="sent-feedback"></div>
+
+  <button class="next-btn" id="sent-next" onclick="nextSentence()">Next Sentence →</button>
+  <button class="next-btn" id="r2-next" onclick="goRound3()" style="background:#1565C0">Next Round →</button>
+</div>
+
+<!-- ROUND 3: TRUE OR FALSE -->
+<div class="round-panel" id="round3">
+  <div class="round-title">Round 3: True or False? 🤔</div>
+  <div class="round-sub">True or false about the reading? Think carefully!</div>
+
+  <div id="tf-items"></div>
+
+  <button class="next-btn" id="r3-next" onclick="showResults()">See My Results! 🏆</button>
+</div>
+
+<!-- RESULTS -->
+<div class="round-panel" id="results-panel">
+  <div class="results-card">
+    <div class="stars-row" id="result-stars">⭐⭐⭐</div>
+    <div class="results-score" id="result-score">0</div>
+    <div style="font-size:14px;color:#888">out of 250 points</div>
+    <div class="results-msg" id="result-msg">Amazing!</div>
+    <div class="results-sub" id="result-sub">Great work, Dea!</div>
+    <div class="results-btns">
+      <button class="btn-replay" onclick="restartGame()">🔄 Play Again</button>
+      <button onclick="saveGameResult(4,score,250)" style="background:#1B5E20;color:white;border:none;padding:10px 22px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;margin:8px;box-shadow:0 3px 10px rgba(0,0,0,0.2)">💾 Eredmény mentése (.txt)</button>
+      <a class="btn-back" href="session4.html">← Back to Session 4</a>
+      <a class="btn-bingo" href="game4.html">🎯 Try Bingo</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ─── STATE ───
+let score = 0;
+let selectedFoodChip = null;
+let placedCount = 0;
+const TOTAL_FOODS = 10;
+
+// ─── SCORE ───
+function addScore(pts){
+  score += pts;
+  document.getElementById('score-display').textContent = score;
+}
+
+// ─── PROGRESS ───
+function setProgress(pct){
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ─── ROUND 1: OPINION SORTER ───
+function selectFood(el){
+  if(el.classList.contains('placed')) return;
+  document.querySelectorAll('.food-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedFoodChip = el;
+}
+
+function placeFood(zone){
+  if(!selectedFoodChip) return;
+  const food = selectedFoodChip.dataset.food;
+  const emoji = selectedFoodChip.querySelector('.chip-emoji').textContent;
+
+  // Add chip to zone
+  const zoneEl = document.getElementById('zone-' + zone);
+  const chip = document.createElement('div');
+  chip.className = 'zone-chip';
+  chip.textContent = emoji + ' ' + food;
+  zoneEl.appendChild(chip);
+
+  // Mark as placed
+  selectedFoodChip.classList.add('placed','selected');
+  selectedFoodChip.classList.remove('selected');
+  selectedFoodChip = null;
+
+  addScore(10);
+  placedCount++;
+  setProgress(Math.round(placedCount/TOTAL_FOODS*33));
+
+  if(placedCount === TOTAL_FOODS){
+    const loveCount = document.getElementById('zone-love').children.length;
+    const hateCount = document.getElementById('zone-hate').children.length;
+    const summary = document.getElementById('r1-summary');
+    document.getElementById('r1-summary-text').textContent =
+      'You love ' + loveCount + ' food' + (loveCount!==1?'s':'') + '! ' +
+      'You hate ' + hateCount + ' food' + (hateCount!==1?'s':'') + '! That\'s so interesting! 🎉';
+    summary.classList.add('show');
+    document.getElementById('r1-next').classList.add('show');
+  }
+}
+
+// ─── ROUND 2: SENTENCE BUILDER ───
+const sentences = [
+  {words:['I','love','chocolate','cake','.'], correct:['I','love','chocolate','cake','.']},
+  {words:["Emma","doesn't","like","fish",'.'], correct:["Emma","doesn't","like","fish",'.']},
+  {words:['Maya','really','loves','plantain','.'], correct:['Maya','really','loves','plantain','.']},
+  {words:['Do','you','like','sushi','?'], correct:['Do','you','like','sushi','?']},
+  {words:["I","don't","like","spicy","food",'.'], correct:["I","don't","like","spicy","food",'.']}
+];
+let currentSent = 0;
+let builtSent = [];
+let sentScore = 0;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function loadSentence(){
+  const sent = sentences[currentSent];
+  document.getElementById('sent-progress').textContent = 'Sentence ' + (currentSent+1) + ' of ' + sentences.length;
+  builtSent = [];
+
+  const buildArea = document.getElementById('building-area');
+  buildArea.innerHTML = '<span style="color:#bbb;font-style:italic;font-size:14px">Click words in order…</span>';
+  buildArea.className = 'building-area';
+
+  const feedback = document.getElementById('sent-feedback');
+  feedback.className = 'feedback-box';
+  feedback.textContent = '';
+
+  document.getElementById('sent-next').classList.remove('show');
+  document.getElementById('r2-next').classList.remove('show');
+
+  const chipsEl = document.getElementById('word-chips');
+  chipsEl.innerHTML = '';
+  const shuffled = shuffle(sent.words);
+  shuffled.forEach((w,i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.id = 'wchip_' + i;
+    chip.onclick = () => clickWord(chip, w);
+    chipsEl.appendChild(chip);
+  });
+}
+
+function clickWord(chip, word){
+  if(chip.classList.contains('used')) return;
+  builtSent.push(word);
+
+  const sent = sentences[currentSent];
+  const pos = builtSent.length - 1;
+  const expected = sent.correct[pos];
+
+  if(word !== expected){
+    chip.classList.add('wrong');
+    setTimeout(()=>{chip.classList.remove('wrong');}, 400);
+    builtSent.pop();
+    return;
+  }
+
+  chip.classList.add('used');
+
+  const buildArea = document.getElementById('building-area');
+  if(builtSent.length === 1) buildArea.innerHTML = '';
+  const builtChip = document.createElement('span');
+  builtChip.className = 'built-chip';
+  builtChip.textContent = word;
+  buildArea.appendChild(builtChip);
+
+  if(builtSent.length === sent.correct.length){
+    buildArea.classList.add('correct');
+    const feedback = document.getElementById('sent-feedback');
+    feedback.className = 'feedback-box correct';
+    feedback.textContent = '✅ Perfect! "' + sent.correct.join(' ') + '"';
+    addScore(20);
+    sentScore++;
+
+    const isLast = currentSent === sentences.length - 1;
+    if(!isLast){
+      document.getElementById('sent-next').classList.add('show');
+    } else {
+      setProgress(66);
+      document.getElementById('r2-next').classList.add('show');
+    }
+  }
+}
+
+function nextSentence(){
+  currentSent++;
+  if(currentSent < sentences.length){
+    loadSentence();
+  }
+}
+
+function goRound2(){
+  document.getElementById('round1').classList.remove('active');
+  document.getElementById('round2').classList.add('active');
+  document.getElementById('round-badge').textContent = 'Round 2 of 3';
+  setProgress(33);
+  currentSent = 0;
+  loadSentence();
+}
+
+// ─── ROUND 3: TRUE OR FALSE ───
+const tfItems = [
+  {stmt:"Emma's favourite food is pizza.", answer:false, explanation:"❌ It's pasta! Emma says: 'My favourite food is pasta.'"},
+  {stmt:"Maya doesn't like cheese.", answer:true, explanation:"✅ Correct! 'Maya doesn't like cheese. She says it's too strong.'"},
+  {stmt:"Emma really loves spicy food.", answer:false, explanation:"❌ Emma doesn't like spicy food at all — her eyes water!"},
+  {stmt:"People in Japan eat tacos.", answer:false, explanation:"❌ Tacos are from Mexico! People in Japan eat sushi and rice."},
+  {stmt:"Plantain is a type of banana.", answer:true, explanation:"✅ Correct! The text says: 'plantain — it's a type of banana that you cook.'"}
+];
+let tfAnswered = 0;
+
+function goRound3(){
+  document.getElementById('round2').classList.remove('active');
+  document.getElementById('round3').classList.add('active');
+  document.getElementById('round-badge').textContent = 'Round 3 of 3';
+  setProgress(66);
+  tfAnswered = 0;
+
+  const container = document.getElementById('tf-items');
+  container.innerHTML = '';
+  tfItems.forEach((item,i)=>{
+    const div = document.createElement('div');
+    div.className = 'tf-statement';
+    div.id = 'tf_' + i;
+    div.innerHTML = `
+      <p>${item.stmt}</p>
+      <div class="tf-buttons">
+        <button class="tf-btn true-btn" id="tf_t_${i}" onclick="answerTF(${i},true)">✅ TRUE</button>
+        <button class="tf-btn false-btn" id="tf_f_${i}" onclick="answerTF(${i},false)">❌ FALSE</button>
+      </div>
+      <div class="tf-explanation" id="tf_exp_${i}">${item.explanation}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function answerTF(i, userAnswer){
+  const item = tfItems[i];
+  const trueBtn = document.getElementById('tf_t_' + i);
+  const falseBtn = document.getElementById('tf_f_' + i);
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  if(userAnswer === item.answer){
+    addScore(10);
+    if(userAnswer) trueBtn.classList.add('correct-answer');
+    else falseBtn.classList.add('correct-answer');
+  } else {
+    if(userAnswer) trueBtn.classList.add('wrong-answer');
+    else falseBtn.classList.add('wrong-answer');
+    if(item.answer) trueBtn.classList.add('correct-answer');
+    else falseBtn.classList.add('correct-answer');
+  }
+
+  document.getElementById('tf_exp_' + i).classList.add('show');
+  tfAnswered++;
+
+  if(tfAnswered === tfItems.length){
+    setProgress(100);
+    document.getElementById('r3-next').classList.add('show');
+  }
+}
+
+// ─── RESULTS ───
+function showResults(){
+  document.getElementById('round3').classList.remove('active');
+  document.getElementById('results-panel').classList.add('active');
+  document.getElementById('round-badge').textContent = 'Results!';
+
+  const s = score;
+  document.getElementById('result-score').textContent = s;
+
+  let stars, msg, sub;
+  if(s >= 220){ stars='⭐⭐⭐'; msg='Amazing! You\'re a food champion! 🏆'; sub='Excellent work on every round, Dea!'; }
+  else if(s >= 160){ stars='⭐⭐'; msg='Great job! You know your food! 🍕'; sub='Really good effort — try again for 3 stars!'; }
+  else { stars='⭐'; msg='Good try! Keep practising! 💪'; sub='Play again and you\'ll do even better!'; }
+
+  document.getElementById('result-stars').textContent = stars;
+  document.getElementById('result-msg').textContent = msg;
+  document.getElementById('result-sub').textContent = sub;
+}
+
+// ─── RESTART ───
+function restartGame(){
+  score = 0;
+  selectedFoodChip = null;
+  placedCount = 0;
+  currentSent = 0;
+  tfAnswered = 0;
+  document.getElementById('score-display').textContent = '0';
+  setProgress(0);
+  document.getElementById('round-badge').textContent = 'Round 1 of 3';
+
+  // Reset round 1
+  document.querySelectorAll('.food-chip').forEach(c=>c.classList.remove('placed','selected'));
+  ['love','like','dontlike','hate'].forEach(z=>{document.getElementById('zone-'+z).innerHTML='';});
+  document.getElementById('r1-summary').classList.remove('show');
+  document.getElementById('r1-next').classList.remove('show');
+
+  // Reset panels
+  document.querySelectorAll('.round-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('round1').classList.add('active');
+}
+function saveGameResult(n,s,max){
+  var pct=Math.round(s/max*100),stars=pct>=80?'★★★':pct>=60?'★★':'★';
+  var out='Dea játékeredménye — Session '+n+' Játék\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\nPontszám: '+s+'/'+max+' pont ('+pct+'%)\nÉrtékelés: '+stars+'\n';
+  out+=pct>=80?'\nSzép munka! Kiváló! ★★★':pct>=60?'\nJó munka! ★★':'\nGyakoroljunk még! ★';
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_Game_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+</script>
+</body>
+</html>

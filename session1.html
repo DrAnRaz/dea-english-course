@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 — Me and My World | Dea's English</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.65;background:#f4f6f9;color:#1a1a1a}
+.page-header{background:linear-gradient(135deg,#1B5E20,#388E3C);color:white;padding:28px 36px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header .subtitle{font-size:13px;opacity:0.82;margin-top:5px}
+.page-header .badge{background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap;margin-top:4px}
+#save-status{position:fixed;top:14px;right:20px;background:#43A047;color:white;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;transition:opacity 0.5s;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+#save-status.show{opacity:1}
+.container{max-width:940px;margin:0 auto;padding:28px 18px 80px}
+.section{border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+.sec-head{padding:13px 22px;color:white;font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-head .icon{font-size:20px}
+.sec-head .timing{margin-left:auto;font-size:12px;opacity:0.85;font-weight:400;background:rgba(255,255,255,0.18);padding:3px 10px;border-radius:12px}
+.sec-body{padding:22px 24px}
+.goal .sec-head{background:#2E7D32}.goal .sec-body{background:#E8F5E9}
+.dea-corner .sec-head{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}.dea-corner .sec-body{background:linear-gradient(135deg,#F3E5F5,#FCE4EC)}
+.warmup .sec-head{background:#E65100}.warmup .sec-body{background:#FFF8F1}
+.vocab .sec-head{background:#1565C0}.vocab .sec-body{background:#E3F2FD}
+.reading .sec-head{background:#6A1B9A}.reading .sec-body{background:#F3E5F5}
+.grammar .sec-head{background:#AD1457}.grammar .sec-body{background:#FCE4EC}
+.task .sec-head{background:#00695C}.task .sec-body{background:#E0F7FA}
+.review .sec-head{background:#BF360C}.review .sec-body{background:#FFF3E0}
+h3{font-size:14px;font-weight:700;color:#333;margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.4px}
+p{font-size:14px;margin:6px 0;color:#333}
+ul,ol{padding-left:20px;font-size:14px;color:#333}
+li{margin:5px 0}
+strong{color:#111}
+
+/* ── VISUAL AIDS ── */
+/* Sentence blocks */
+.sent-blocks{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.blk{padding:7px 14px;border-radius:8px;font-weight:800;font-size:15px;color:white}
+.blk.subj{background:#1565C0}
+.blk.verb{background:#AD1457}
+.blk.adj{background:#2E7D32}
+.blk.punct{background:transparent;color:#555;font-size:18px;padding:0 2px}
+.sent-blocks .arrow{font-size:18px;color:#888;margin:0 4px}
+
+/* Grammar card grid */
+.grammar-visual{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.gv-card{background:white;border-radius:12px;padding:14px 16px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07)}
+.gv-card .pronoun{font-size:20px;font-weight:800;color:#1565C0;margin-bottom:6px}
+.gv-card .verb-chip{display:inline-block;background:#AD1457;color:white;border-radius:8px;padding:4px 14px;font-weight:800;font-size:15px;margin-bottom:6px}
+.gv-card .example{font-size:12px;color:#555;font-style:italic}
+
+/* Vocab cards */
+.vocab-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.vc{background:white;border-radius:12px;padding:12px 10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #1565C0}
+.vc .vc-emoji{font-size:28px;margin-bottom:6px}
+.vc .vc-word{font-weight:800;font-size:14px;color:#1565C0;margin-bottom:3px}
+.vc .vc-pron{font-size:11px;color:#888;margin-bottom:5px}
+.vc .vc-example{font-size:11px;color:#444;font-style:italic;line-height:1.4}
+.vc input[type=checkbox]{margin-top:6px;width:16px;height:16px;accent-color:#2E7D32}
+
+/* ID card visual */
+.id-card-visual{background:white;border:3px solid #1565C0;border-radius:16px;padding:22px 26px;max-width:420px;margin:14px auto;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+.id-card-visual .id-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:2px solid #E3F2FD;padding-bottom:12px}
+.id-card-visual .id-avatar{width:60px;height:60px;background:#E3F2FD;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.id-card-visual .id-title{font-weight:800;font-size:16px;color:#1565C0}
+.id-card-visual .id-sub{font-size:12px;color:#888}
+.id-row{display:flex;gap:10px;margin:8px 0;align-items:center}
+.id-row .id-label{font-size:12px;font-weight:700;color:#1565C0;text-transform:uppercase;min-width:80px}
+.id-row .id-line{flex:1;border-bottom:2px dashed #aaa;height:20px}
+
+/* Dea's corner specifics */
+.dc-challenge{background:white;border-radius:12px;padding:16px 20px;margin:12px 0;border:2px solid #CE93D8}
+.dc-challenge h4{color:#6A1B9A;font-size:15px;margin-bottom:8px}
+.dc-fact{background:#FFF9C4;border-radius:10px;padding:12px 16px;margin:10px 0;border-left:4px solid #F9A825}
+.dc-fact strong{color:#E65100}
+.dc-editable{background:rgba(255,255,255,0.8);border:2px dashed #CE93D8;border-radius:10px;padding:12px 16px;min-height:60px;font-size:14px;margin:8px 0}
+.dc-editable:focus{outline:none;border-color:#6A1B9A}
+.dc-editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#CE93D8;font-style:italic}
+.star-row{font-size:22px;letter-spacing:6px;margin:8px 0;text-align:center}
+
+/* Reading text */
+.reading-text{background:white;border-left:5px solid #7B1FA2;padding:16px 20px;border-radius:0 10px 10px 0;font-size:15px;line-height:1.9;margin:12px 0;font-style:italic;color:#2a2a2a}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:10px 0;background:white;border-radius:10px;overflow:hidden;font-size:14px}
+th{padding:10px 14px;text-align:left;background:rgba(0,0,0,0.07);font-size:12px;font-weight:700;text-transform:uppercase}
+td{padding:9px 14px;border-top:1px solid rgba(0,0,0,0.05)}
+
+/* Editable fields */
+.editable{background:white;border:2px dashed #bbb;border-radius:10px;padding:12px 16px;min-height:56px;font-size:14px;color:#333;margin:8px 0;transition:border-color 0.2s}
+.editable:focus{outline:none;border-color:#1565C0;box-shadow:0 0 0 3px rgba(21,101,192,0.12)}
+.editable.tall{min-height:110px}
+.editable[data-placeholder]:empty::before{content:attr(data-placeholder);color:#bbb;font-style:italic;pointer-events:none}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin:14px 0 3px}
+.frame-box{background:white;border:2px solid rgba(0,0,0,0.09);border-radius:10px;padding:14px 18px;margin:10px 0}
+.teacher-note{background:#FFFDE7;border-left:4px solid #FBC02D;padding:10px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin:10px 0}
+.activity-box{background:rgba(255,255,255,0.65);border-radius:10px;padding:14px 18px;margin:10px 0;border:1px solid rgba(0,0,0,0.07)}
+.activity-box h3{margin-top:0}
+.task-frame{background:rgba(255,255,255,0.7);border:2px solid rgba(0,105,92,0.2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.check-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.check-item:last-child{border-bottom:none}
+.check-item label{font-size:14px;cursor:pointer;flex:1}
+input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#2E7D32;flex-shrink:0}
+.qa-item{margin:10px 0}
+.qa-item .q{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+
+/* Online teaching toolbar */
+.online-bar{position:fixed;bottom:70px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.online-btn{border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.25);transition:transform 0.1s;white-space:nowrap;letter-spacing:0.2px}
+.online-btn:hover{transform:translateY(-2px)}
+.btn-save{background:#1B5E20;color:white}
+.btn-ss{background:#0D47A1;color:white}
+.btn-ss.active{background:#B71C1C}
+.live-banner{display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:white;text-align:center;font-size:13px;font-weight:800;padding:7px;z-index:10000;letter-spacing:1px}
+body.screen-share .live-banner{display:block}
+body.screen-share .content{font-size:18px!important}
+@media print{.online-bar,.live-banner{display:none!important}}
+
+@media print{
+  body{background:white;font-size:12px}
+  #save-status,.print-btn,.reset-btn{display:none!important}
+  .section{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .sec-head,.sec-body,.page-header,.dea-corner .sec-head,.dea-corner .sec-body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .editable,.dc-editable{border:1px solid #ccc}
+  .vocab-grid{grid-template-columns:repeat(4,1fr)}
+  .grammar-visual{grid-template-columns:repeat(3,1fr)}
+}
+.print-btn,.reset-btn{position:fixed;bottom:24px;border:none;padding:12px 22px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.18);color:white}
+.print-btn{right:24px;background:#1565C0}
+.reset-btn{right:160px;background:#757575;font-size:12px;padding:10px 18px}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div>
+    <h1>👤 Session 1 — Me and My World</h1>
+    <div class="subtitle">Dea's English Mini-Course · Right on! 2 (Jenny Dooley, Express Publishing)</div>
+    <div class="subtitle">Hungarian L1 · Age 11 · A1–A2 · Visual &amp; Kinesthetic Learner</div>
+  </div>
+  <div><div class="badge">⏱ 45–60 min</div></div>
+</div>
+<div id="save-status">✓ Saved</div>
+<div class="container">
+
+<!-- GOAL -->
+<div class="section goal">
+  <div class="sec-head"><span class="icon">🎯</span> Goal &amp; Introduction <span class="timing">2 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"Today you will make your own English ID card and learn to talk about yourself and your family. By the end, you can introduce yourself in English!"</em></p></div>
+    <ul>
+      <li>Learn adjectives to describe people (personality + appearance)</li>
+      <li>Use <strong>am / is / are</strong> correctly</li>
+      <li>Read a short text about a girl named Emma</li>
+      <li>Make and present a personal English ID card</li>
+    </ul>
+    <div class="field-label">Teacher's session notes</div>
+    <div class="editable" id="goal-notes" contenteditable="true" data-placeholder="Add any notes before the session…"></div>
+  </div>
+</div>
+
+<!-- DEA'S CORNER -->
+<div class="section dea-corner">
+  <div class="sec-head"><span class="icon">🌟</span> Dea's Corner — Just for You! <span class="timing">Read this, Dea!</span></div>
+  <div class="sec-body">
+    <div class="star-row">⭐ ⭐ ⭐</div>
+    <div class="dc-challenge">
+      <h4>👋 Hey Dea! Today YOU are the main character.</h4>
+      <p style="font-size:14px;color:#333;margin:8px 0">You're going to make your very own <strong>English ID card</strong> — like a superhero profile, but for YOU! 🦸‍♀️</p>
+      <p style="font-size:14px;color:#333;margin:8px 0">Look at the 12 words below. They are going to describe YOU and your family. Before we start, circle <strong>2 words</strong> that are most like you:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0">
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">😄 funny</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">💛 kind</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">🙈 shy</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">🧠 clever</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">⚽ sporty</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">🎨 creative</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">📏 tall</span>
+        <span style="background:#E1BEE7;border-radius:20px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer">🤝 friendly</span>
+      </div>
+    </div>
+    <div class="dc-fact">
+      <strong>💡 Did you know?</strong> In English, you always need TWO words: "I am" — you can NEVER just say "am funny" without the "I"! It's like a rule: subject + verb, always together. 🔗
+    </div>
+    <p style="font-size:14px;color:#555;margin-top:10px"><strong>Your goal today:</strong> By the end of this session, you will introduce yourself in English. Ready? Let's go! 🚀</p>
+    <div class="field-label">Dea writes: Two words that describe me are…</div>
+    <div class="dc-editable" id="dea-self" contenteditable="true" data-placeholder="I am ___ and ___."></div>
+  </div>
+</div>
+
+<!-- WARM-UP -->
+<div class="section warmup">
+  <div class="sec-head"><span class="icon">⚡</span> Warm-Up — True or False? <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>How to play</h3>
+      <ol>
+        <li>Say statements about yourself. Dea reacts: 👍 = True, 👎 = False.</li>
+        <li>Examples: <em>"I am a teacher."</em> / <em>"I am twelve years old."</em> / <em>"I am very funny."</em></li>
+        <li>Switch — Dea makes statements, you react.</li>
+        <li>After 5–6 rounds, introduce today's adjectives by labeling what you acted out.</li>
+      </ol>
+    </div>
+    <div class="field-label">Warm-up observations</div>
+    <div class="editable" id="warmup-notes" contenteditable="true" data-placeholder="What did Dea already know?"></div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="section vocab">
+  <div class="sec-head"><span class="icon">📝</span> Vocabulary — Personality &amp; Description <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <h3>How to introduce: draw a stick figure → act it out → Dea repeats</h3>
+
+    <!-- VISUAL VOCAB CARDS -->
+    <div class="vocab-grid">
+      <div class="vc"><div class="vc-emoji">😄</div><div class="vc-word">funny</div><div class="vc-pron">FUN-ee</div><div class="vc-example">She is funny.</div><input type="checkbox" id="v1"></div>
+      <div class="vc"><div class="vc-emoji">💛</div><div class="vc-word">kind</div><div class="vc-pron">kaynd</div><div class="vc-example">My mum is kind.</div><input type="checkbox" id="v2"></div>
+      <div class="vc"><div class="vc-emoji">🙈</div><div class="vc-word">shy</div><div class="vc-pron">shy</div><div class="vc-example">I am not shy.</div><input type="checkbox" id="v3"></div>
+      <div class="vc"><div class="vc-emoji">🧠</div><div class="vc-word">clever</div><div class="vc-pron">KLEV-er</div><div class="vc-example">He is clever.</div><input type="checkbox" id="v4"></div>
+      <div class="vc"><div class="vc-emoji">⚽</div><div class="vc-word">sporty</div><div class="vc-pron">SPOR-tee</div><div class="vc-example">My brother is sporty.</div><input type="checkbox" id="v5"></div>
+      <div class="vc"><div class="vc-emoji">🎨</div><div class="vc-word">creative</div><div class="vc-pron">kree-AY-tiv</div><div class="vc-example">I am creative.</div><input type="checkbox" id="v6"></div>
+      <div class="vc"><div class="vc-emoji">📏</div><div class="vc-word">tall</div><div class="vc-pron">tawl</div><div class="vc-example">My dad is tall.</div><input type="checkbox" id="v7"></div>
+      <div class="vc"><div class="vc-emoji">🤏</div><div class="vc-word">short</div><div class="vc-pron">short</div><div class="vc-example">I am short.</div><input type="checkbox" id="v8"></div>
+      <div class="vc"><div class="vc-emoji">🤝</div><div class="vc-word">friendly</div><div class="vc-pron">FREND-lee</div><div class="vc-example">She is friendly.</div><input type="checkbox" id="v9"></div>
+      <div class="vc"><div class="vc-emoji">👶</div><div class="vc-word">young</div><div class="vc-pron">yung</div><div class="vc-example">My sister is young.</div><input type="checkbox" id="v10"></div>
+      <div class="vc"><div class="vc-emoji">👴</div><div class="vc-word">old</div><div class="vc-pron">old</div><div class="vc-example">My grandma is old.</div><input type="checkbox" id="v11"></div>
+      <div class="vc"><div class="vc-emoji">🧍</div><div class="vc-word">only child</div><div class="vc-pron">OH-nlee</div><div class="vc-example">I am an only child.</div><input type="checkbox" id="v12"></div>
+    </div>
+
+    <div class="activity-box">
+      <h3>🎨 Activity 1 — Match &amp; Color</h3>
+      <p>Draw 6 faces. Write the adjective on strips. Dea matches strip to face, then colors each face.</p>
+    </div>
+    <div class="activity-box">
+      <h3>✓ Activity 2 — Is it me?</h3>
+      <p>Read an adjective aloud. Dea puts ✓ if it describes her, ✗ if not. Then share your own answers.</p>
+    </div>
+    <div class="field-label">Vocabulary notes</div>
+    <div class="editable" id="vocab-notes" contenteditable="true" data-placeholder="Difficult words, pronunciation issues…"></div>
+  </div>
+</div>
+
+<!-- READING -->
+<div class="section reading">
+  <div class="sec-head"><span class="icon">📖</span> Reading — Meet Emma and Her Family <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="reading-text">
+      <p style="margin-bottom:10px">Hi! My name is Emma. I am twelve years old. I am from London, in England. I am tall and I have long brown hair and green eyes. My friends say I am funny and creative. I love art, music, and dancing. I am very friendly — I talk to everyone at school!</p>
+      <p style="margin-bottom:10px">My mum's name is Claire. She is a teacher at my school. She is kind and very patient with her students. She is not very tall, but she is beautiful and elegant. My dad's name is Tom. He is a doctor at the local hospital. He is tall and sometimes serious at work, but at home he is funny and playful. He tells the best jokes!</p>
+      <p style="margin-bottom:10px">I have a sister named Lucy. She is eight years old. She is small and quiet. At school, she is shy and not very confident. But on the football pitch, she is completely different — she is fast, brave, and amazing!</p>
+      <p style="margin-bottom:10px">I also have a brother. His name is Jack. He is sixteen. He is sporty and very smart. He studies a lot and he wants to be an engineer. He is sometimes a little arrogant, but he is also helpful and funny when he wants to be.</p>
+      <p>My best friend is Maya. She is from Jamaica. She is creative, energetic, and very confident. We are both in the art club. Maya is definitely not shy — she is the funniest and loudest person in our school!</p>
+    </div>
+    <div class="qa-item"><div class="q">1. How old is Emma?</div><div class="editable" id="q1" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">2. What is Emma's mum's job?</div><div class="editable" id="q2" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">3. Who is the sporty person in the family?</div><div class="editable" id="q3" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">4. Find TWO adjectives that describe Jack.</div><div class="editable" id="q4" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">5. 🔍 Inference: Why do you think Lucy is "brave" at football but "not very confident" at school?</div><div class="editable" id="q5" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">6. 📖 Vocabulary: Find a word in the text that means "full of energy".</div><div class="editable" id="q6" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="qa-item"><div class="q">7. 💬 Your turn: Which person in the text is most similar to you? Why?</div><div class="editable tall" id="q7" contenteditable="true" data-placeholder="Dea's answer…"></div></div>
+    <div class="activity-box" style="margin-top:14px">
+      <h3>✏️ Follow-up — Color-code the text</h3>
+      <ul>
+        <li><strong style="color:#1565C0">🔵 Blue pen:</strong> Underline all <em>am / is / are</em></li>
+        <li><strong style="color:#AD1457">🔴 Red pen:</strong> Circle all adjectives</li>
+        <li>Count together: How many adjectives? How many <em>is/am</em>?</li>
+      </ul>
+    </div>
+    <div class="field-label">Reading notes</div>
+    <div class="editable" id="reading-notes" contenteditable="true" data-placeholder="Fluency, what she understood, errors…"></div>
+  </div>
+</div>
+
+<!-- GRAMMAR -->
+<div class="section grammar">
+  <div class="sec-head"><span class="icon">🔧</span> Grammar — To Be: am / is / are <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="frame-box"><p><em>"In English, we always need a little helper word: AM, IS, or ARE. It's like <strong>glue</strong> between the person and the description."</em></p></div>
+
+    <!-- VISUAL: sentence structure blocks -->
+    <h3>Visual: sentence structure</h3>
+    <div class="sent-blocks">
+      <div class="blk subj">I</div><div class="blk verb">am</div><div class="blk adj">funny</div><div class="blk punct">.</div>
+    </div>
+    <div class="sent-blocks">
+      <div class="blk subj">She</div><div class="blk verb">is</div><div class="blk adj">kind</div><div class="blk punct">.</div>
+    </div>
+    <div class="sent-blocks">
+      <div class="blk subj">They</div><div class="blk verb">are</div><div class="blk adj">clever</div><div class="blk punct">.</div>
+    </div>
+
+    <!-- VISUAL: who uses which? -->
+    <h3>Who uses which form?</h3>
+    <div class="grammar-visual">
+      <div class="gv-card">
+        <div class="pronoun">I</div>
+        <div class="verb-chip">am</div>
+        <div class="example">I am creative.</div>
+      </div>
+      <div class="gv-card">
+        <div class="pronoun">he / she / it</div>
+        <div class="verb-chip">is</div>
+        <div class="example">She is funny.</div>
+      </div>
+      <div class="gv-card">
+        <div class="pronoun">you / we / they</div>
+        <div class="verb-chip">are</div>
+        <div class="example">They are friends.</div>
+      </div>
+    </div>
+
+    <div class="teacher-note"><strong>Hungarian note:</strong> In Hungarian you can say "Vicces vagyok" without a subject. In English you ALWAYS need both words: "I am funny." Never drop either one!</div>
+
+    <div class="activity-box">
+      <h3>✂️ Activity 1 — Sentence Builder Cards</h3>
+      <p>Write on strips: <strong>I / She / He / We / am / is / are / funny / kind / tall / clever / friendly</strong>. Dea makes at least 5 different correct sentences.</p>
+    </div>
+    <div class="activity-box">
+      <h3>🗣️ Activity 2 — Gap Fill (oral)</h3>
+      <ul>
+        <li>"I ___ eleven years old." → <strong>am</strong></li>
+        <li>"My friend ___ very kind." → <strong>is</strong></li>
+        <li>"We ___ at school." → <strong>are</strong></li>
+        <li>"Emma ___ from London." → <strong>is</strong></li>
+      </ul>
+    </div>
+
+    <div class="field-label">Dea writes her own sentences (3–5)</div>
+    <div class="editable tall" id="grammar-practice" contenteditable="true" data-placeholder="e.g. I am kind. My sister is funny. We are clever."></div>
+    <div class="field-label">Grammar notes</div>
+    <div class="editable" id="grammar-notes" contenteditable="true" data-placeholder="Errors, what clicked, what needs more work…"></div>
+  </div>
+</div>
+
+<!-- TASK -->
+<div class="section task">
+  <div class="sec-head"><span class="icon">🎨</span> Task — My English ID Card <span class="timing">10–15 min</span></div>
+  <div class="sec-body">
+    <div class="teacher-note"><strong>Materials:</strong> Blank A5 card (fold A4), colored pens</div>
+
+    <!-- VISUAL ID CARD TEMPLATE -->
+    <h3>Visual ID card template (draw this on paper for Dea)</h3>
+    <div class="id-card-visual">
+      <div class="id-header">
+        <div class="id-avatar">🧑</div>
+        <div><div class="id-title">MY ENGLISH ID CARD</div><div class="id-sub">Session 1 · Me and My World</div></div>
+      </div>
+      <div class="id-row"><div class="id-label">🏷️ Name</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">🎂 Age</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">📍 From</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">😊 I am</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">👨‍👩‍👧 Family</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">🎨 Fav colour</div><div class="id-line"></div></div>
+      <div class="id-row"><div class="id-label">🍕 Fav food</div><div class="id-line"></div></div>
+    </div>
+
+    <h3>Sentence frames strip (write this for Dea)</h3>
+    <div class="task-frame">
+      <p>My name <strong>is</strong> ___. &nbsp;|&nbsp; I <strong>am</strong> ___ years old. &nbsp;|&nbsp; I <strong>am</strong> ___ and ___. &nbsp;|&nbsp; I <strong>have</strong> ___.</p>
+    </div>
+    <h3>Steps</h3>
+    <ol>
+      <li>Draw a self-portrait in the top corner (2 minutes — quick sketch!).</li>
+      <li>Fill in each line using the sentence frames above.</li>
+      <li>Decorate with colored pens.</li>
+      <li>Dea reads her ID card aloud to you. Ask: <em>"Are you sporty?"</em></li>
+    </ol>
+
+    <div class="field-label">Dea's card content (type what she wrote)</div>
+    <div class="editable tall" id="task-output" contenteditable="true" data-placeholder="Copy Dea's ID card sentences here…"></div>
+    <div class="field-label">Speaking notes</div>
+    <div class="editable" id="task-notes" contenteditable="true" data-placeholder="Fluency, confidence, errors, highlights…"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE ROUND -->
+<div class="section" style="border-radius:14px;margin-bottom:22px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.09)">
+  <div class="sec-head" style="background:#E65100"><span class="icon">⚡</span> Challenge Round <span class="timing">8–10 min</span></div>
+  <div class="sec-body" style="background:#FFF3E0">
+
+    <!-- Spot the Mistake -->
+    <div class="activity-box">
+      <h3>🔍 Spot the Mistake</h3>
+      <p style="font-size:13px;color:#777;margin-bottom:10px"><em>Hint: check if the subject matches am / is / are</em></p>
+      <div class="qa-item">
+        <div class="q" style="font-style:italic;color:#B71C1C">"She am my best friend."</div>
+        <div style="display:flex;align-items:center;gap:8px;margin:6px 0">
+          <span style="font-size:13px;color:#555;font-weight:700">Correction →</span>
+          <div class="editable" id="cr1" contenteditable="true" data-placeholder="Write the correct sentence…" style="flex:1;min-height:36px;padding:6px 12px"></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="q" style="font-style:italic;color:#B71C1C">"Tom and Claire is parents."</div>
+        <div style="display:flex;align-items:center;gap:8px;margin:6px 0">
+          <span style="font-size:13px;color:#555;font-weight:700">Correction →</span>
+          <div class="editable" id="cr2" contenteditable="true" data-placeholder="Write the correct sentence…" style="flex:1;min-height:36px;padding:6px 12px"></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="q" style="font-style:italic;color:#B71C1C">"I are twelve years old."</div>
+        <div style="display:flex;align-items:center;gap:8px;margin:6px 0">
+          <span style="font-size:13px;color:#555;font-weight:700">Correction →</span>
+          <div class="editable" id="cr3" contenteditable="true" data-placeholder="Write the correct sentence…" style="flex:1;min-height:36px;padding:6px 12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transform It -->
+    <div class="activity-box" style="margin-top:12px">
+      <h3>🔄 Transform It — Change I → She</h3>
+      <div class="qa-item">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;font-weight:700;color:#444">I am funny.</span>
+          <span style="font-size:18px;color:#E65100">→</span>
+          <span style="font-size:14px;font-weight:700;color:#444">She</span>
+          <div class="editable" id="tr1" contenteditable="true" data-placeholder="___" style="min-width:160px;min-height:34px;padding:4px 10px;display:inline-block"></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;font-weight:700;color:#444">I am tall and creative.</span>
+          <span style="font-size:18px;color:#E65100">→</span>
+          <span style="font-size:14px;font-weight:700;color:#444">She</span>
+          <div class="editable" id="tr2" contenteditable="true" data-placeholder="___" style="min-width:200px;min-height:34px;padding:4px 10px;display:inline-block"></div>
+        </div>
+      </div>
+      <div class="qa-item">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0">
+          <span style="font-size:14px;font-weight:700;color:#444">I am not shy.</span>
+          <span style="font-size:18px;color:#E65100">→</span>
+          <span style="font-size:14px;font-weight:700;color:#444">She</span>
+          <div class="editable" id="tr3" contenteditable="true" data-placeholder="___" style="min-width:160px;min-height:34px;padding:4px 10px;display:inline-block"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Write Your Own -->
+    <div class="activity-box" style="margin-top:12px">
+      <h3>✍️ Write Your Own</h3>
+      <div class="editable tall" id="cr-write" contenteditable="true" data-placeholder="Write 3 sentences about a person you know. Use am/is/are + adjectives. Example: My friend is funny and creative."></div>
+    </div>
+
+    <!-- Word Power -->
+    <div class="activity-box" style="margin-top:12px">
+      <h3>💡 Word Power — Harder Words</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">🧐</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">arrogant</div>
+          <div style="font-size:12px;color:#555;font-style:italic">thinks they are better than others</div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">🧘</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">patient</div>
+          <div style="font-size:12px;color:#555;font-style:italic">calm when waiting for something</div>
+        </div>
+        <div style="background:white;border-radius:12px;padding:14px 12px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.07);border-bottom:3px solid #E65100">
+          <div style="font-size:22px;margin-bottom:6px">💪</div>
+          <div style="font-weight:800;font-size:14px;color:#E65100;margin-bottom:4px">confident</div>
+          <div style="font-size:12px;color:#555;font-style:italic">sure of yourself and your abilities</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REVIEW & HOMEWORK -->
+<div class="section review">
+  <div class="sec-head"><span class="icon">🏠</span> Review &amp; Homework <span class="timing">5–10 min</span></div>
+  <div class="sec-body">
+    <div class="activity-box">
+      <h3>⚡ Flashcard Race</h3>
+      <p>Hold up the adjective word cards one by one. Dea shouts the word AND acts it out. Speed up gradually!</p>
+    </div>
+    <h3>Homework</h3>
+    <div class="task-frame">
+      <p>🎨 <strong>Draw</strong> your best friend or a family member.</p>
+      <p>✏️ <strong>Write 4 sentences:</strong> their name, age, and two adjectives.</p>
+      <p>📌 Use your ID card as a model!</p>
+    </div>
+    <div class="field-label">Next session check: listen for…</div>
+    <p style="font-size:13px;color:#666;margin:6px 0">✅ is/am correct? ✅ Subject + verb in every sentence? ✅ Adjectives from our list?</p>
+    <div class="field-label">Homework result (fill in at Session 2)</div>
+    <div class="editable" id="hw-check" contenteditable="true" data-placeholder="Did she do it? Errors? What to recycle at S2 warm-up?"></div>
+    <h3 style="margin-top:18px">Session Self-Evaluation</h3>
+    <div class="check-item"><input type="checkbox" id="ev1"><label for="ev1">Dea used am/is/are correctly in sentences</label></div>
+    <div class="check-item"><input type="checkbox" id="ev2"><label for="ev2">Dea read the text with good fluency</label></div>
+    <div class="check-item"><input type="checkbox" id="ev3"><label for="ev3">Dea completed and presented her ID card</label></div>
+    <div class="check-item"><input type="checkbox" id="ev4"><label for="ev4">Dea was engaged and motivated throughout</label></div>
+    <div class="check-item"><input type="checkbox" id="ev5"><label for="ev5">Homework explained and understood</label></div>
+    <div class="field-label">Overall session notes</div>
+    <div class="editable tall" id="session-notes" contenteditable="true" data-placeholder="What worked? What to revisit? Carry into Session 2?"></div>
+  </div>
+</div>
+
+</div>
+<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:100">
+  <a href="session1_game.html" style="display:inline-block;background:#7B1FA2;color:white;padding:12px 22px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🎮 Play Digital Game</a>
+  <a href="game1.html" style="display:inline-block;background:#C2185B;color:white;padding:12px 22px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18)">🃏 Print Card Game</a>
+</div>
+<div class="live-banner">🔴 ÉLŐÓRA — Képernyőmegosztás aktív</div>
+<div class="online-bar">
+  <button class="online-btn btn-save" onclick="saveDeaWork(1)">💾 Dea munkájának mentése</button>
+  <button class="online-btn btn-ss" id="ss-btn" onclick="toggleSS()">📺 Képernyőmegosztás</button>
+</div>
+<script>
+function saveDeaWork(n){
+  var out='Dea válaszai — Session '+n+'\nDátum: '+new Date().toLocaleDateString('hu-HU')+'\n'+'='.repeat(40)+'\n\n',count=0;
+  document.querySelectorAll('[contenteditable][id]').forEach(function(el){
+    var t=el.innerText.trim();
+    if(t&&t.length>2){out+='['+el.id+']\n'+t+'\n\n';count++;}
+  });
+  if(count===0){alert('Még nincs kitöltött mező! Töltsd ki Dea válaszait először.');return;}
+  var b=new Blob([out],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='Dea_Session'+n+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);
+}
+var _ss=false;
+function toggleSS(){
+  _ss=!_ss;
+  document.body.classList.toggle('screen-share',_ss);
+  var b=document.getElementById('ss-btn');
+  b.textContent=_ss?'❌ Kilépés a módból':'📺 Képernyőmegosztás';
+  b.classList.toggle('active',_ss);
+}
+</script>
+<button class="print-btn" onclick="window.print()">🖨️ Print</button>
+<button class="reset-btn" onclick="resetSession()">↺ Clear</button>
+<script>
+const KEY='dea_s1_';let timer;
+function showSaved(){const s=document.getElementById('save-status');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1800);}
+function save(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id)localStorage.setItem(KEY+el.id,el.innerHTML);});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id)localStorage.setItem(KEY+cb.id,cb.checked);});showSaved();}
+function load(){document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){const v=localStorage.getItem(KEY+el.id);if(v!==null)el.innerHTML=v;}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){const v=localStorage.getItem(KEY+cb.id);if(v!==null)cb.checked=(v==='true');}});}
+function resetSession(){if(!confirm('Clear all notes for Session 1?'))return;document.querySelectorAll('[contenteditable]').forEach(el=>{if(el.id){localStorage.removeItem(KEY+el.id);el.innerHTML='';}});document.querySelectorAll('input[type=checkbox]').forEach(cb=>{if(cb.id){localStorage.removeItem(KEY+cb.id);cb.checked=false;}});}
+document.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(save,600);});
+document.addEventListener('change',()=>{clearTimeout(timer);timer=setTimeout(save,300);});
+window.addEventListener('load',load);
+</script>
+</body>
+</html>

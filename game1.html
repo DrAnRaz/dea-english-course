@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess Who? — Me and My World 🌟</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4f6f9;color:#1a1a1a;font-size:14px}
+
+/* ── SCREEN-ONLY ELEMENTS ── */
+.screen-only{display:block}
+.back-btn{display:inline-block;margin:20px 24px 0;background:#7B1FA2;color:white;padding:10px 22px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,0.15)}
+.back-btn:hover{background:#6A1B9A}
+
+/* ── HEADERS ── */
+.main-header{text-align:center;padding:28px 24px 12px;background:linear-gradient(135deg,#7B1FA2,#AB47BC);color:white;margin:20px 24px;border-radius:16px}
+.main-header h1{font-size:28px;font-weight:900;margin-bottom:6px}
+.main-header .sub{font-size:15px;opacity:0.88}
+.section-header{text-align:center;padding:14px 20px;background:linear-gradient(135deg,#4A148C,#7B1FA2);color:white;border-radius:14px 14px 0 0;font-size:18px;font-weight:800;margin-top:32px}
+.section-body{background:white;border-radius:0 0 14px 14px;padding:24px;margin-bottom:8px;box-shadow:0 3px 10px rgba(0,0,0,0.09)}
+
+.page-break-before{page-break-before:always;break-before:page}
+
+/* ── HOW TO PLAY ── */
+.instructions-box{background:#F3E5F5;border:2px solid #CE93D8;border-radius:14px;padding:22px 26px;max-width:700px;margin:0 auto}
+.instructions-box h2{color:#6A1B9A;font-size:17px;font-weight:900;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
+.instr-steps{list-style:none;padding:0}
+.instr-steps li{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(123,31,162,0.1);font-size:14px;line-height:1.6}
+.instr-steps li:last-child{border-bottom:none}
+.step-num{background:#7B1FA2;color:white;font-weight:900;font-size:13px;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tips-box{background:#EDE7F6;border-radius:10px;padding:14px 18px;margin-top:16px}
+.tips-box h3{color:#4A148C;font-size:14px;font-weight:800;margin-bottom:8px}
+.tips-box ul{padding-left:18px}
+.tips-box li{font-size:13px;color:#333;margin:5px 0}
+
+/* ── CHARACTER CARDS GRID ── */
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto;padding:8px 0}
+
+/* ── SINGLE CHARACTER CARD ── */
+.char-card{background:white;border:2px dashed #CE93D8;border-radius:14px;padding:16px 14px;text-align:center;position:relative;page-break-inside:avoid;break-inside:avoid}
+.card-num{position:absolute;top:8px;right:10px;font-size:10px;color:#CE93D8;font-weight:700}
+.card-emoji{font-size:58px;line-height:1;margin-bottom:8px}
+.card-name{font-size:16px;font-weight:900;color:#4A148C;margin-bottom:10px}
+.adj-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:5px}
+.adj-chip{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:white;white-space:nowrap}
+
+/* Adjective chip colors */
+.chip-funny{background:#E65100}
+.chip-creative{background:#7B1FA2}
+.chip-tall{background:#1565C0}
+.chip-short{background:#C2185B}
+.chip-friendly{background:#2E7D32}
+.chip-confident{background:#00695C}
+.chip-serious{background:#546E7A}
+.chip-patient{background:#F9A825;color:#333}
+.chip-kind{background:#00897B}
+.chip-quiet{background:#9575CD}
+.chip-shy{background:#E91E63}
+.chip-brave{background:#C62828}
+.chip-sporty{background:#558B2F}
+.chip-smart{background:#283593}
+.chip-arrogant{background:#6D1B1B}
+.chip-energetic{background:#E64A19}
+.chip-small{background:#039BE5}
+
+/* ── QUESTION PROMPT CARD ── */
+.prompt-section{max-width:500px;margin:0 auto}
+.prompt-card{background:white;border:3px dashed #AB47BC;border-radius:16px;padding:24px 28px}
+.prompt-card h2{text-align:center;color:#6A1B9A;font-size:17px;font-weight:900;margin-bottom:16px}
+.prompt-list{list-style:none;padding:0}
+.prompt-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #F3E5F5;font-size:14px;color:#333}
+.prompt-list li:last-child{border-bottom:none}
+.prompt-q-num{background:#AB47BC;color:white;font-size:11px;font-weight:900;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prompt-q-text{font-style:italic;flex:1}
+.prompt-answers{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+.prompt-answer-chip{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:700}
+.pa-yes{background:#E8F5E9;color:#2E7D32;border:2px solid #A5D6A7}
+.pa-no{background:#FFEBEE;color:#C62828;border:2px solid #EF9A9A}
+
+/* ── PRINT STYLES ── */
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:white;font-size:12px}
+  .screen-only,.back-btn{display:none!important}
+  .main-header{margin:0;border-radius:0;padding:18px 20px}
+  .section-header{margin-top:0}
+  .cards-grid{grid-template-columns:repeat(3,1fr);gap:12px}
+  .char-card{border-style:dashed;border-color:#CE93D8;page-break-inside:avoid;break-inside:avoid}
+  .card-emoji{font-size:48px}
+  .page-break-before{page-break-before:always;break-before:page;padding-top:20px}
+  .section-body{box-shadow:none;border:1px solid #e0e0e0}
+}
+@media(max-width:600px){
+  .cards-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .card-emoji{font-size:44px}
+}
+</style>
+</head>
+<body>
+
+<a href="session1.html" class="back-btn screen-only">← Back to Session 1</a>
+
+<!-- ════════════════════════════════════
+     PAGE 1 — TITLE + HOW TO PLAY
+════════════════════════════════════ -->
+<div class="main-header">
+  <h1>Guess Who? 🌟</h1>
+  <div class="sub">Me and My World — A Speaking Game Using Adjectives!</div>
+</div>
+
+<div style="max-width:900px;margin:0 auto;padding:0 20px">
+
+  <div class="section-header">📋 How to Play</div>
+  <div class="section-body">
+    <div class="instructions-box">
+      <h2>How to Play (2 Players)</h2>
+      <ol class="instr-steps">
+        <li><span class="step-num">1</span><span>Print and cut out all <strong>12 character cards</strong> below. Keep the Question Starter Card too!</span></li>
+        <li><span class="step-num">2</span><span>Each player <strong>secretly picks ONE character card</strong>. Don't show your partner!</span></li>
+        <li><span class="step-num">3</span><span>Take turns asking <strong>YES / NO questions</strong> about adjectives.<br><em>Examples: "Is your person tall?" &nbsp;·&nbsp; "Is she funny?" &nbsp;·&nbsp; "Is he brave?"</em></span></li>
+        <li><span class="step-num">4</span><span>Your partner answers: <strong>"Yes, she is!"</strong> or <strong>"No, he isn't."</strong></span></li>
+        <li><span class="step-num">5</span><span>First player to correctly <strong>GUESS the other's character WINS! 🏆</strong></span></li>
+      </ol>
+      <div class="tips-box">
+        <h3>💡 Tips for Good Questions</h3>
+        <ul>
+          <li>Ask about <strong>one adjective at a time</strong></li>
+          <li>Remember answers to narrow it down</li>
+          <li>Try: <em>"Is she...?"</em> / <em>"Is he...?"</em> / <em>"Are they...?"</em></li>
+          <li>Use the <strong>Question Starter Card</strong> if you need ideas!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<!-- ════════════════════════════════════
+     PAGE 2 — CHARACTER CARDS
+════════════════════════════════════ -->
+  <div class="section-header page-break-before">🃏 Character Cards — Cut Out &amp; Play!</div>
+  <div class="section-body">
+    <div class="cards-grid">
+
+      <!-- 1. Emma -->
+      <div class="char-card">
+        <div class="card-num">#1</div>
+        <div class="card-emoji">🧑‍🦱</div>
+        <div class="card-name">Emma</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-funny">funny</span>
+          <span class="adj-chip chip-creative">creative</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-friendly">friendly</span>
+          <span class="adj-chip chip-confident">confident</span>
+        </div>
+      </div>
+
+      <!-- 2. Tom -->
+      <div class="char-card">
+        <div class="card-num">#2</div>
+        <div class="card-emoji">👨‍⚕️</div>
+        <div class="card-name">Tom</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-serious">serious</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-patient">patient</span>
+          <span class="adj-chip chip-friendly">helpful</span>
+          <span class="adj-chip chip-brave">brave</span>
+        </div>
+      </div>
+
+      <!-- 3. Claire -->
+      <div class="char-card">
+        <div class="card-num">#3</div>
+        <div class="card-emoji">👩‍🏫</div>
+        <div class="card-name">Claire</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-kind">kind</span>
+          <span class="adj-chip chip-patient">patient</span>
+          <span class="adj-chip chip-short">short</span>
+          <span class="adj-chip chip-friendly">friendly</span>
+          <span class="adj-chip chip-quiet">quiet</span>
+        </div>
+      </div>
+
+      <!-- 4. Lucy -->
+      <div class="char-card">
+        <div class="card-num">#4</div>
+        <div class="card-emoji">🧒</div>
+        <div class="card-name">Lucy</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-small">small</span>
+          <span class="adj-chip chip-quiet">quiet</span>
+          <span class="adj-chip chip-shy">shy</span>
+          <span class="adj-chip chip-brave">brave</span>
+          <span class="adj-chip chip-creative">creative</span>
+        </div>
+      </div>
+
+      <!-- 5. Jack -->
+      <div class="char-card">
+        <div class="card-num">#5</div>
+        <div class="card-emoji">🧑‍💻</div>
+        <div class="card-name">Jack</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-sporty">sporty</span>
+          <span class="adj-chip chip-smart">smart</span>
+          <span class="adj-chip chip-arrogant">arrogant</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-funny">funny</span>
+        </div>
+      </div>
+
+      <!-- 6. Maya -->
+      <div class="char-card">
+        <div class="card-num">#6</div>
+        <div class="card-emoji">🧑‍🎨</div>
+        <div class="card-name">Maya</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-energetic">energetic</span>
+          <span class="adj-chip chip-creative">creative</span>
+          <span class="adj-chip chip-confident">confident</span>
+          <span class="adj-chip chip-funny">funny</span>
+          <span class="adj-chip chip-friendly">friendly</span>
+        </div>
+      </div>
+
+      <!-- 7. Sam -->
+      <div class="char-card">
+        <div class="card-num">#7</div>
+        <div class="card-emoji">👦</div>
+        <div class="card-name">Sam</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-shy">shy</span>
+          <span class="adj-chip chip-short">short</span>
+          <span class="adj-chip chip-kind">kind</span>
+          <span class="adj-chip chip-quiet">quiet</span>
+          <span class="adj-chip chip-creative">creative</span>
+        </div>
+      </div>
+
+      <!-- 8. Zoe -->
+      <div class="char-card">
+        <div class="card-num">#8</div>
+        <div class="card-emoji">🧑‍🦰</div>
+        <div class="card-name">Zoe</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-brave">brave</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-arrogant">arrogant</span>
+          <span class="adj-chip chip-sporty">sporty</span>
+          <span class="adj-chip chip-confident">confident</span>
+        </div>
+      </div>
+
+      <!-- 9. Ben -->
+      <div class="char-card">
+        <div class="card-num">#9</div>
+        <div class="card-emoji">😄</div>
+        <div class="card-name">Ben</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-funny">funny</span>
+          <span class="adj-chip chip-short">short</span>
+          <span class="adj-chip chip-kind">kind</span>
+          <span class="adj-chip chip-creative">creative</span>
+          <span class="adj-chip chip-patient">patient</span>
+        </div>
+      </div>
+
+      <!-- 10. Leo -->
+      <div class="char-card">
+        <div class="card-num">#10</div>
+        <div class="card-emoji">🧑‍🎓</div>
+        <div class="card-name">Leo</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-smart">smart</span>
+          <span class="adj-chip chip-serious">serious</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-arrogant">arrogant</span>
+          <span class="adj-chip chip-quiet">quiet</span>
+        </div>
+      </div>
+
+      <!-- 11. Lily -->
+      <div class="char-card">
+        <div class="card-num">#11</div>
+        <div class="card-emoji">🌸</div>
+        <div class="card-name">Lily</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-shy">shy</span>
+          <span class="adj-chip chip-small">small</span>
+          <span class="adj-chip chip-kind">kind</span>
+          <span class="adj-chip chip-funny">funny</span>
+          <span class="adj-chip chip-creative">creative</span>
+        </div>
+      </div>
+
+      <!-- 12. Max -->
+      <div class="char-card">
+        <div class="card-num">#12</div>
+        <div class="card-emoji">🏃</div>
+        <div class="card-name">Max</div>
+        <div class="adj-chips">
+          <span class="adj-chip chip-brave">brave</span>
+          <span class="adj-chip chip-sporty">sporty</span>
+          <span class="adj-chip chip-energetic">energetic</span>
+          <span class="adj-chip chip-tall">tall</span>
+          <span class="adj-chip chip-confident">confident</span>
+        </div>
+      </div>
+
+    </div><!-- /cards-grid -->
+  </div>
+
+<!-- ════════════════════════════════════
+     PAGE 3 — QUESTION STARTER CARD
+════════════════════════════════════ -->
+  <div class="section-header page-break-before">✂️ Question Starter Cards — Cut Out &amp; Keep!</div>
+  <div class="section-body">
+    <div class="prompt-section">
+      <div class="prompt-card">
+        <h2>❓ Question Starters</h2>
+        <ol class="prompt-list">
+          <li><span class="prompt-q-num">1</span><span class="prompt-q-text">"Is your person tall?"</span></li>
+          <li><span class="prompt-q-num">2</span><span class="prompt-q-text">"Is he / she funny?"</span></li>
+          <li><span class="prompt-q-num">3</span><span class="prompt-q-text">"Is your person shy?"</span></li>
+          <li><span class="prompt-q-num">4</span><span class="prompt-q-text">"Is he / she kind?"</span></li>
+          <li><span class="prompt-q-num">5</span><span class="prompt-q-text">"Is your person creative?"</span></li>
+          <li><span class="prompt-q-num">6</span><span class="prompt-q-text">"Is he / she brave?"</span></li>
+          <li><span class="prompt-q-num">7</span><span class="prompt-q-text">"Is your person sporty?"</span></li>
+          <li><span class="prompt-q-num">8</span><span class="prompt-q-text">"Is he / she confident?"</span></li>
+          <li><span class="prompt-q-num">9</span><span class="prompt-q-text">"Is your person energetic?"</span></li>
+          <li><span class="prompt-q-num">10</span><span class="prompt-q-text">"Is he / she patient?"</span></li>
+        </ol>
+        <div class="prompt-answers">
+          <span class="prompt-answer-chip pa-yes">Yes, he is! ✓</span>
+          <span class="prompt-answer-chip pa-yes">Yes, she is! ✓</span>
+          <span class="prompt-answer-chip pa-no">No, he isn't. ✗</span>
+          <span class="prompt-answer-chip pa-no">No, she isn't. ✗</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /max-width wrapper -->
+
+<div style="text-align:center;padding:20px;color:#999;font-size:12px" class="screen-only">
+  <a href="session1.html" class="back-btn" style="margin:0">← Back to Session 1</a>
+  &nbsp;&nbsp;
+  <button onclick="window.print()" style="background:#1565C0;color:white;border:none;padding:10px 22px;border-radius:24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.15)">🖨️ Print Game</button>
+</div>
+
+</body>
+</html>
