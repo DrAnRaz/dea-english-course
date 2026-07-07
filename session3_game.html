@@ -279,6 +279,7 @@ const sentenceToWord = [
 ];
 
 let currentSentence = 0;
+let currentCalledWord = null;
 let markedCells = new Array(16).fill(false);
 
 function buildBingoGrid() {
@@ -296,13 +297,25 @@ function buildBingoGrid() {
 
 function markCell(i) {
   if (markedCells[i]) return;
+  if (!currentCalledWord) { flashCaller('Press “Read Next Sentence” first! 👂'); return; }
+  if (bingoObjects[i].word !== currentCalledWord) { flashCaller('Not that one — listen again! 👂'); return; }
   markedCells[i] = true;
   const cell = document.getElementById('cell-' + i);
   cell.classList.add('marked');
   cell.innerHTML = `<div style="font-size:20px">✓</div><div class="cell-word" style="color:white">${bingoObjects[i].word}</div>`;
   totalScore += 5;
   updateScore();
+  currentCalledWord = null;
   checkBingo();
+}
+function flashCaller(msg) {
+  const box = document.getElementById('caller-box');
+  if (!box) return;
+  let f = document.getElementById('caller-flash');
+  if (!f) { f = document.createElement('div'); f.id = 'caller-flash'; f.style.cssText = 'font-size:13px;color:#c62828;font-weight:700;margin-top:6px'; box.appendChild(f); }
+  f.textContent = msg;
+  box.style.boxShadow = '0 0 0 3px #ef5350';
+  setTimeout(function(){ box.style.boxShadow=''; const g=document.getElementById('caller-flash'); if(g){g.textContent='';} }, 1300);
 }
 
 function nextSentence() {
@@ -310,6 +323,7 @@ function nextSentence() {
   const box = document.getElementById('caller-box');
   box.innerHTML = `<div class="caller-num">Sentence ${currentSentence + 1} of ${callerSentences.length}</div><div id="caller-text">${callerSentences[currentSentence]}</div>`;
   document.getElementById('sentence-counter').textContent = `Sentence ${currentSentence + 1} / ${callerSentences.length}`;
+  currentCalledWord = sentenceToWord[currentSentence];
   currentSentence++;
   updateProgress();
 }
@@ -585,6 +599,7 @@ function restartGame() {
   updateScore();
   bingoAchieved = false;
   currentSentence = 0;
+  currentCalledWord = null;
   markedCells = new Array(16).fill(false);
   document.getElementById('final-screen').classList.remove('active');
   document.getElementById('round3').classList.remove('active');
